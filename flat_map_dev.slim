@@ -6,10 +6,10 @@ initialize() {
 
 	 //outpath="/Users/cj/Desktop/test.slim";
 	 //sigma_d=1;
-	 //sigma_i=0.2;
-	 //recomb=1e-9;
+	 sigma_i=0.25;
+	 recomb=1e-9;
 
-    defineConstant("K", 5);  // carrying-capacity per unit square (roughly)
+    defineConstant("K", 3);  // carrying-capacity per unit square (roughly)
     defineConstant("SD", sigma_i);  // sigma_D, the dispersal distance
     defineConstant("SI", sigma_i);  // sigma_I, the spatial interaction distance
     defineConstant("SM", SI);  // sigma_M, the mate choice distance
@@ -84,33 +84,33 @@ early() {
 }
 
 2: early() {
-    //if ((sim.generation % 20) == 0) {
-    //    cat(sim.generation + " " + "early" + " " + mean(p1.individuals.age) + " " + p1.individualCount/W^2);
-    //    cat(" " + mean(p1.individuals.tagF) + " " + 1/mean(1/p1.individuals.tagF) + " " + mean(p1.individuals.tag));
-    //    catn(" " + clock());
-    //}
+    if ((sim.generation % 20) == 0) {
+        cat(sim.generation + " " + "early" + " " + mean(p1.individuals.age) + " " + p1.individualCount/W^2);
+        cat(" " + mean(p1.individuals.tagF) + " " + 1/mean(1/p1.individuals.tagF) + " " + mean(p1.individuals.tag));
+        catn(" " + clock());
+    }
 }
 
 2: late() {
-    //if ((sim.generation % 20) == 0) {
-    //    cat(sim.generation + " " + "late " + " " + mean(p1.individuals.age) + " " + p1.individualCount/W^2);
-    //    cat(" " + mean(p1.individuals.tagF) + " " + 1/mean(1/p1.individuals.tagF) + " " + mean(p1.individuals.tag));
-    //    catn(" " + clock());
-    //}
+    if ((sim.generation % 20) == 0) {
+        cat(sim.generation + " " + "late " + " " + mean(p1.individuals.age) + " " + p1.individualCount/W^2);
+        cat(" " + mean(p1.individuals.tagF) + " " + 1/mean(1/p1.individuals.tagF) + " " + mean(p1.individuals.tag));
+        catn(" " + clock());
+    }
     
     // DEBUG: GUI COLORS
-    // green = many neighbors, few offspring so far
-    // red = many offspring so far, few neighbors
-    // yellow = many offspring so far, many neighbors
-    //max_n = max(1, max(p1.individuals.tag));
-    //max_f = max(0.01, max(p1.individuals.tagF));
-    //max_a = max(p1.individuals.age);
-    //for (ind in p1.individuals) {
-    //	ind.color = rgb2color(c(ind.tag/max_n, ind.tagF/max_f, ind.age/max_a));
-    //}
+     //green = many neighbors, few offspring so far
+     //red = many offspring so far, few neighbors
+     //yellow = many offspring so far, many neighbors
+    max_n = max(1, max(p1.individuals.tag));
+    max_f = max(0.01, max(p1.individuals.tagF));
+    max_a = max(p1.individuals.age);
+    for (ind in p1.individuals) {
+    	ind.color = rgb2color(c(ind.tag/max_n, ind.tagF/max_f, ind.age/max_a));
+    }
 }
 
 50000 late() {
-   sim.treeSeqOutput(outpath);
+	//sim.treeSeqOutput(outpath);
    sim.simulationFinished();
 }
