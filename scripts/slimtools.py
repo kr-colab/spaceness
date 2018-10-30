@@ -75,7 +75,8 @@ def check_treeseq_coalescence(indir):
         j=j+1
     return treeseqs,out
 
-treeseqs,out=check_treeseq_coalescence("/Users/cj/spaceness/sims/slimout/40N/")
+treeseqs,out=check_treeseq_coalescence("/Users/cj/spaceness/sims/slimout/small_long/")
+np.mean(out[0])
 
 # np.savetxt("/Users/cj/spaceness/uncoal_prop.txt",np.transpose(out))
 # tmp=open("/Users/cj/spaceness/uncoal_tsnames.txt","w")
@@ -84,7 +85,7 @@ treeseqs,out=check_treeseq_coalescence("/Users/cj/spaceness/sims/slimout/40N/")
 # tmp.close()
 # np.savetxt("/Users/cj/spaceness/uncoal_tsnames.txt",treeseqs)
 
-def sample_treeseq_directory(indir,outdir,nSamples):
+def sample_treeseq_directory(indir,outdir,nSamples,recapitate,recombination_rate):
     '''
     loop sample_treeseq over a directory.
     '''
@@ -97,13 +98,17 @@ def sample_treeseq_directory(indir,outdir,nSamples):
         subsample_nodes=[a for b in subsample_nodes for a in b] #flatten the list
         subsample_nodes=np.sort(np.array(subsample_nodes))
         o=ts.simplify(subsample_nodes)
+        if(recapitate):
+            ts=ts.recapitate(recombination_rate=recombination_rate)
         o.dump(os.path.join(outdir,trees[i]))
 
     return None
 
-# sample_treeseq_directory(indir="/Users/cj/spaceness/sims/slimout/k5/",
-#                          outdir="/Users/cj/spaceness/sims/sampled/k5/",
-#                          nSamples=50)
+sample_treeseq_directory(indir="/Users/cj/spaceness/sims/slimout/small_long/",
+                         outdir="/Users/cj/spaceness/sims/sampled/small_long/",
+                         nSamples=50,
+                         recapitate=True,
+                         recombination_rate=1e-9)
 
 def mutate_treeseqs(indir,outdir,mu):
     '''
@@ -117,10 +122,10 @@ def mutate_treeseqs(indir,outdir,mu):
 
     return None
 
-# mutate_treeseqs("/Users/cj/spaceness/sims/sampled/k5/",
-#                 "/Users/cj/spaceness/sims/mutated/k5/",
-#                 1e-8)
-direc=indir
+mutate_treeseqs("/Users/cj/spaceness/sims/sampled/small_long/",
+                "/Users/cj/spaceness/sims/mutated/small_long/",
+                1e-8)
+
 def get_ms_outs(direc):
     '''
     loops through a trees directory created by the data generator class
@@ -148,7 +153,7 @@ def get_ms_outs(direc):
 
     return haps,positions,labels,locs
 
-#haps,positions,labels,locs=get_ms_outs("/Users/cj/spaceness/sims/mutated/k5/")
+haps,positions,labels,locs=get_ms_outs("/Users/cj/spaceness/sims/mutated/small_long")
 
 def discretize_snp_positions(ogpositions):
     '''
@@ -171,7 +176,7 @@ def discretize_snp_positions(ogpositions):
 dpositions=discretize_snp_positions(positions)
 
 def getHaplotypeSumStats(haps,positions,labels,locs,outfile,verbose=True):
-    out=np.zeros(shape=(len(haps),6+101))
+    out=np.zeros(shape=(len(haps),7+101))
     for i in range(len(haps)):
         if(verbose):
             print("processing simulation "+str(i))
@@ -182,7 +187,7 @@ def getHaplotypeSumStats(haps,positions,labels,locs,outfile,verbose=True):
         #nonspatial population-wide summary statistics
         segsites=np.shape(genotypes)[0]
         mpd=np.mean(allel.diversity.mean_pairwise_difference(allele_counts))
-        mpd=(mpd*segsites)/1e8
+        pi=(mpd*segsites)/1e8
         tajD=allel.diversity.tajima_d(ac=allele_counts,start=1,stop=1e8)
         thetaW=allel.diversity.watterson_theta(pos=positions[i],ac=allele_counts,start=1,stop=1e8)
         het_o=np.mean(allel.heterozygosity_observed(genotypes))
@@ -198,7 +203,7 @@ def getHaplotypeSumStats(haps,positions,labels,locs,outfile,verbose=True):
         #gen_sp_corr=np.corrcoef(gen_dist,sp_dist)[0,1]
 
         #row=np.append(sp_dist,gen_dist,sfs)
-        row=[segsites,mpd,thetaW,tajD,het_o,fis]
+        row=[labels[i],segsites,pi,thetaW,tajD,het_o,fis]
         row=np.append(row,sfs)
 
         out[i]=row
@@ -207,7 +212,8 @@ def getHaplotypeSumStats(haps,positions,labels,locs,outfile,verbose=True):
 
     return(out)
 
-ss=getHaplotypeSumStats(haps,dpositions,labels,locs,"/Users/cj/spaceness/k5sumstats.txt")
+ss=getHaplotypeSumStats(haps,dpositions,labels,locs,"/Users/cj/spaceness/n1k_g200k_sumstats.txt")
+
 
 ## for old pipeline using multiple presampled param values
 # def sample_sim_params(params_to_sample,
