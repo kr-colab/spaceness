@@ -1,0 +1,56 @@
+initialize() {
+	setSeed(123);
+	initializeSLiMOptions(dimensionality="xy");
+   // initializeTreeSeq();	
+	
+	// Clumpiness (aka the Pain) occurs when neighborhood size is less than 1
+	// i.e. sigma_D < 1/sqrt(PI * K) = 0.25
+	// (regardless of mate choice)
+	sigma_D = 0.2;
+	
+	defineConstant("K", 5);  // carrying-capacity per unit square (roughly)
+	defineConstant("SD", sigma_D);  // sigma_D, the dispersal distance
+	defineConstant("SM", SD);  // sigma_M, the mate choice distance
+	defineConstant("W", 50.0);  // width and height of the simulated area
+	defineConstant("G", 1e4);  // genome length
+	
+	initializeMutationType("m1", 0.5, "g", 0.0, 2);
+	initializeGenomicElementType("g1", m1, 1.0);
+	initializeGenomicElement(g1, 0, G-1);
+	initializeMutationRate(0.0);
+	initializeRecombinationRate(1e-8);
+	
+	// mate choice
+	initializeInteractionType(2, "xy", reciprocal=T, maxDistance=SM * 3);
+	i2.setInteractionFunction("n", 1.0/(2*PI*SM^2), SM);
+}
+
+1 late() {
+	sim.addSubpop("p1", asInteger(K * W * W));
+	p1.setSpatialBounds(c(0, 0, W, W));
+	// random initial positions
+	for (ind in p1.individuals) {
+		ind.setSpatialPosition(p1.pointUniform());
+	}
+}
+
+2: early() {
+	i2.evaluate(p1);
+}
+
+mateChoice() {
+	mate = i2.drawByStrength(individual, 1);
+	if (mate.size()) {
+		return mate;
+	} else {
+		return float(0);
+	}
+}
+
+modifyChild() {
+	pos = parent1.spatialPosition + rnorm(2, 0, SD);
+	child.setSpatialPosition(p1.pointReflected(pos));
+	return p1.pointInBounds(pos);
+}
+
+900 late() { sim.outputFixedMutations(); }
