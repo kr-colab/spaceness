@@ -6,14 +6,15 @@ initialize() {
 
 	 //outpath="/Users/cj/Desktop/test.slim";
 	 //sigma_d=1;
-	 sigma=0.2;
+	 //sigma_i=0.2;
+	 //recomb=1e-9;
 
     defineConstant("K", 5);  // carrying-capacity per unit square (roughly)
     defineConstant("SD", sigma);  // sigma_D, the dispersal distance
     defineConstant("SI", sigma);  // sigma_I, the spatial interaction distance
     defineConstant("SM", SI);  // sigma_M, the mate choice distance
     defineConstant("L", 4);    // mean lifetime at stationarity
-    defineConstant("W", 16.0);  // width and height of the simulated area
+    defineConstant("W", 35.0);  // width and height of the simulated area
     defineConstant("G", 1e8);  // genome length
     defineConstant("FECUN", 1/L); // mean fecundity
     defineConstant("RHO", FECUN/((1+FECUN) * K)); // constant in spatial competition function
@@ -109,7 +110,7 @@ early() {
     //}
 }
 
-100000 late() {
+200000 late() {
    sim.treeSeqOutput(outpath);
    sim.simulationFinished();
 }

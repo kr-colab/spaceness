@@ -6,7 +6,7 @@ initialize() {
 
 	 //outpath="/Users/cj/Desktop/test.slim";
 	 //sigma_d=1;
-	 sigma=0.2;
+	 //sigma=0.2;
 
     defineConstant("K", 5);  // carrying-capacity per unit square (roughly)
     defineConstant("SD", sigma);  // sigma_D, the dispersal distance
@@ -109,7 +109,7 @@ early() {
     //}
 }
 
-100000 late() {
+200000 late() {
    sim.treeSeqOutput(outpath);
    sim.simulationFinished();
 }
