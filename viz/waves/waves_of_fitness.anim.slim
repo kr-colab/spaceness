@@ -4,10 +4,10 @@ initialize() {
 	initializeSLiMOptions(dimensionality="xy");
 	initializeTreeSeq();
 	
-	sigma_D = 1;
+	sigma_D = 0.5;
 	sigma_I = 1;
 	
-	defineConstant("OUTBASE", "flat");
+	defineConstant("OUTBASE", "waves");
 	defineConstant("K", 5);  // carrying-capacity per unit square (roughly)
 	defineConstant("SD", sigma_D);  // sigma_D, the dispersal distance
 	defineConstant("SI", sigma_I);  // sigma_I, the spatial interaction distance
@@ -115,12 +115,10 @@ early() {
 
 2: late() {
 	// full output
-	if ((sim.generation % 2000) == 0) {
-		sim.treeSeqOutput(OUTBASE + "." + sim.generation + ".trees");
-	}
+    sim.treeSeqRememberIndividuals(p1.individuals);
 }
 
-100000 late() {
-	sim.treeSeqOutput(OUTBASE + "."  + sim.generation + ".trees");
+500 late() {
+	sim.treeSeqOutput(OUTBASE + "."  + sim.generation + ".anim.trees");
 	sim.simulationFinished();
 }

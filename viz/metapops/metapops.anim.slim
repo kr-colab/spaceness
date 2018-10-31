@@ -4,16 +4,16 @@ initialize() {
 	initializeSLiMOptions(dimensionality="xy");
 	initializeTreeSeq();
 	
-	sigma_D = 0.25;
-	sigma_I = 0.2;
+	sigma_D = 0.15;
+	sigma_I = 0.5; // dies out below about 0.3
 	
-	defineConstant("OUTBASE", "patchy");
-	defineConstant("K", 3);  // carrying-capacity per unit square (roughly)
+	defineConstant("OUTBASE", "metapops");
+	defineConstant("K", 5);  // carrying-capacity per unit square (roughly)
 	defineConstant("SD", sigma_D);  // sigma_D, the dispersal distance
 	defineConstant("SI", sigma_I);  // sigma_I, the spatial interaction distance
 	defineConstant("SM", SI);  // sigma_M, the mate choice distance
 	defineConstant("L", 4);    // mean lifetime at stationarity
-	defineConstant("W", 55.0);  // width and height of the simulated area
+	defineConstant("W", 50.0);  // width and height of the simulated area
 	defineConstant("G", 1e4);  // genome length
 	defineConstant("FECUN", 1/L); // mean fecundity
 	defineConstant("RHO", FECUN/((1+FECUN) * K)); // constant in spatial competition function
@@ -113,7 +113,12 @@ early() {
 	}
 }
 
-400 late() {
-	sim.treeSeqOutput(OUTBASE + "." + sim.generation + ".trees");
+2: late() {
+	// full output
+    sim.treeSeqRememberIndividuals(p1.individuals);
+}
+
+500 late() {
+	sim.treeSeqOutput(OUTBASE + "."  + sim.generation + ".anim.trees");
 	sim.simulationFinished();
 }

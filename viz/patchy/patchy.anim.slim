@@ -2,17 +2,18 @@ initialize() {
 	setSeed(123);
 	initializeSLiMModelType("nonWF");
 	initializeSLiMOptions(dimensionality="xy");
-	// initializeTreeSeq();
+	initializeTreeSeq();
 	
-	sigma_D = 0.15;
-	sigma_I = 0.5; // dies out below about 0.3
+	sigma_D = 0.25;
+	sigma_I = 0.2;
 	
-	defineConstant("K", 5);  // carrying-capacity per unit square (roughly)
+	defineConstant("OUTBASE", "patchy");
+	defineConstant("K", 3);  // carrying-capacity per unit square (roughly)
 	defineConstant("SD", sigma_D);  // sigma_D, the dispersal distance
 	defineConstant("SI", sigma_I);  // sigma_I, the spatial interaction distance
 	defineConstant("SM", SI);  // sigma_M, the mate choice distance
 	defineConstant("L", 4);    // mean lifetime at stationarity
-	defineConstant("W", 55.0);  // width and height of the simulated area
+	defineConstant("W", 50.0);  // width and height of the simulated area
 	defineConstant("G", 1e4);  // genome length
 	defineConstant("FECUN", 1/L); // mean fecundity
 	defineConstant("RHO", FECUN/((1+FECUN) * K)); // constant in spatial competition function
@@ -63,7 +64,7 @@ reproduction() {
 	
 	// header info
 	cat("gen" + " " + "stage" + " " + "age" + " " + "density");
-	catn(" " + "neighbor" + " " + "harm_neigh" + " " + "num_off" + " " + "clumpines" + " " + "time");
+	catn(" " + "neighbor" + " " + "harm_neigh" + " " + "num_off" + " " + "clumpiness" + " " + "time");
 }
 
 early() {
@@ -85,7 +86,7 @@ early() {
 	if ((sim.generation % 20) == 0) {
 		cat(sim.generation + " " + "early" + " " + mean(p1.individuals.age) + " " + p1.individualCount/W^2);
 		cat(" " + mean(p1.individuals.tagF) + " " + 1/mean(1/p1.individuals.tagF) + " " + mean(p1.individuals.tag));
-		cat(" " + mean(p1.individuals.tagF) / (p1.individualCount/W^2));		
+		cat(" " + mean(p1.individuals.tagF) / (p1.individualCount/W^2));
 		catn(" " + clock());
 	}
 }
@@ -112,7 +113,12 @@ early() {
 	}
 }
 
-9000 late() {
-	//sim.treeSeqOutput(outpath);
+2: late() {
+	// full output
+    sim.treeSeqRememberIndividuals(p1.individuals);
+}
+
+500 late() {
+	sim.treeSeqOutput(OUTBASE + "."  + sim.generation + ".anim.trees");
 	sim.simulationFinished();
 }

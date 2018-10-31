@@ -1,13 +1,14 @@
 initialize() {
 	setSeed(123);
 	initializeSLiMOptions(dimensionality="xy");
-   // initializeTreeSeq();	
+	initializeTreeSeq();
 	
-	// Clumpiness (aka the Pain) occurs when neighborhood size is less than 1
-	// i.e. sigma_D < 1/sqrt(PI * K) = 0.25
+	// Clumpiness (aka the Pain) occurs here when
+	// sigma_D < 1/sqrt(PI * K) = 0.25
 	// (regardless of mate choice)
 	sigma_D = 0.2;
 	
+	defineConstant("OUTBASE", "pain");
 	defineConstant("K", 5);  // carrying-capacity per unit square (roughly)
 	defineConstant("SD", sigma_D);  // sigma_D, the dispersal distance
 	defineConstant("SM", SD);  // sigma_M, the mate choice distance
@@ -53,4 +54,14 @@ modifyChild() {
 	return p1.pointInBounds(pos);
 }
 
-900 late() { sim.outputFixedMutations(); }
+2: late() {
+	// full output
+	if ((sim.generation % 2000) == 0) {
+		sim.treeSeqOutput(OUTBASE + "." + sim.generation + ".trees");
+	}
+}
+
+100000 late() {
+	sim.treeSeqOutput(OUTBASE + "."  + sim.generation + ".trees");
+	sim.simulationFinished();
+}
