@@ -6,26 +6,15 @@ initialize() {
 
 	 //outpath="/Users/cj/Desktop/test.slim";
 	 //sigma_d=1;
-<<<<<<< HEAD
-	 sigma=0.2;
+	 sigma_i=0.25;
+	 recomb=1e-9;
 
-    defineConstant("K", 5);  // carrying-capacity per unit square (roughly)
-    defineConstant("SD", sigma);  // sigma_D, the dispersal distance
-    defineConstant("SI", sigma);  // sigma_I, the spatial interaction distance
-    defineConstant("SM", SI);  // sigma_M, the mate choice distance
-    defineConstant("L", 4);    // mean lifetime at stationarity
-    defineConstant("W", 16.0);  // width and height of the simulated area
-=======
-	 //sigma_i=0.2;
-	 //recomb=1e-9;
-
-    defineConstant("K", 5);  // carrying-capacity per unit square (roughly)
+    defineConstant("K", 3);  // carrying-capacity per unit square (roughly)
     defineConstant("SD", sigma_i);  // sigma_D, the dispersal distance
     defineConstant("SI", sigma_i);  // sigma_I, the spatial interaction distance
     defineConstant("SM", SI);  // sigma_M, the mate choice distance
     defineConstant("L", 4);    // mean lifetime at stationarity
     defineConstant("W", 35.0);  // width and height of the simulated area
->>>>>>> 443681a96a5f9d67c3894f11b75ae40a237f5c95
     defineConstant("G", 1e8);  // genome length
     defineConstant("FECUN", 1/L); // mean fecundity
     defineConstant("RHO", FECUN/((1+FECUN) * K)); // constant in spatial competition function
@@ -34,11 +23,7 @@ initialize() {
     initializeGenomicElementType("g1", m1, 1.0);
     initializeGenomicElement(g1, 0, G-1);
     initializeMutationRate(0.0);
-<<<<<<< HEAD
-    initializeRecombinationRate(1e-9);
-=======
     initializeRecombinationRate(recomb);
->>>>>>> 443681a96a5f9d67c3894f11b75ae40a237f5c95
     
     // spatial competition
     initializeInteractionType(1, "xy", reciprocal=T, maxDistance=SI * 3);
@@ -55,13 +40,13 @@ reproduction() {
     mate = i2.drawByStrength(individual, 1);
     if (mate.size()) {
         nOff = rpois(1, FECUN);
-        //individual.tag = individual.tag + nOff;  // DEBUG
+        individual.tag = individual.tag + nOff;  // DEBUG
         for (i in seqLen(rpois(1, 1/L))) {
             pos = individual.spatialPosition + rnorm(2, 0, SD);
             if (p1.pointInBounds(pos)) {
             offspring = subpop.addCrossed(individual, mate);
           	offspring.setSpatialPosition(p1.pointReflected(pos));
-          	//offspring.tag = 0; // DEBUG
+          	offspring.tag = 0; // DEBUG
           	}
         }
     }
@@ -74,7 +59,7 @@ reproduction() {
     // random initial positions
     for (ind in p1.individuals) {
         ind.setSpatialPosition(p1.pointUniform());
-        //ind.tag = 0; // DEBUG
+        ind.tag = 0; // DEBUG
     }
     i1.evaluate();
 
@@ -87,7 +72,7 @@ early() {
     i1.evaluate(p1);
     inds = p1.individuals;
     competition = i1.totalOfNeighborStrengths(inds);
-    //inds.tagF = competition;  // DEBUG
+    inds.tagF = competition;  // DEBUG
     inds.fitnessScaling = pmin(0.95, 1/(1 + RHO * competition));    
     // avoid edge effects
     inds.fitnessScaling = inds.fitnessScaling * pmin(sqrt(inds.x/SI), 1.0) * pmin(sqrt(inds.y/SI), 1.0) * pmin(sqrt((W - inds.x)/SI), 1.0) * pmin(sqrt((W - inds.y)/SI), 1.0);
@@ -99,37 +84,33 @@ early() {
 }
 
 2: early() {
-    //if ((sim.generation % 20) == 0) {
-    //    cat(sim.generation + " " + "early" + " " + mean(p1.individuals.age) + " " + p1.individualCount/W^2);
-    //    cat(" " + mean(p1.individuals.tagF) + " " + 1/mean(1/p1.individuals.tagF) + " " + mean(p1.individuals.tag));
-    //    catn(" " + clock());
-    //}
+    if ((sim.generation % 20) == 0) {
+        cat(sim.generation + " " + "early" + " " + mean(p1.individuals.age) + " " + p1.individualCount/W^2);
+        cat(" " + mean(p1.individuals.tagF) + " " + 1/mean(1/p1.individuals.tagF) + " " + mean(p1.individuals.tag));
+        catn(" " + clock());
+    }
 }
 
 2: late() {
-    //if ((sim.generation % 20) == 0) {
-    //    cat(sim.generation + " " + "late " + " " + mean(p1.individuals.age) + " " + p1.individualCount/W^2);
-    //    cat(" " + mean(p1.individuals.tagF) + " " + 1/mean(1/p1.individuals.tagF) + " " + mean(p1.individuals.tag));
-    //    catn(" " + clock());
-    //}
+    if ((sim.generation % 20) == 0) {
+        cat(sim.generation + " " + "late " + " " + mean(p1.individuals.age) + " " + p1.individualCount/W^2);
+        cat(" " + mean(p1.individuals.tagF) + " " + 1/mean(1/p1.individuals.tagF) + " " + mean(p1.individuals.tag));
+        catn(" " + clock());
+    }
     
     // DEBUG: GUI COLORS
-    // green = many neighbors, few offspring so far
-    // red = many offspring so far, few neighbors
-    // yellow = many offspring so far, many neighbors
-    //max_n = max(1, max(p1.individuals.tag));
-    //max_f = max(0.01, max(p1.individuals.tagF));
-    //max_a = max(p1.individuals.age);
-    //for (ind in p1.individuals) {
-    //	ind.color = rgb2color(c(ind.tag/max_n, ind.tagF/max_f, ind.age/max_a));
-    //}
+     //green = many neighbors, few offspring so far
+     //red = many offspring so far, few neighbors
+     //yellow = many offspring so far, many neighbors
+    max_n = max(1, max(p1.individuals.tag));
+    max_f = max(0.01, max(p1.individuals.tagF));
+    max_a = max(p1.individuals.age);
+    for (ind in p1.individuals) {
+    	ind.color = rgb2color(c(ind.tag/max_n, ind.tagF/max_f, ind.age/max_a));
+    }
 }
 
-<<<<<<< HEAD
-100000 late() {
-=======
 50000 late() {
->>>>>>> 443681a96a5f9d67c3894f11b75ae40a237f5c95
-   sim.treeSeqOutput(outpath);
+	//sim.treeSeqOutput(outpath);
    sim.simulationFinished();
 }

@@ -1,0 +1,113 @@
+initialize() {
+	setSeed(123);
+	initializeSLiMModelType("nonWF");
+	initializeSLiMOptions(dimensionality="xy");
+	initializeTreeSeq();
+	
+	sigma_D = 0.5;
+	sigma_I = 1;
+	
+	defineConstant("OUTBASE", "waves");
+	defineConstant("K", 5);  // carrying-capacity per unit square (roughly)
+	defineConstant("SD", sigma_D);  // sigma_D, the dispersal distance
+	defineConstant("SI", sigma_I);  // sigma_I, the spatial interaction distance
+	defineConstant("SM", SI);  // sigma_M, the mate choice distance
+	defineConstant("L", 4);    // mean lifetime at stationarity
+	defineConstant("W", 50.0);  // width and height of the simulated area
+	defineConstant("G", 1e4);  // genome length
+	defineConstant("FECUN", 1/L); // mean fecundity
+	defineConstant("RHO", FECUN/((1+FECUN) * K)); // constant in spatial competition function
+	
+	initializeMutationType("m1", 0.5, "g", 0.0, 2);
+	initializeGenomicElementType("g1", m1, 1.0);
+	initializeGenomicElement(g1, 0, G-1);
+	initializeMutationRate(0.0);
+	initializeRecombinationRate(1e-8);
+	
+	// spatial competition
+	initializeInteractionType(1, "xy", reciprocal=T, maxDistance=SI * 3);
+	i1.setInteractionFunction("n", 1.0/(2*PI*SI^2), SI);
+	
+	// mate choice
+	initializeInteractionType(2, "xy", reciprocal=T, maxDistance=SM * 3);
+	i2.setInteractionFunction("n", 1.0/(2*PI*SM^2), SM);
+
+}
+
+reproduction() {
+	// choose our nearest neighbor as a mate, within the max distance
+	mate = i2.drawByStrength(individual, 1);
+	if (mate.size()) {
+		nOff = rpois(1, FECUN);
+		individual.tag = individual.tag + nOff;  // DEBUG
+		for (i in seqLen(rpois(1, 1/L))) {
+			pos = individual.spatialPosition + rnorm(2, 0, SD);
+			if (p1.pointInBounds(pos)) {
+				offspring = subpop.addCrossed(individual, mate);
+				offspring.setSpatialPosition(p1.pointReflected(pos));
+				offspring.tag = 0; // DEBUG
+			}
+		}
+	}
+	return;
+}
+
+1 early() {
+	sim.addSubpop("p1", asInteger(K * W * W));
+	p1.setSpatialBounds(c(0, 0, W, W));
+	// random initial positions
+	for (ind in p1.individuals) {
+		ind.setSpatialPosition(p1.pointUniform());
+		ind.tag = 0; // DEBUG
+	}
+	i1.evaluate();
+	
+	// header info
+	cat("gen" + " " + "stage" + " " + "age" + " " + "density");
+	catn(" " + "neighbor" + " " + "harm_neigh" + " " + "num_off" + " " + "clumpiness" + " " + "time");
+}
+
+early() {
+	i1.evaluate(p1);
+	inds = p1.individuals;
+	competition = i1.totalOfNeighborStrengths(inds);
+	inds.tagF = competition;  // DEBUG
+	inds.fitnessScaling = pmin(0.95, 1/(1 + RHO * competition));
+	// avoid edge effects
+	inds.fitnessScaling = inds.fitnessScaling * pmin(sqrt(inds.x/SI), 1.0) * pmin(sqrt(inds.y/SI), 1.0) * pmin(sqrt((W - inds.x)/SI), 1.0) * pmin(sqrt((W - inds.y)/SI), 1.0);
+}
+
+1: late() {
+	// to be ready for mate choice
+	i2.evaluate(p1);
+}
+
+2: early() {
+	if ((sim.generation % 100) == 0) {
+		cat(sim.generation + " " + "early" + " " + mean(p1.individuals.age) + " " + p1.individualCount/W^2);
+		cat(" " + mean(p1.individuals.tagF) + " " + 1/mean(1/p1.individuals.tagF) + " " + mean(p1.individuals.tag));
+		cat(" " + mean(p1.individuals.tagF) / (p1.individualCount/W^2));
+		catn(" " + clock());
+	}
+}
+
+2: late() {
+	if ((sim.generation % 100) == 0) {
+		cat(sim.generation + " " + "late " + " " + mean(p1.individuals.age) + " " + p1.individualCount/W^2);
+		cat(" " + mean(p1.individuals.tagF) + " " + 1/mean(1/p1.individuals.tagF) + " " + mean(p1.individuals.tag));
+		cat(" " + mean(p1.individuals.tagF) / (p1.individualCount/W^2));		
+		catn(" " + clock());
+	}
+}
+
+2: late() {
+	// full output
+	if ((sim.generation % 2000) == 0) {
+		sim.treeSeqOutput(OUTBASE + "." + sim.generation + ".trees");
+	}
+}
+
+100000 late() {
+	sim.treeSeqOutput(OUTBASE + "."  + sim.generation + ".trees");
+	sim.simulationFinished();
+}

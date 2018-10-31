@@ -6,26 +6,15 @@ initialize() {
 
 	 //outpath="/Users/cj/Desktop/test.slim";
 	 //sigma_d=1;
-<<<<<<< HEAD
-	 sigma=0.2;
+	 //sigma_i=0.2;
+	 //recomb=1e-9;
 
     defineConstant("K", 5);  // carrying-capacity per unit square (roughly)
     defineConstant("SD", sigma);  // sigma_D, the dispersal distance
     defineConstant("SI", sigma);  // sigma_I, the spatial interaction distance
     defineConstant("SM", SI);  // sigma_M, the mate choice distance
     defineConstant("L", 4);    // mean lifetime at stationarity
-    defineConstant("W", 16.0);  // width and height of the simulated area
-=======
-	 //sigma_i=0.2;
-	 //recomb=1e-9;
-
-    defineConstant("K", 5);  // carrying-capacity per unit square (roughly)
-    defineConstant("SD", sigma_i);  // sigma_D, the dispersal distance
-    defineConstant("SI", sigma_i);  // sigma_I, the spatial interaction distance
-    defineConstant("SM", SI);  // sigma_M, the mate choice distance
-    defineConstant("L", 4);    // mean lifetime at stationarity
     defineConstant("W", 35.0);  // width and height of the simulated area
->>>>>>> 443681a96a5f9d67c3894f11b75ae40a237f5c95
     defineConstant("G", 1e8);  // genome length
     defineConstant("FECUN", 1/L); // mean fecundity
     defineConstant("RHO", FECUN/((1+FECUN) * K)); // constant in spatial competition function
@@ -34,11 +23,7 @@ initialize() {
     initializeGenomicElementType("g1", m1, 1.0);
     initializeGenomicElement(g1, 0, G-1);
     initializeMutationRate(0.0);
-<<<<<<< HEAD
     initializeRecombinationRate(1e-9);
-=======
-    initializeRecombinationRate(recomb);
->>>>>>> 443681a96a5f9d67c3894f11b75ae40a237f5c95
     
     // spatial competition
     initializeInteractionType(1, "xy", reciprocal=T, maxDistance=SI * 3);
@@ -125,11 +110,7 @@ early() {
     //}
 }
 
-<<<<<<< HEAD
-100000 late() {
-=======
-50000 late() {
->>>>>>> 443681a96a5f9d67c3894f11b75ae40a237f5c95
+200000 late() {
    sim.treeSeqOutput(outpath);
    sim.simulationFinished();
 }
