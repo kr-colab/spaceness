@@ -40,7 +40,7 @@ reproduction() {
 	if (mate.size()) {
 		nOff = rpois(1, FECUN);
 		individual.tag = individual.tag + nOff;  // DEBUG
-		for (i in seqLen(rpois(1, 1/L))) {
+		for (i in seqLen(nOff)) {
 			pos = individual.spatialPosition + rnorm(2, 0, SD);
 			if (p1.pointInBounds(pos)) {
 				offspring = subpop.addCrossed(individual, mate);
@@ -113,7 +113,7 @@ early() {
 	}
 }
 
-2: late() {
+1: late() {
 	// full output
     sim.treeSeqRememberIndividuals(p1.individuals);
 }
