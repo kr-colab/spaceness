@@ -1,28 +1,36 @@
+#!/usr/bin/env python3
+
+import sys
 import pyslim
 import numpy as np
 import matplotlib
-import glob
 matplotlib.use('Agg')
 from matplotlib import pyplot as plt
 
-treefiles = glob.glob("*.trees")
+if len(sys.argv) == 1:
+    raise ValueError("Usage:  plot_locations.py [treefile [treefile]]")
+
+treefiles = sys.argv[1:]
 
 for treefile in treefiles:
     print(treefile)
-    outbase = treefile.split(".")[0]
+    outfile = ".".join(treefile.rsplit(".")[:-1] + ["locs", "png"])
     ts = pyslim.load(treefile)
-    ages = np.array([ts.node(i.nodes[0]).time for i in ts.individuals()])
-    locations = np.array([i.location for i in ts.individuals()])
-    fig_dims = (max(locations[:,0]), max(locations[:,1]))
-    for k, age in enumerate(sorted(list(set(ages)))):
-        outfile = outbase + ".{:03d}.png".format(k)
-        locs = locations[ages == age, :2]
-        fig = plt.figure(figsize=(3, 3))
-        plt.scatter(locs[:,0], locs[:,1], marker='.')
-        plt.xlim(0, fig_dims[0])
-        plt.ylim(0, fig_dims[1])
-        plt.savefig(outfile, dpi=288)
-        print(".")
+    locs = np.array([i.location[:2] for i in ts.individuals()])
 
-    print("... done!")
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.set_aspect('equal')
+    ax.get_xaxis().set_visible(False)
+    ax.get_yaxis().set_visible(False)
+    fig = plt.figure(figsize=(3, 3))
+
+    pts = ax.scatter(locs[:,0], locs[:,1], s=5)
+
+    fig.set_size_inches([3,3])
+    plt.tight_layout()
+    plt.savefig(outfile, dpi=288)
+    print(".")
+
+print("... done!")
 

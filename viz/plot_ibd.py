@@ -19,7 +19,7 @@ for treefile in treefiles:
     print(treefile + " -> " + outfile)
 
     ts = pyslim.SlimTreeSequence(pyslim.load(treefile).simplify())
-    rts = ts.recapitate(recombination_rate = 1e-8)
+    rts = ts.recapitate(recombination_rate = 1e-8, Ne=ts.num_samples)
     samples = np.random.choice(rts.num_individuals, 300, replace=False)
     sample_genomes = [list(rts.individual(ind).nodes) for ind in samples]
 

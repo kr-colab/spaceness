@@ -4,11 +4,11 @@ initialize() {
 	initializeSLiMOptions(dimensionality="xy");
 	initializeTreeSeq();
 	
-	sigma_D = 1;
-	sigma_I = 1;
+	sigma_D = 2;
+	sigma_I = 2;
 	
 	defineConstant("OUTBASE", "flat");
-	defineConstant("K", 5);  // carrying-capacity per unit square (roughly)
+	defineConstant("K", 3);  // carrying-capacity per unit square (roughly)
 	defineConstant("SD", sigma_D);  // sigma_D, the dispersal distance
 	defineConstant("SI", sigma_I);  // sigma_I, the spatial interaction distance
 	defineConstant("SM", SI);  // sigma_M, the mate choice distance
@@ -83,7 +83,7 @@ early() {
 }
 
 2: early() {
-	if ((sim.generation % 20) == 0) {
+	if (T) {
 		cat(sim.generation + " " + "early" + " " + mean(p1.individuals.age) + " " + p1.individualCount/W^2);
 		cat(" " + mean(p1.individuals.tagF) + " " + 1/mean(1/p1.individuals.tagF) + " " + mean(p1.individuals.tag));
 		cat(" " + mean(p1.individuals.tagF) / (p1.individualCount/W^2));
@@ -92,7 +92,7 @@ early() {
 }
 
 2: late() {
-	if ((sim.generation % 20) == 0) {
+	if (T) {
 		cat(sim.generation + " " + "late " + " " + mean(p1.individuals.age) + " " + p1.individualCount/W^2);
 		cat(" " + mean(p1.individuals.tagF) + " " + 1/mean(1/p1.individuals.tagF) + " " + mean(p1.individuals.tag));
 		cat(" " + mean(p1.individuals.tagF) / (p1.individualCount/W^2));		
@@ -115,12 +115,10 @@ early() {
 
 2: late() {
 	// full output
-	if ((sim.generation % 2000) == 0) {
-		sim.treeSeqOutput(OUTBASE + "." + sim.generation + ".trees");
-	}
+    sim.treeSeqRememberIndividuals(p1.individuals);
 }
 
-100000 late() {
-	sim.treeSeqOutput(OUTBASE + "."  + sim.generation + ".trees");
+500 late() {
+	sim.treeSeqOutput(OUTBASE + "."  + sim.generation + ".anim.trees");
 	sim.simulationFinished();
 }
