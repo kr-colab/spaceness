@@ -1,0 +1,24 @@
+#!/bin/bash
+#SBATCH --partition=kern,preempt       ### queue to submit to
+#SBATCH --job-name=sml_lng    ### job name
+#SBATCH --output=slim_batch.out   ### file in which to store job stdout
+#SBATCH --error=slim_batch.err    ### file in which to store job stderr
+#SBATCH --time=2880                ### wall-clock time limit, in minutes
+#SBATCH --mem=2G              ### memory limit
+#SBATCH --nodes=1               ### number of nodes to use
+#SBATCH --ntasks-per-node=1     ### number of tasks to launch per node
+#SBATCH --cpus-per-task=1       ### number of cores for each task
+ 
+module load cuda/9.0
+module use /projects/apps/shared/modulefiles/
+module load python3 tskit SLiM
+
+python3 /projects/kernlab/cbattey2/spaceness/scripts/run_slim.py \
+--sampled_param "sigma" \
+--min 0.2 \
+--max 2 \
+--slim_path "slim" \
+--slim_recipe "/projects/kernlab/cbattey2/spaceness/flat_map_small_long.slim" \
+--outdir "/projects/kernlab/cbattey2/spaceness/sims/slimout/small_long/"
+
+
