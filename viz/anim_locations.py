@@ -44,29 +44,19 @@ for treefile in treefiles:
     def update_points(n):
         locs, age_n = get_locs(n)
         pts.set_offsets(locs)
-        pts.set_color(age_n)
+        pts.set_color(plt.get_cmap('copper_r')(age_n))
         return pts
 
     locs, age_n = get_locs(1)
-    pts = ax.scatter(locs[:,0], locs[:,1], s=5, c=age_n)
+    pts = ax.scatter(locs[:,0], locs[:,1], s=5, c=plt.get_cmap('copper_r')(age_n))
 
     fig.set_size_inches([3,3])
     plt.tight_layout()
 
-    ani = animation.FuncAnimation(fig, update_points, frames=range(max(birth_list), 2, -1), 
+    ani = animation.FuncAnimation(fig, update_points, frames=range(int(max(birth_list)), 2, -1), 
                                   interval=200)
     writer = animation.writers['ffmpeg'](fps=10)
     ani.save(outfile, writer=writer, dpi=100)
 
-
-    #     outfile = outbase + ".{:03d}.png".format(k)
-    #     locs = locations[births == birth, :2]
-    #     fig = plt.figure(figsize=(3, 3))
-    #     plt.scatter(locs[:,0], locs[:,1], marker='.')
-    #     plt.xlim(0, fig_dims[0])
-    #     plt.ylim(0, fig_dims[1])
-    #     plt.savefig(outfile, dpi=288)
-    #     print(".")
-
-    print("... done!")
+print("... done!")
 
