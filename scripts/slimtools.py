@@ -4,6 +4,8 @@ import pyslim, os, io, shutil
 import shlex, scipy, time, re
 from shutil import copyfile
 import allel
+import time
+from tqdm import tqdm
 
 def run_one_slim_sim(sampled_param,
                      min,
@@ -47,13 +49,13 @@ def run_one_slim_sim(sampled_param,
 def check_treeseq_coalescence(indir):
     '''
     Read in a set of SLiM tree sequences and record (1) the
-    proportion of uncoalesced gene trees and (2) the median
+    proportion of uncoalesced gene trees and (2) the mean
     number of remaining lineages at the root.
     '''
     treeseqs=[f for f in os.listdir(indir) if not f.startswith(".")]
     out=np.zeros(shape= (2,len(treeseqs)))
     j=0
-    for t in treeseqs:
+    for t in tqdm(treeseqs):
         ts=pyslim.load(os.path.join(indir,t))
         sts=ts.simplify()
         nroots=[0 for _ in range(sts.num_trees)]
@@ -62,19 +64,22 @@ def check_treeseq_coalescence(indir):
             nroots[i]=t.num_roots
             i=i+1
         prop_uncoalesced=np.sum([x>1 for x in nroots])/len(nroots)
-        median_lineages=np.mean(nroots)
-        out[:,j]=[prop_uncoalesced,median_lineages]
+        mean_lineages=np.mean(nroots)
+        out[:,j]=[prop_uncoalesced,mean_lineages]
         j=j+1
     return treeseqs,out
 
-def sample_treeseq_directory(indir,outdir,nSamples,recapitate,recombination_rate):
+def sample_treeseq_directory(indir,outdir,nSamples,recapitate,recombination_rate,output_pop_sizes,pop_size_outpath):
     '''
     Sample individuals from a tree sequence then simplify and (optionally)
     recapitate the tree with msprime.
     '''
-    trees=os.listdir(indir) #note hidden files will fuck this up
-    for i in range(len(trees)):
+    trees=[f for f in os.listdir(indir) if not f.startswith(".")]
+    pop_sizes=[]
+    for i in tqdm(range(len(trees))):
         ts=pyslim.load(os.path.join(indir,trees[i]))
+        if(output_pop_sizes):
+            pop_sizes.append(ts.num_samples/2)
         sample_inds=np.unique([ts.node(j).individual for j in ts.samples()]) #final-generation individuals
         subsample=np.random.choice(sample_inds,nSamples,replace=False) #get nSamples random sample inds
         subsample_nodes=[ts.individual(x).nodes for x in subsample] #node numbers for sampled individuals
@@ -84,14 +89,16 @@ def sample_treeseq_directory(indir,outdir,nSamples,recapitate,recombination_rate
         if(recapitate):
             ts=ts.recapitate(recombination_rate=recombination_rate)
         o.dump(os.path.join(outdir,trees[i]))
+    if(output_pop_sizes):
+        np.savetxt(pop_size_outpath,pop_sizes)
     return None
 
 def mutate_treeseqs(indir,outdir,mu):
     '''
     Add mutations at constant rate "mu" to all tree sequences in directory "indir"
     '''
-    trees=os.listdir(indir)
-    for i in trees:
+    trees=[f for f in os.listdir(indir) if not f.startswith(".")]
+    for i in tqdm(trees):
         ts=pyslim.load(os.path.join(indir,i))
         ts=msp.mutate(ts,mu)
         ts.dump(os.path.join(outdir,i))
@@ -100,18 +107,18 @@ def mutate_treeseqs(indir,outdir,mu):
 
 def get_ms_outs(direc):
     '''
-    loops through a trees directory created by the data generator class
-    and returns the repsective genotype matrices, positions, and labels
-    as four numpy arrays
+    loop through a directory of mutated tree sequences
+    and return the haplotype matrices, positions, labels,
+    and spatial locations as four numpy arrays.
     '''
     haps = []
     positions = []
     locs = []
 
-    trees=os.listdir(direc)
+    trees=[f for f in os.listdir(direc) if not f.startswith(".")]
     labels=[float(re.sub("sigma_|_.trees*|.trees","",x)) for x in trees]
 
-    for i in trees:
+    for i in tqdm(trees):
         ts = pyslim.load(os.path.join(direc,i))
         haps.append(ts.genotype_matrix())
         positions.append(np.array([s.position for s in ts.sites()]))
@@ -133,7 +140,7 @@ def discretize_snp_positions(ogpositions):
     '''
     count=0
     newpositions=[]
-    for i in range(len(ogpositions)):
+    for i in tqdm(range(len(ogpositions))):
         dpos=[int(x) for x in ogpositions[i]]
         for j in range(len(dpos)-1):
             if(dpos[j]==dpos[j+1]):
@@ -145,9 +152,10 @@ def discretize_snp_positions(ogpositions):
 
 def getHaplotypeSumStats(haps,positions,labels,locs,outfile,verbose=True):
     out=np.zeros(shape=(len(haps),7+101))
-    for i in range(len(haps)):
+    for i in tqdm(range(len(haps))):
         if(verbose):
             print("processing simulation "+str(i))
+
         #load in genotypes etc into scikit-allel
         genotypes=allel.HaplotypeArray(haps[i]).to_genotypes(ploidy=2)
         allele_counts=genotypes.count_alleles()
@@ -183,43 +191,47 @@ def getHaplotypeSumStats(haps,positions,labels,locs,outfile,verbose=True):
 ################ example pipeline use ####################
 
 #check treeseq directory for coalescence
-treeseqs,out=check_treeseq_coalescence("/Users/cj/spaceness/sims/slimout/10kouts/")
+treeseqs,out=check_treeseq_coalescence("/Users/cj/spaceness/sims/slimout/spatial/dist_bins/")
 np.mean(out[0]) #mean proportion uncoalesced gene trees
 np.mean(out[1]) #median roots per gene tree
 
-#output proportion uncoalesced & dispersal for 10k outs
-np.savetxt("/Users/cj/spaceness/uncoal_prop.txt",np.transpose(out))
-treeseqs=[f for f in os.listdir("/Users/cj/spaceness/sims/slimout/10kouts/") if not f.startswith(".")]
-tmp=open("/Users/cj/spaceness/uncoal_tsnames.txt","w")
-for i in range(len(treeseqs)):
-    tmp.write(treeseqs[i]+"\n")
-tmp.close()
-
-sample_treeseq_directory(indir="/Users/cj/spaceness/sims/slimout/10kouts",
-                         outdir="/Users/cj/spaceness/sims/sampled/10kouts",
+sample_treeseq_directory(indir="/Users/cj/spaceness/sims/slimout/random_mating/dist_bins/",
+                         outdir="/Users/cj/spaceness/sims/sampled/random_mating/dist_bins",
                          nSamples=50,
                          recapitate=True,
-                         recombination_rate=1e-9)
+                         recombination_rate=1e-9,
+                         output_pop_sizes=True,
+                         pop_size_outpath="/Users/cj/spaceness/sumstats/popsize_distbins_rm.txt")
 
-mutate_treeseqs("/Users/cj/spaceness/sims/sampled/10kouts",
-                "/Users/cj/spaceness/sims/mutated/10kouts",
+mutate_treeseqs("/Users/cj/spaceness/sims/sampled/random_mating/dist_bins",
+                "/Users/cj/spaceness/sims/mutated/random_mating/dist_bins",
                 1e-8)
 
-haps,positions,labels,locs=get_ms_outs("/Users/cj/spaceness/sims/mutated/10kouts")
-len(haps)
+haps,positions,labels,locs=get_ms_outs("/Users/cj/spaceness/sims/mutated/random_mating/dist_bins")
 
 dpositions=discretize_snp_positions(positions)
 
-ss=getHaplotypeSumStats(haps,dpositions,labels,locs,"/Users/cj/spaceness/sumstats/10kouts_sumstats.txt")
+ss=getHaplotypeSumStats(haps,dpositions,labels,locs,
+                        "/Users/cj/spaceness/sumstats/ss_randmates_bins.txt",
+                        verbose=False)
 
-#tree names to get generations for 10k outs
-treeseqs=os.listdir("/Users/cj/spaceness/sims/10kouts")
-o=open("/Users/cj/spaceness/10kout_treenames.txt")
-for i in range(len(treeseqs)):
-    o.write(treeseqs[i]+"\n")
-o.close()
+# #output proportion uncoalesced & dispersal for 10k outs
+# np.savetxt("/Users/cj/spaceness/uncoal_prop.txt",np.transpose(out))
+# treeseqs=[f for f in os.listdir("/Users/cj/spaceness/sims/slimout/10kouts/") if not f.startswith(".")]
+# tmp=open("/Users/cj/spaceness/uncoal_tsnames.txt","w")
+# for i in range(len(treeseqs)):
+#     tmp.write(treeseqs[i]+"\n")
+# tmp.close()
+#
+# #tree names to get generations for 10k outs
+# treeseqs=os.listdir("/Users/cj/spaceness/sims/10kouts")
+# o=open("/Users/cj/spaceness/10kout_treenames.txt")
+# for i in range(len(treeseqs)):
+#     o.write(treeseqs[i]+"\n")
+# o.close()
 
-## for old pipeline using multiple presampled param values
+###################################################
+## old pipeline using multiple presampled param values
 # def sample_sim_params(params_to_sample,
 #                       min,
 #                       max,
