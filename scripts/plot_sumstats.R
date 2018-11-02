@@ -1,91 +1,113 @@
 setwd("~/spaceness/")
-library(data.table);library(ggplot2);library(magrittr);library(cowplot)
-theme_set(theme_classic()+theme(axis.text=element_text(size=8),
-                                axis.title=element_text(size=8),
-                                strip.text = element_text(size=8),
-                                title = element_text(size=8,hjust=0.5)))
-
-k5 <- fread("sims/sumstats.txt")
-k5labs <- fread("sims/mutated/labels.txt")
-k5$labs <- k5labs$V1
-k5$k <- 5
-k10 <- fread("sims/sumstats_k10.txt")
-k10labs <- fread("sims/mutated/k10/labels.txt")
-k10$labs <- k10labs$V1
-k10$k <- 10
-k3 <- fread("sims/sumstats_k3.txt")
-k3labs <- fread("sims/mutated/k3/labels.txt")
-k3$labs <- k3labs$V1
-k3$k <- 3
-
-pd <- rbind(k5,k10,k3)
-pd$neighbors <- 2*pi*pd$labs^2*pd$k
+library(data.table);library(ggplot2);library(magrittr);library(cowplot);library(plyr);library(wesanderson)
+theme_set(theme_classic()+theme(axis.text=element_text(size=7),
+                                axis.title=element_text(size=7),
+                                strip.text = element_text(size=7),
+                                title = element_text(size=8,hjust=0.5),
+                                legend.title = element_text(size=7),
+                                legend.text = element_text(size=7),
+                                strip.background = element_blank()))
+discrete_palette <- c("steelblue1","forestgreen","chartreuse3","slateblue3")
 
 
-names(pd) <- c("segsites","mpd","thetaW","tajD","het_o","Fis",paste0("SFS",0:100),"dispersal","k","neighbors")
-sfs <- pd[,7:(ncol(pd)-2)]
-pd <- melt(pd[,c("segsites","mpd","thetaW","tajD","het_o","Fis","dispersal","k","neighbors")],id.vars=c("dispersal","k","neighbors"))
+spat <- fread("sumstats/ss_spatial.txt")
+spat$type <- "spatial\nmate choice\n"
+spat$popsize <- fread("sumstats/popsize_spatial.txt",header = F)$V1
+rm <- fread("sumstats/ss_random_mating.txt")
+rm$type <- "random\nmating\n"
+rm$popsize <- fread("sumstats/popsize_random_mating.txt",header = F)$V1
+
+pd <- rbind(spat,rm)
+names(pd) <- c("dispersal","segsites","pi","thetaW","tajD","het_o","Fis",paste0(0:100),"type","Census N")
+sfs <- pd[,8:(ncol(pd)-1)]
+sfs$dispersal <- pd$dispersal
+sfs$segsites <- pd$segsites
+sfs$type <- pd$type
+pd <- melt(pd[,c("segsites","pi","tajD","het_o","Fis","dispersal","type","Census N")],id.vars=c("dispersal","type"))
+pd$variable[pd$variable=="pi"] <- expression(pi)
 
 #summary stat plot
-ggplot(data=subset(pd,dispersal<=2),aes(x=neighbors,y=value,col=factor(k)))+
+pd$variable <- factor(pd$variable,levels=c("Census N","segsites","pi","tajD","het_o","Fis"))
+ss_by_dispersal <- ggplot(data=pd,aes(x=dispersal/16*100,y=value,fill=type,col=type))+
   theme_classic()+
   theme(axis.title.y=element_blank(),
         strip.background = element_blank(),
-        legend.box.background = element_blank())+
-  scale_color_brewer(palette = "Accent")+
-  xlab("Neighbors")+
+        legend.box.background = element_blank(),
+        legend.title = element_text(size=9),
+        legend.text = element_text(size=8),
+        axis.text=element_text(size=8),
+        axis.title=element_text(size=9),
+        strip.text = element_text(size=8))+
+  #scale_color_brewer(palette = "Dark2",name="Model")+
+  scale_fill_manual(values=discrete_palette,name="Model")+
+  scale_color_manual(values=discrete_palette,guide=F)+
+  xlab("Dispersal (% Total Range)")+
   facet_wrap(~variable,scales="free")+
-  geom_point(size=0.5)+
+  geom_point(size=1.4,shape=21,stroke=0.02,col="black",alpha=0.7)+
   geom_smooth(lwd=0.5,fill=NA)
 
-ggplot(data=subset(pd,dispersal<=2),aes(x=dispersal/35*100,y=value,col=factor(k)))+
-  theme_classic()+
-  theme(axis.title.y=element_blank(),
-        strip.background = element_blank(),
-        legend.box.background = element_blank())+
-  scale_color_brewer(palette = "Accent")+
-  xlab("Dispersal Kernal (% total range)")+
-  facet_wrap(~variable,scales="free")+
-  geom_point(size=0.5)+
-  geom_smooth(lwd=0.5,fill=NA)
+pdf("~/spaceness/figures/sumstat_by_dispersal_spat_v_rm.pdf",width=7.5,height=3.5,useDingbats = F)
+ss_by_dispersal <- ss_by_dispersal + guides(fill = guide_legend(override.aes = list(size=4)))
+print(ss_by_dispersal)
+dev.off()
 
-ggplot(data=subset(pd,k==5),aes(x=neighbors,y=value))+
-  theme_classic()+
-  theme(axis.title.y=element_blank(),
-        strip.background = element_blank(),
-        legend.box.background = element_blank())+
-  scale_color_brewer(palette = "Accent")+
-  xlab("Neighbors")+
-  facet_wrap(~variable,scales="free")+
-  geom_point(size=0.5)+
-  geom_smooth(lwd=0.5,fill=NA)
+#SFS plots for binned runs
+spat_sfs <- fread("sumstats/ss_spatial_bins.txt",data.table=F)
+rm_sfs <- fread("sumstats/ss_randmates_bins.txt",data.table=F)
+spat_sfs$model <- "Spatial Mate Choice"
+rm_sfs$model <- "Random Mating"
+sfs <- rbind(spat_sfs,rm_sfs)
 
-
-
-#sim vs pred plot
-pred <- fread("predictions.txt")
-pred$sim <- pd$dispersal[151:200]
-
-ggplot(data=pred,aes(x=sim,y=V1,fill=V1-sim))+
-  theme_classic()+
-  scale_fill_distiller(palette = "RdYlBu",name="Residual")+
-  geom_point(shape=21,size=2)+
-  annotate(geom="segment",x=0,xend=2,y=0,yend=2)
-
-
-# 
-
-#SFS plot
-sfs$dispersal_class <- factor(.bincode(sfs$dispersal,seq(0.1,2,0.3)))
+sfs <- sfs[,c(1,2,8:(ncol(sfs)))]
+colnames(sfs) <- c("sigma","segsites",paste(0:100),"model")
+sfs$dispersal_class <- round(sfs$sigma,2)
 sfs$sim <- 1:nrow(sfs)
-sfs <- melt(sfs,id.vars=c("dispersal","dispersal_class","sim"))
+sfs <- subset(sfs,sigma<=1)
+sfs <- melt(sfs,id.vars=c("sigma","dispersal_class","sim","segsites","model"))
+sfs$sfs_class <- as.numeric(as.character(sfs$variable))
 sfs <- na.omit(sfs)
+sfs <- subset(sfs,sfs_class>0 & sfs_class<100)
 
-ddply(sfs,.(dispersal_class),summarize,nsingletons=mean())
-ggplot(data=sfs,aes(x=variable,y=value,fill=dispersal_class))+
-  theme_classic()+theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())+
-  facet_wrap(~dispersal_class)+
-  geom_bar(stat="identity")
+sfsbins <- ddply(sfs,.(variable,dispersal_class,model),summarize,meanCount=mean(value),meanSegsites=mean(segsites))
+sfsbins$sfs_class <- as.numeric(as.character(sfsbins$variable))
+sfsbins$log_segscaled_n <- log(sfsbins$meanCount/sfsbins$meanSegsites)
+
+sfsbins <- subset(sfsbins,dispersal_class != 0.5) #can remove once rm 0.5 sims are done
+
+sfs_diffs <- ddply(sfsbins,.(sfs_class,dispersal_class),function(e){
+  diff <- e$log_segscaled_n[e$model=="Spatial Mate Choice"]-e$log_segscaled_n[e$model=="Random Mating"]
+  return(diff)
+})
+
+sfsplot <- ggplot(data=sfsbins,aes(x=sfs_class,y=log_segscaled_n,col=factor(dispersal_class)))+
+  facet_grid(.~model)+
+  theme(legend.position = "none",
+        )+
+  scale_color_manual(values=wes_palette("Zissou1",nlevels(factor(sfsbins$dispersal_class)),"continuous"),
+                     name="Interaction\nRadius")+
+  ylab("log(count per segregating site)")+xlab("SFS Class")+
+  geom_line(lwd=0.25)
+
+sfsplot_diffs <- ggplot(data=sfs_diffs,aes(x=sfs_class,col=factor(dispersal_class),fill=factor(dispersal_class),y=V1))+
+  scale_color_manual(values=wes_palette("Zissou1",nlevels(factor(sfs_diffs$dispersal_class)),"continuous"),
+                     name="Interaction\nRadius",guide=F)+
+  scale_fill_manual(values=wes_palette("Zissou1",nlevels(factor(sfs_diffs$dispersal_class)),"continuous"),
+                     name="Interaction\nRadius")+
+  xlab("SFS Class")+ylab(expression(italic(SFS[spatial])-italic(SFS[random~mating])))+
+  geom_point(shape=21,col="black",stroke=0.1,size=0.95,alpha=0.7)+
+  geom_smooth(fill=NA,lwd=0.5)
+
+sfsplot_diffs <- sfsplot_diffs+guides(fill=guide_legend(override.aes = list(size=4),
+                                                        keyheight = 3,
+                                                        default.unit = "mm"))
+
+pdf("~/spaceness/figures/sfs_spatial_v_rm.pdf",width=6.5,height=2)
+ggdraw()+
+  draw_plot(sfsplot,0,0,0.5,1)+
+  draw_plot(sfsplot_diffs,0.5,0,0.5,1)
+dev.off()
+
+
 
 
 #plot of proportion uncoalesced trees for 10k outs
@@ -104,32 +126,38 @@ ss <- fread("sumstats/10kouts_sumstats.txt",data.table = F)[,1:7]
 colnames(ss) <- c("dispersal","segsites","pi","thetaW","tajD","het_o","Fis")
 ss$gen <- coal$gen
 
-coal_by_gen <- ggplot(data=coal,aes(x=gen,y=V1,col=dispersal))+
+coal_by_gen <- ggplot(data=coal,aes(x=gen,y=V1,fill=dispersal))+
   ggtitle("Coalescence by Generation\nNWF Spatial Model, n~=1000")+
-  ylab("Proportion Uncoalesced Gene Trees")+xlab("Generation")+
-  theme(legend.position = "none")+
-  scale_color_distiller(palette = "RdYlBu")+
-  geom_point(position=position_jitter(width=2000),size=0.75)
+  ylab("Proportion Uncoalesced Gene Trees")+xlab("")+
+  theme(legend.position = c(0.75,0.65))+
+  scale_fill_distiller(palette = "RdYlBu",name="Interaction\nDistance")+
+  geom_point(position=position_jitter(width=2000),shape=21,stroke=0.01,col="grey40")
+coal_by_gen <- coal_by_gen + guides(fill=guide_colorbar(barwidth=unit(4,"mm"),barheight=unit(22,"mm"),ticks.colour = "black"))
 
-tajd_by_gen <- ggplot(data=ss,aes(x=gen,y=tajD,col=dispersal))+
+tajd_by_gen <- ggplot(data=ss,aes(x=gen,y=tajD,fill=dispersal))+
+  theme(legend.position = "none")+
   ggtitle("Tajima's D by Generation\nNWF Spatial Model, n~=1000")+
-  scale_color_distiller(palette = "RdYlBu")+
-  geom_point(position=position_jitter(width=2000),size=0.75)
+  ylab("Tajima's D")+xlab("")+
+  scale_fill_distiller(palette = "RdYlBu")+
+  geom_point(position=position_jitter(width=2000),shape=21,stroke=0.01,col="grey40")
+
+pdf("~/spaceness/figures/10kouts_coalescence_by_generation.pdf",width=6.5,height=3)
+ggdraw()+
+  draw_plot(tajd_by_gen,0,0,0.5,1)+
+  draw_plot(coal_by_gen,0.5,0,.5,1)+
+  draw_text("Generation",0.52,0.035,9)
+dev.off()
 
 ss_final <- subset(ss,gen==200000)
 mss <- melt(ss_final,id.vars=c("dispersal","gen"))
-ggplot(data=mss,aes(x=dispersal,y=value))+
-  theme(strip.background = element_blank())+
+ss_by_dispersal <- ggplot(data=mss,aes(x=dispersal,y=value))+
+  theme(strip.background = element_blank())+ylab("")+
   facet_wrap(~variable,scales="free")+
   geom_point(shape=1)+
-  geom_smooth(fill=NA,wd=0.75,col="forestgreen")
+  geom_smooth(fill=NA,lwd=0.75,col="forestgreen")
 
-pdf("~/spaceness/figures/10kouts_coalescence_by_generation.pdf",width=7.5,height=3.5)
-ggdraw()+
-  draw_plot(coal_by_gen,0,0,0.5,1)+
-  draw_plot(tajd_by_gen,0.5,0,.5,1)
+pdf("~/spaceness/figures/10kouts_final_gen_ss_by_dispersal.pdf",width=7.5,height=3.5)
+print(ss_by_dispersal)
 dev.off()
-
-
 
 
