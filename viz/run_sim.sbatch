@@ -1,8 +1,8 @@
 #!/bin/bash
-#SBATCH -p long
+#SBATCH -p short
 #SBATCH -n 1
-#SBATCH -t 20:00:00
-#SBATCH --mem-per-cpu=20G
+#SBATCH -t 24:00:00
+#SBATCH --mem-per-cpu=12G
 #SBATCH --ntasks-per-core=1
 
 module use /projects/apps/shared/modulefiles

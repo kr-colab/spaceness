@@ -36,7 +36,8 @@ for treefile in treefiles:
 
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    pts = ax.scatter(dists[ut], divs[0][ut]/1000, s=2)
+    pts = ax.scatter(dists[ut], divs[0][ut]/1000, 
+                     alpha  = 0.5, s = 5, marker = '.', linewidths = 0)
     plt.xlabel("geographic distance")
     plt.ylabel("divergence")
     fig.set_size_inches([4,4])
