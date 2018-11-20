@@ -28,12 +28,11 @@ def run_one_slim_sim(sampled_param,
     distribution. Output will be named with the name and value of
     the sampled parameter.
     '''
-
     #get sampled param names and values
     val=numpy.random.uniform(min,max)
 
-    #get output file path
     filename = sampled_param+"_"+str(val)+"_.trees"
+
     filepath = os.path.join(outdir,filename)
 
     #set strings for defining SLiM variables
@@ -47,7 +46,7 @@ def run_one_slim_sim(sampled_param,
              slim_recipe]
 
     #run it
-    print("starting slim simulation with "+args.sampled_param+"="+str(val))
+    print("writing tree sequence output to "+filepath)
     subprocess.check_output(command)
 
     return None

@@ -23,8 +23,10 @@ sfs <- pd[,8:(ncol(pd)-1)]
 sfs$dispersal <- pd$dispersal
 sfs$segsites <- pd$segsites
 sfs$type <- pd$type
-pd <- melt(pd[,c("segsites","pi","tajD","het_o","Fis","dispersal","type","Census N")],id.vars=c("dispersal","type"))
-pd$variable[pd$variable=="pi"] <- expression(pi)
+pd$mean_neighbors <- ((pi*pd$dispersal^2)/16^2)*1000
+pd$max_neighbors <- (3*((pi*pd$dispersal^2)/16^2))*1000
+pd <- melt(pd[,c("segsites","pi","tajD","het_o","Fis","dispersal","type","Census N","mean_neighbors","max_neighbors")],
+           id.vars=c("dispersal","type","mean_neighbors","max_neighbors"))
 
 #summary stat plot
 pd$variable <- factor(pd$variable,levels=c("Census N","segsites","pi","tajD","het_o","Fis"))
@@ -41,7 +43,7 @@ ss_by_dispersal <- ggplot(data=pd,aes(x=dispersal/16*100,y=value,fill=type,col=t
   #scale_color_brewer(palette = "Dark2",name="Model")+
   scale_fill_manual(values=discrete_palette,name="Model")+
   scale_color_manual(values=discrete_palette,guide=F)+
-  xlab("Dispersal (% Total Range)")+
+  xlab("Interaction Radius (% range width)")+
   facet_wrap(~variable,scales="free")+
   geom_point(size=1.4,shape=21,stroke=0.02,col="black",alpha=0.7)+
   geom_smooth(lwd=0.5,fill=NA)
@@ -50,6 +52,30 @@ pdf("~/spaceness/figures/sumstat_by_dispersal_spat_v_rm.pdf",width=7.5,height=3.
 ss_by_dispersal <- ss_by_dispersal + guides(fill = guide_legend(override.aes = list(size=4)))
 print(ss_by_dispersal)
 dev.off()
+
+ss_by_neighbors <- ggplot(data=pd,aes(x=mean_neighbors,y=value,fill=type,col=type))+
+  theme_classic()+
+  theme(axis.title.y=element_blank(),
+        strip.background = element_blank(),
+        legend.box.background = element_blank(),
+        legend.title = element_text(size=9),
+        legend.text = element_text(size=8),
+        axis.text=element_text(size=8),
+        axis.title=element_text(size=9),
+        strip.text = element_text(size=8))+
+  #scale_color_brewer(palette = "Dark2",name="Model")+
+  scale_fill_manual(values=discrete_palette,name="Model")+
+  scale_color_manual(values=discrete_palette,guide=F)+
+  xlab("Mean Neighborhood Size")+
+  facet_wrap(~variable,scales="free")+
+  geom_point(size=1.4,shape=21,stroke=0.02,col="black",alpha=0.7)+
+  geom_smooth(lwd=0.5,fill=NA)
+
+pdf("~/spaceness/figures/sumstat_by_neighbors_spat_v_rm.pdf",width=7.5,height=3.5,useDingbats = F)
+ss_by_neighbors <- ss_by_neighbors + guides(fill = guide_legend(override.aes = list(size=4)))
+print(ss_by_neighbors)
+dev.off()
+
 
 #SFS plots for binned runs
 spat_sfs <- fread("sumstats/ss_spatial_bins.txt",data.table=F)
@@ -94,7 +120,7 @@ sfsplot_diffs <- ggplot(data=sfs_diffs,aes(x=sfs_class,col=factor(dispersal_clas
   scale_fill_manual(values=wes_palette("Zissou1",nlevels(factor(sfs_diffs$dispersal_class)),"continuous"),
                      name="Interaction\nRadius")+
   xlab("SFS Class")+ylab(expression(italic(SFS[spatial])-italic(SFS[random~mating])))+
-  geom_point(shape=21,col="black",stroke=0.1,size=0.95,alpha=0.7)+
+  geom_point(shape=21,col="black",stroke=0.05,size=1.05,alpha=0.7)+
   geom_smooth(fill=NA,lwd=0.5)
 
 sfsplot_diffs <- sfsplot_diffs+guides(fill=guide_legend(override.aes = list(size=4),
@@ -127,7 +153,7 @@ colnames(ss) <- c("dispersal","segsites","pi","thetaW","tajD","het_o","Fis")
 ss$gen <- coal$gen
 
 coal_by_gen <- ggplot(data=coal,aes(x=gen,y=V1,fill=dispersal))+
-  ggtitle("Coalescence by Generation\nNWF Spatial Model, n~=1000")+
+  #ggtitle("Coalescence by Time Step\nNWF Spatial Model, n~=1000")+
   ylab("Proportion Uncoalesced Gene Trees")+xlab("")+
   theme(legend.position = c(0.75,0.65))+
   scale_fill_distiller(palette = "RdYlBu",name="Interaction\nDistance")+
@@ -136,16 +162,16 @@ coal_by_gen <- coal_by_gen + guides(fill=guide_colorbar(barwidth=unit(4,"mm"),ba
 
 tajd_by_gen <- ggplot(data=ss,aes(x=gen,y=tajD,fill=dispersal))+
   theme(legend.position = "none")+
-  ggtitle("Tajima's D by Generation\nNWF Spatial Model, n~=1000")+
+  #ggtitle("Tajima's D by Time Step\nNWF Spatial Model, n~=1000")+
   ylab("Tajima's D")+xlab("")+
   scale_fill_distiller(palette = "RdYlBu")+
   geom_point(position=position_jitter(width=2000),shape=21,stroke=0.01,col="grey40")
 
-pdf("~/spaceness/figures/10kouts_coalescence_by_generation.pdf",width=6.5,height=3)
+pdf("~/spaceness/figures/10kouts_coalescence_by_generation.pdf",width=6.5,height=2.5)
 ggdraw()+
   draw_plot(tajd_by_gen,0,0,0.5,1)+
   draw_plot(coal_by_gen,0.5,0,.5,1)+
-  draw_text("Generation",0.52,0.035,9)
+  draw_text("Time Steps",0.52,0.035,9)
 dev.off()
 
 ss_final <- subset(ss,gen==200000)
@@ -153,6 +179,7 @@ mss <- melt(ss_final,id.vars=c("dispersal","gen"))
 ss_by_dispersal <- ggplot(data=mss,aes(x=dispersal,y=value))+
   theme(strip.background = element_blank())+ylab("")+
   facet_wrap(~variable,scales="free")+
+  xlab("Time Steps")+
   geom_point(shape=1)+
   geom_smooth(fill=NA,lwd=0.75,col="forestgreen")
 

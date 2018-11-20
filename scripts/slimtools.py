@@ -5,7 +5,11 @@ import shlex, scipy, time, re
 from shutil import copyfile
 import allel
 import time
+from scipy import spatial
+from scipy import stats
 from tqdm import tqdm
+import itertools
+import matplotlib.pyplot as plt
 
 def run_one_slim_sim(sampled_param,
                      min,
@@ -69,17 +73,28 @@ def check_treeseq_coalescence(indir):
         j=j+1
     return treeseqs,out
 
-def sample_treeseq_directory(indir,outdir,nSamples,recapitate,recombination_rate,output_pop_sizes,pop_size_outpath):
+def get_pop_sizes(indir,outpath):
+    trees = trees=[f for f in os.listdir(indir) if not f.startswith(".")]
+    labels=[float(re.sub("sigma_|_.trees*|.trees","",x)) for x in trees]
+    out=np.empty(shape=(len(trees),2))
+    for i in tqdm(range(len(trees))):
+        ts=pyslim.load(os.path.join(indir,trees[i]))
+        popsize=ts.num_samples/2
+        out[i]=[labels[i],popsize]
+    np.savetxt(outpath,out)
+    return out
+
+def sample_treeseq_directory(indir,outdir,nSamples,recapitate,recombination_rate):
     '''
     Sample individuals from a tree sequence then simplify and (optionally)
     recapitate the tree with msprime.
     '''
     trees=[f for f in os.listdir(indir) if not f.startswith(".")]
-    pop_sizes=[]
+    #pop_sizes=[]
     for i in tqdm(range(len(trees))):
         ts=pyslim.load(os.path.join(indir,trees[i]))
-        if(output_pop_sizes):
-            pop_sizes.append(ts.num_samples/2)
+        #if(output_pop_sizes):
+            #pop_sizes.append(ts.num_samples/2)
         sample_inds=np.unique([ts.node(j).individual for j in ts.samples()]) #final-generation individuals
         subsample=np.random.choice(sample_inds,nSamples,replace=False) #get nSamples random sample inds
         subsample_nodes=[ts.individual(x).nodes for x in subsample] #node numbers for sampled individuals
@@ -89,8 +104,8 @@ def sample_treeseq_directory(indir,outdir,nSamples,recapitate,recombination_rate
         if(recapitate):
             ts=ts.recapitate(recombination_rate=recombination_rate)
         o.dump(os.path.join(outdir,trees[i]))
-    if(output_pop_sizes):
-        np.savetxt(pop_size_outpath,pop_sizes)
+    #if(output_pop_sizes):
+    #    np.savetxt(pop_size_outpath,pop_sizes)
     return None
 
 def mutate_treeseqs(indir,outdir,mu):
@@ -105,11 +120,14 @@ def mutate_treeseqs(indir,outdir,mu):
 
     return None
 
-def get_ms_outs(direc):
+def get_ms_outs(direc,subset,start=0,stop=0):
     '''
     loop through a directory of mutated tree sequences
     and return the haplotype matrices, positions, labels,
     and spatial locations as four numpy arrays.
+    If subset is true, stop and start are the
+    range of files to process (0-indexed, stop not included,
+    as ordered by "os.listdir(direc)").
     '''
     haps = []
     positions = []
@@ -117,7 +135,9 @@ def get_ms_outs(direc):
 
     trees=[f for f in os.listdir(direc) if not f.startswith(".")]
     labels=[float(re.sub("sigma_|_.trees*|.trees","",x)) for x in trees]
-
+    if(subset):
+        trees=trees[start:stop]
+        labels=labels[start:stop]
     for i in tqdm(trees):
         ts = pyslim.load(os.path.join(direc,i))
         haps.append(ts.genotype_matrix())
@@ -146,12 +166,38 @@ def discretize_snp_positions(ogpositions):
             if(dpos[j]==dpos[j+1]):
                 dpos[j+1]=dpos[j+1]+1
                 count=count+1
-        newpositions.append(np.sort(dpos)) #NOTE:shouldn't need to sort here but one alignment threw an error (i=1 for the 200 sim set) that indices were not monotonicall increasing for unknown reasons. Investigate further...
+        newpositions.append(np.sort(dpos)) #NOTE:shouldn't need to sort here but one alignment threw an error (i=1 for the 200 sim set) that indices were not monotonically increasing for unknown reasons. Investigate further...
     print(str(count)+" SNPs were shifted one base pair")
     return(np.array(newpositions))
 
+def getPairwiseIbsTractLengths(x,y,positions,maxlen):
+    '''
+    input:
+    x: haplotype as 1D array
+    y: haplotype as 1D array
+    positions: a 1D array of SNP positions (integer, 1-based)
+
+    Returns:
+    1d array listing distances between adjacent SNPs in a pair of sequences.
+
+    Example:
+    haps,positions,labels,locs=getHapsPosLabelsLocs(direc="mutated_treeSeq_directory")
+    ibs_lengths_1_2=getPairwiseIbsTractLengths(haps[0][:,0],haps[0][:,1],positions[0])
+    '''
+    snps=~np.equal(x,y)
+    snp_positions=positions[snps]
+    l=len(snp_positions)
+    ibs_tracts=[]
+    if(l==0):
+        ibs_tracts=[maxlen]
+    else:
+        if(l>1):
+            ibs_tracts=snp_positions[np.arange(1,l,2)]-snp_positions[np.arange(0,l-1,2)] #middle blocks
+        np.append(ibs_tracts,snp_positions[0])          #first block
+        np.append(ibs_tracts,maxlen-snp_positions[l-1]) #last block
+    return ibs_tracts
+
 def getHaplotypeSumStats(haps,positions,labels,locs,outfile,verbose=True):
-    out=np.zeros(shape=(len(haps),7+101))
     for i in tqdm(range(len(haps))):
         if(verbose):
             print("processing simulation "+str(i))
@@ -159,6 +205,7 @@ def getHaplotypeSumStats(haps,positions,labels,locs,outfile,verbose=True):
         #load in genotypes etc into scikit-allel
         genotypes=allel.HaplotypeArray(haps[i]).to_genotypes(ploidy=2)
         allele_counts=genotypes.count_alleles()
+        genotype_allele_counts=genotypes.to_allele_counts()
 
         #nonspatial population-wide summary statistics
         segsites=np.shape(genotypes)[0]
@@ -172,48 +219,78 @@ def getHaplotypeSumStats(haps,positions,labels,locs,outfile,verbose=True):
         sfs=np.append(sfs,[np.repeat(0,np.shape(haps[i])[1]-len(sfs)+1)])
 
         #pairwise summary stats
-        #gen_dist=allel.pairwise_dxy(pos=positions[i],gac=genotypes,start=0,stop=1e8) #SLOOOOOW - issue with noninteger positions?
-        #sp_dist=np.array(scipy.spatial.distance.pdist(locs[i]))
+        if(verbose):
+            print("calculating pairwise statistics")
+        gen_dist=allel.pairwise_dxy(pos=positions[i],gac=genotype_allele_counts,start=0,stop=1e8) #SLOOOOOW - issue with noninteger positions?
+        sp_dist=np.array(scipy.spatial.distance.pdist(locs[i]))
+
+        #IBS tract length summaries
+        if(verbose):
+            print("calculating IBS tract lengths")
+        pairs=itertools.combinations(range(np.shape(haps[i])[1]),2)
+        ibs=[]
+        for j in pairs:
+            ibs.append(getPairwiseIbsTractLengths(haps[i][:,j[0]],
+                                                         haps[i][:,j[1]],
+                                                         positions[i],
+                                                         1e8))
+        ibs_flat=[x for y in ibs for x in y]
+        ibs_95p=np.percentile(ibs_flat,95)
+        ibs_over_1e6=len([x for x in ibs_flat if x>=1e6])
+        ibs_num_blocks_per_pair=len(ibs_flat)/scipy.special.comb(np.shape(haps[i])[1],2)
+        ibs_binned=scipy.stats.binned_statistic(x=ibs_flat,
+                                                values=ibs_flat,
+                                                statistic='count',
+                                                bins=np.arange(0,1e8,2e4))
 
         #summaries of pairwise stats as a function of geographic distance
-        #gen_sp_corr=np.corrcoef(gen_dist,sp_dist)[0,1]
+        gen_sp_corr=np.corrcoef(gen_dist,sp_dist)[0,1]
 
         #row=np.append(sp_dist,gen_dist,sfs)
-        row=[labels[i],segsites,pi,thetaW,tajD,het_o,fis]
+        row=[labels[i],segsites,pi,thetaW,tajD,het_o,fis,gen_sp_corr,ibs_95p,ibs_num_blocks_per_pair,ibs_over_1e6]
         row=np.append(row,sfs)
+        row=np.append(row,ibs_binned[0])
 
-        out[i]=row
+        if(i==0):
+            out=np.zeros(shape=(len(haps),len(row)))
+            out[i]=row
+        else:
+            out[i]=row
         if(outfile):
             np.savetxt(outfile,out)
 
     return(out)
-
 ################ example pipeline use ####################
 
 #check treeseq directory for coalescence
-treeseqs,out=check_treeseq_coalescence("/Users/cj/spaceness/sims/slimout/spatial/dist_bins/")
-np.mean(out[0]) #mean proportion uncoalesced gene trees
-np.mean(out[1]) #median roots per gene tree
+# treeseqs,out=check_treeseq_coalescence("/Users/cj/spaceness/sims/slimout/spatial/W16")
+# np.mean(out[0]) #mean proportion uncoalesced gene trees
+# np.mean(out[1]) #median roots per gene tree
+#
+# sample_treeseq_directory(indir="/Users/cj/spaceness/sims/slimout/spatial/W16",
+#                          outdir="/Users/cj/spaceness/sims/sampled/spatial/W16",
+#                          nSamples=50,
+#                          recapitate=True,
+#                          recombination_rate=1e-9,
+#                          output_pop_sizes=True,
+#                          pop_size_outpath="/Users/cj/spaceness/sumstats/popsize_W16_rm.txt")
+#
+# mutate_treeseqs("/Users/cj/spaceness/sims/sampled/spatial/W16/",
+#                 "/Users/cj/spaceness/sims/mutated/spatial/W16/",
+#                 1e-8)
+#
+#haps,positions,labels,locs=get_ms_outs("/Users/cj/spaceness/sims/mutated/spatial/W16",
+#                                        False)
+#
+#positions=discretize_snp_positions(positions)
+#
+# ss=getHaplotypeSumStats(haps,positions,labels,locs,
+#                         outfile="/Users/cj/spaceness/sumstats/ss_spatial_W16.txt",
+#                         verbose=False)
 
-sample_treeseq_directory(indir="/Users/cj/spaceness/sims/slimout/random_mating/dist_bins/",
-                         outdir="/Users/cj/spaceness/sims/sampled/random_mating/dist_bins",
-                         nSamples=50,
-                         recapitate=True,
-                         recombination_rate=1e-9,
-                         output_pop_sizes=True,
-                         pop_size_outpath="/Users/cj/spaceness/sumstats/popsize_distbins_rm.txt")
 
-mutate_treeseqs("/Users/cj/spaceness/sims/sampled/random_mating/dist_bins",
-                "/Users/cj/spaceness/sims/mutated/random_mating/dist_bins",
-                1e-8)
 
-haps,positions,labels,locs=get_ms_outs("/Users/cj/spaceness/sims/mutated/random_mating/dist_bins")
 
-dpositions=discretize_snp_positions(positions)
-
-ss=getHaplotypeSumStats(haps,dpositions,labels,locs,
-                        "/Users/cj/spaceness/sumstats/ss_randmates_bins.txt",
-                        verbose=False)
 
 # #output proportion uncoalesced & dispersal for 10k outs
 # np.savetxt("/Users/cj/spaceness/uncoal_prop.txt",np.transpose(out))
