@@ -100,19 +100,21 @@ if args.phenotype=="gaussian":
     for i in range(args.nSamples):
         phenfile.write("msp_"+str(i)+" "+"msp_"+str(i)+" "+str(phenotypes[i])+"\n")
     phenfile.close()
+
 if args.phenotype=="transform_coord":
     phenfile=open(os.path.join(args.outdir,simname)+".phenotypes","w")
     for i in range(args.nSamples):
-        ind_phenotype=np.random.normal(locs[i][0]/2.5+160,7,1)[0] #if W=50, means will range from 160 - 180 to mimic a cline in cm height
+        ind_phenotype=np.random.normal(locs[i][0]/2.5+args.phenotype_mean,args.phenotype_sd,1)[0]
         phenfile.write("msp_"+str(i)+" "+"msp_"+str(i)+" "+str(ind_phenotype)+"\n")
     phenfile.close()
+
 if args.phenotype=="corner_bimodal":
     phenfile=open(os.path.join(args.outdir,simname)+".phenotypes","w")
     for i in range(args.nSamples):
-        if locs[i][0]<25 and locs[i][1]<25:
-            ind_phenotype=np.random.normal(140,10,1)[0]
+        if locs[i][0]<20 and locs[i][1]<20:
+            ind_phenotype=np.random.normal(args.phenotype_mean,args.phenotype_sd,1)[0]
         else:
-            ind_phenotype=np.random.normal(110,10,1)[0]
+            ind_phenotype=np.random.normal(args.phenotype_mean+3*args.phenotype_sd,args.phenotype_sd,1)[0]
         phenfile.write("msp_"+str(i)+" "+"msp_"+str(i)+" "+str(ind_phenotype)+"\n")
     phenfile.close()
 
@@ -132,6 +134,7 @@ sp.check_output([args.plink_path,
                  os.path.join(args.outdir,simname)+".pca",
                  "--hide-covar"])
 
+#run plink without covariates
 sp.check_output([args.plink_path,
                  "--noweb",
                  "--file",
