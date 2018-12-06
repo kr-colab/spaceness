@@ -86,8 +86,8 @@ def get_pop_sizes(indir,outpath):
 
 def sample_treeseq_directory(indir,outdir,nSamples,recapitate,recombination_rate):
     '''
-    Sample individuals from a tree sequence then simplify and (optionally)
-    recapitate the tree with msprime.
+    Sample individuals from all tree sequences a directory then simplify and (optionally)
+    recapitate the treeseq_to_vcf.py with msprime.
     '''
     trees=[f for f in os.listdir(indir) if not f.startswith(".")]
     #pop_sizes=[]
@@ -108,19 +108,53 @@ def sample_treeseq_directory(indir,outdir,nSamples,recapitate,recombination_rate
     #    np.savetxt(pop_size_outpath,pop_sizes)
     return None
 
-def mutate_treeseqs(indir,outdir,mu):
+def sample_treeseq(infile,outfile,nSamples,recapitate,recombination_rate,write_to_file,seed=12345):
+    '''
+    Sample individuals from a tree sequence then simplify and (optionally)
+    recapitate the tree with msprime.
+    '''
+    if type(infile)==str:
+        ts=pyslim.load(infile)
+    else:
+        ts=infile
+    if(not seed==0):
+        np.random.seed(seed)
+    sample_inds=np.unique([ts.node(j).individual for j in ts.samples()]) #final-generation individuals
+    subsample=np.random.choice(sample_inds,nSamples,replace=False) #get nSamples random sample inds
+    subsample_nodes=[ts.individual(x).nodes for x in subsample] #node numbers for sampled individuals
+    subsample_nodes=[a for b in subsample_nodes for a in b] #flatten the list
+    subsample_nodes=np.sort(np.array(subsample_nodes))
+    o=ts.simplify(subsample_nodes)
+    if(recapitate):
+        ts=ts.recapitate(recombination_rate=recombination_rate)
+    if(write_to_file):
+        o.dump(outfile)
+
+    return o
+
+def mutate_treeseqs(indir,outdir,mu,seed):
     '''
     Add mutations at constant rate "mu" to all tree sequences in directory "indir"
     '''
     trees=[f for f in os.listdir(indir) if not f.startswith(".")]
     for i in tqdm(trees):
         ts=pyslim.load(os.path.join(indir,i))
-        ts=msp.mutate(ts,mu)
+        ts=msp.mutate(ts,mu,random_seed=seed)
         ts.dump(os.path.join(outdir,i))
 
     return None
 
-def get_ms_outs(direc,subset,start=0,stop=0):
+def mutate_treeseq(infile,outfile,mu,seed):
+    '''
+    Add mutations at constant rate "mu" to a single tree sequence
+    '''
+    ts=pyslim.load(os.path.join(infile,i))
+    ts=msp.mutate(ts,mu,random_seed=seed)
+    ts.dump(os.path.join(outfile,i))
+
+    return None
+
+def get_ms_outs_directory(direc,subset,start=0,stop=0):
     '''
     loop through a directory of mutated tree sequences
     and return the haplotype matrices, positions, labels,
@@ -152,6 +186,21 @@ def get_ms_outs(direc,subset,start=0,stop=0):
 
     return haps,positions,labels,locs
 
+
+def get_ms_outs(ts):
+    '''
+    get haplotypes, positions, labels, and spatial locations from a tree sequence.
+    '''
+    haps=np.array(ts.genotype_matrix())
+    positions=np.array([s.position for s in ts.sites()])
+    sample_inds=np.unique([ts.node(j).individual for j in ts.samples()])
+    locs=[[ts.individual(x).location[0],
+           ts.individual(x).location[1]] for x in sample_inds]
+    locs=np.array(locs)
+
+    return haps,positions,locs
+
+
 def discretize_snp_positions(ogpositions):
     '''
     Takes an array of SNP positions as floats (ie from msprime) and returns
@@ -160,13 +209,21 @@ def discretize_snp_positions(ogpositions):
     '''
     count=0
     newpositions=[]
-    for i in tqdm(range(len(ogpositions))):
-        dpos=[int(x) for x in ogpositions[i]]
+    if(ogpositions.ndim>1):
+        for i in tqdm(range(len(ogpositions))):
+            dpos=[int(x) for x in ogpositions[i]]
+            for j in range(len(dpos)-1):
+                if(dpos[j]==dpos[j+1]):
+                    dpos[j+1]=dpos[j+1]+1
+                    count=count+1
+            newpositions.append(np.sort(dpos)) #NOTE:shouldn't need to sort here but one alignment threw an error (i=1 for the 200 sim set) that indices were not monotonically increasing for unknown reasons. Investigate further...
+    else:
+        dpos=[int(x) for x in ogpositions]
         for j in range(len(dpos)-1):
             if(dpos[j]==dpos[j+1]):
                 dpos[j+1]=dpos[j+1]+1
                 count=count+1
-        newpositions.append(np.sort(dpos)) #NOTE:shouldn't need to sort here but one alignment threw an error (i=1 for the 200 sim set) that indices were not monotonically increasing for unknown reasons. Investigate further...
+        newpositions=np.sort(dpos)
     print(str(count)+" SNPs were shifted one base pair")
     return(np.array(newpositions))
 
@@ -197,7 +254,96 @@ def getPairwiseIbsTractLengths(x,y,positions,maxlen):
         np.append(ibs_tracts,maxlen-snp_positions[l-1]) #last block
     return ibs_tracts
 
-def getHaplotypeSumStats(haps,positions,labels,locs,outfile,verbose=True):
+
+def getSLiMSumStats(haps,positions,label,locs,outfile,maxlen,ibs_tracts=True,verbose=True):
+    '''
+    get summary statistics for a single SLiM tree sequence.
+    '''
+    if(verbose):
+        print("loading genotypes")
+
+    #load in genotypes etc into scikit-allel
+    genotypes=allel.HaplotypeArray(haps).to_genotypes(ploidy=2)
+    allele_counts=genotypes.count_alleles()
+    genotype_allele_counts=genotypes.to_allele_counts()
+
+    if(verbose):
+         print("calculating sample-wide statistics")
+    #nonspatial population-wide summary statistics
+    segsites=np.shape(genotypes)[0]
+    mpd=np.mean(allel.diversity.mean_pairwise_difference(allele_counts))
+    pi=(mpd*segsites)/maxlen
+    tajD=allel.diversity.tajima_d(ac=allele_counts,start=1,stop=maxlen)
+    thetaW=allel.diversity.watterson_theta(pos=positions,ac=allele_counts,start=1,stop=maxlen)
+    het_o=np.mean(allel.heterozygosity_observed(genotypes))
+    fis=np.mean(allel.inbreeding_coefficient(genotypes))
+    sfs=allel.sfs(allele_counts[:,1]) #last entry seems to be the highest *non-zero* SFS entry (wtf?) so adding zeros
+    sfs=np.append(sfs,[np.repeat(0,np.shape(haps)[1]-len(sfs)+1)])
+
+    #Isolation by distance
+    if(verbose):
+        print("calculating pairwise statistics")
+    gen_dist=allel.pairwise_dxy(pos=positions,
+                                gac=genotype_allele_counts,
+                                start=0,stop=maxlen) #SLOOOOOW - issue with noninteger positions?
+    sp_dist=np.array(scipy.spatial.distance.pdist(locs))
+
+    #IBS tract length summaries
+    if(verbose):
+        print("calculating IBS tract lengths")
+    if(ibs_tracts):
+        pairs=itertools.combinations(range(np.shape(haps)[1]),2)
+        ibs=[]
+        spat_dists=[]
+        locs2=np.repeat(locs,2,0)
+        for j in pairs:
+            ibs.append(getPairwiseIbsTractLengths(haps[:,j[0]],
+                                                  haps[:,j[1]],
+                                                  positions,
+                                                  maxlen))
+            spat_dists.append(scipy.spatial.distance.euclidean(locs2[j[0]],locs2[j[1]]))
+
+        ibs_flat=[x for y in ibs for x in y]
+        ibs_95p=np.percentile(ibs_flat,95)
+        ibs_mean=np.mean(ibs_flat)
+        ibs_var=np.var(ibs_flat)
+        ibs_skew=scipy.stats.skew(ibs_flat)
+        ibs_mean_spat_corr=np.corrcoef([np.mean(x) for x in ibs],spat_dists)[0,1]
+        #ibs_over_1e6=len([x for x in ibs_flat if x>=1e6]) #way too slow
+        ibs_num_blocks_per_pair=len(ibs_flat)/scipy.special.comb(np.shape(haps)[1],2)
+
+        #summaries of pairwise stats as a function of geographic distance
+        gen_sp_corr=np.corrcoef(gen_dist,sp_dist)[0,1]
+
+    if(ibs_tracts):
+        if os.path.exists(outfile)==False:
+            sfsnames=["sfs_"+str(x)+"," for x in range(np.shape(haps)[1])]
+            sfsnames.append("sfs_"+str(np.shape(haps)[1]))
+            out=open(outfile,"w")
+            out.write("label,segsites,pi,thetaW,tajD,het_o,fis,gen_sp_corr,ibs_mean,ibs_var,ibs_skew,ibs_95p,ibs_num_blocks_per_pair,ibs_mean_spat_corr,"+
+            "".join(sfsnames)+"\n")
+        row=[label,segsites,pi,thetaW,tajD,het_o,fis,gen_sp_corr,
+             ibs_mean,ibs_var,ibs_skew,ibs_95p,ibs_num_blocks_per_pair,ibs_mean_spat_corr]
+        row=np.append(row,sfs)
+        row=" ".join(map(str, row))
+    else:
+        if os.path.exists(outfile)==False:
+            sfsnames=["sfs_"+str(x)+"," for x in range(np.shape(haps)[1])]
+            sfsnames.append("sfs_"+str(np.shape(haps)[1]))
+            out=open(outfile,"w")
+            out.write("label,segsites,pi,thetaW,tajD,het_o,fis,gen_sp_corr,"+"".join(sfsnames)+"\n")
+        row=[label,segsites,pi,thetaW,tajD,het_o,fis,gen_sp_corr]
+        row=np.append(row,sfs)
+        row=" ".join(map(str, row))
+
+    #append to file
+    out=open(outfile,"a")
+    out.write(row+"\n")
+    out.close()
+
+    return(out)
+
+def getSLiMSumStats_directory(haps,positions,labels,locs,outfile,maxlen,ibs_tracts=True,verbose=True):
     for i in tqdm(range(len(haps))):
         if(verbose):
             print("processing simulation "+str(i))
@@ -207,49 +353,69 @@ def getHaplotypeSumStats(haps,positions,labels,locs,outfile,verbose=True):
         allele_counts=genotypes.count_alleles()
         genotype_allele_counts=genotypes.to_allele_counts()
 
+        if(verbose):
+             print("calculating sample-wide statistics")
         #nonspatial population-wide summary statistics
         segsites=np.shape(genotypes)[0]
         mpd=np.mean(allel.diversity.mean_pairwise_difference(allele_counts))
-        pi=(mpd*segsites)/1e8
-        tajD=allel.diversity.tajima_d(ac=allele_counts,start=1,stop=1e8)
-        thetaW=allel.diversity.watterson_theta(pos=positions[i],ac=allele_counts,start=1,stop=1e8)
+        pi=(mpd*segsites)/maxlen
+        tajD=allel.diversity.tajima_d(ac=allele_counts,start=1,stop=maxlen)
+        thetaW=allel.diversity.watterson_theta(pos=positions[i],ac=allele_counts,start=1,stop=maxlen)
         het_o=np.mean(allel.heterozygosity_observed(genotypes))
         fis=np.mean(allel.inbreeding_coefficient(genotypes))
         sfs=allel.sfs(allele_counts[:,1]) #last entry seems to be the highest *non-zero* SFS entry (wtf?) so adding zeros
         sfs=np.append(sfs,[np.repeat(0,np.shape(haps[i])[1]-len(sfs)+1)])
 
-        #pairwise summary stats
+        #Isolation by distance
         if(verbose):
             print("calculating pairwise statistics")
-        gen_dist=allel.pairwise_dxy(pos=positions[i],gac=genotype_allele_counts,start=0,stop=1e8) #SLOOOOOW - issue with noninteger positions?
+        gen_dist=allel.pairwise_dxy(pos=positions[i],
+                                    gac=genotype_allele_counts,
+                                    start=0,stop=maxlen) #SLOOOOOW - issue with noninteger positions?
         sp_dist=np.array(scipy.spatial.distance.pdist(locs[i]))
 
         #IBS tract length summaries
         if(verbose):
             print("calculating IBS tract lengths")
-        pairs=itertools.combinations(range(np.shape(haps[i])[1]),2)
-        ibs=[]
-        for j in pairs:
-            ibs.append(getPairwiseIbsTractLengths(haps[i][:,j[0]],
-                                                         haps[i][:,j[1]],
-                                                         positions[i],
-                                                         1e8))
-        ibs_flat=[x for y in ibs for x in y]
-        ibs_95p=np.percentile(ibs_flat,95)
-        ibs_over_1e6=len([x for x in ibs_flat if x>=1e6])
-        ibs_num_blocks_per_pair=len(ibs_flat)/scipy.special.comb(np.shape(haps[i])[1],2)
-        ibs_binned=scipy.stats.binned_statistic(x=ibs_flat,
-                                                values=ibs_flat,
-                                                statistic='count',
-                                                bins=np.arange(0,1e8,2e4))
+        if(ibs_tracts):
+            pairs=itertools.combinations(range(np.shape(haps[i])[1]),2)
+            ibs=[]
+            spat_dists=[]
+            locs2=np.repeat(locs[i],2,0)
+            for j in pairs:
+                ibs.append(getPairwiseIbsTractLengths(haps[i][:,j[0]],
+                                                      haps[i][:,j[1]],
+                                                      positions[i],
+                                                      1e8))
+                spat_dists.append(scipy.spatial.distance.euclidean(locs2[j[0]],locs2[j[1]]))
+
+            ibs_flat=[x for y in ibs for x in y]
+            ibs_95p=np.percentile(ibs_flat,95)
+            ibs_mean=np.mean(ibs_flat)
+            ibs_var=np.var(ibs_flat)
+            ibs_skew=scipy.stats.skew(ibs_flat)
+            ibs_mean_spat_corr=np.corrcoef([np.mean(x) for x in ibs],spat_dists)[0,1]
+
+            #ibs_over_1e6=len([x for x in ibs_flat if x>=1e6]) #way too slow
+            ibs_num_blocks_per_pair=len(ibs_flat)/scipy.special.comb(np.shape(haps[i])[1],2)
+            #ibs_binned=scipy.stats.binned_statistic(x=ibs_flat,
+            #                                        values=ibs_flat,
+            #                                        statistic='count',
+            #                                        bins=np.arange(0,1e8,2e4))
+            #np.savetxt("/Users/cj/Desktop/ibs_test.txt",ibs_flat)
 
         #summaries of pairwise stats as a function of geographic distance
         gen_sp_corr=np.corrcoef(gen_dist,sp_dist)[0,1]
 
         #row=np.append(sp_dist,gen_dist,sfs)
-        row=[labels[i],segsites,pi,thetaW,tajD,het_o,fis,gen_sp_corr,ibs_95p,ibs_num_blocks_per_pair,ibs_over_1e6]
-        row=np.append(row,sfs)
-        row=np.append(row,ibs_binned[0])
+        if(ibs_tracts):
+            row=[labels[i],segsites,pi,thetaW,tajD,het_o,fis,gen_sp_corr,
+                 ibs_mean,ibs_var,ibs_skew,ibs_95p,ibs_num_blocks_per_pair,ibs_mean_spat_corr]
+            row=np.append(row,sfs)
+            #row=np.append(row,ibs_binned[0])
+        else:
+            row=[labels[i],segsites,pi,thetaW,tajD,het_o,fis,gen_sp_corr]
+            row=np.append(row,sfs)
 
         if(i==0):
             out=np.zeros(shape=(len(haps),len(row)))

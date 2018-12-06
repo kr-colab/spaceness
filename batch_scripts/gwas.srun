@@ -1,0 +1,16 @@
+#!/bin/bash
+#SBATCH --partition=kern,preempt       ### queue to submit to
+#SBATCH --job-name=gwas    ### job name
+#SBATCH --output=gwas.out   ### file in which to store job stdout
+#SBATCH --error=gwas.err    ### file in which to store job stderr
+#SBATCH --time=5000                ### wall-clock time limit, in minutes
+#SBATCH --mem=32G              ### memory limit
+#SBATCH --nodes=1               ### number of nodes to use
+#SBATCH --ntasks-per-node=1     ### number of tasks to launch per node
+#SBATCH --cpus-per-task=8       ### number of cores for each task
+
+module load python3 tskit SLiM
+python /projects/kernlab/cbattey2/spaceness/scripts/run_gwas_local.py
+
+
+
