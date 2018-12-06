@@ -2,6 +2,7 @@ from slimtools import *
 import msprime as msp,pyslim,numpy as np,os,subprocess as sp
 import argparse
 import allel
+import scipy
 
 parser = argparse.ArgumentParser(description='Run a GWAS in plink on individuals \
                                               sampled from a SLiM simulation.\
@@ -30,9 +31,9 @@ parser.add_argument('--phenotype', dest='phenotype',
                                   "transform_coord" (phenotype is a transformation of the x coordinate); \
                                   "corner_bimodal" (phenotype drawn from different normal distributions \
                                   in/outside a corner of the landscape).')
-parser.add_argument('--phenotype_mean', dest='phenotype_mean',
+parser.add_argument('--phenotype_mean', dest='phenotype_mean',type=float,
                    help='mean for gaussian phenotypes')
-parser.add_argument('--phenotype_sd', dest='phenotype_sd',
+parser.add_argument('--phenotype_sd', dest='phenotype_sd',type=float,
                    help='standard deviation for gaussian phenotypes')
 parser.add_argument('--seed', dest='seed',type=int,
                    help='Random seed for sampling individuals and adding mutations to tree sequences.')
@@ -52,6 +53,7 @@ args=parser.parse_args()
 #                           seed=123)
 
 #sample individuals and add mutations
+np.random.seed(args.seed)
 simname=os.path.basename(args.infile)
 ts=sample_treeseq(infile=args.infile,
                   outfile="",
@@ -66,6 +68,7 @@ ts=msp.mutate(ts,args.mu,random_seed=args.seed)
 haps=ts.genotype_matrix()
 sample_inds=np.unique([ts.node(j).individual for j in ts.samples()])
 locs=[[ts.individual(x).location[0],ts.individual(x).location[1]] for x in sample_inds]
+np.savetxt(os.path.join(args.outdir,simname)+"_locs.txt",locs)
 
 #run a PCA
 genotype_counts=allel.HaplotypeArray(haps).to_genotypes(ploidy=2).to_allele_counts()
@@ -100,7 +103,7 @@ if args.phenotype=="gaussian":
     for i in range(args.nSamples):
         phenfile.write("msp_"+str(i)+" "+"msp_"+str(i)+" "+str(phenotypes[i])+"\n")
     phenfile.close()
-
+#replace denominator of location with W/sd*n to vary means over n sd's across the map
 if args.phenotype=="transform_coord":
     phenfile=open(os.path.join(args.outdir,simname)+".phenotypes","w")
     for i in range(args.nSamples):
@@ -114,7 +117,21 @@ if args.phenotype=="corner_bimodal":
         if locs[i][0]<20 and locs[i][1]<20:
             ind_phenotype=np.random.normal(args.phenotype_mean,args.phenotype_sd,1)[0]
         else:
-            ind_phenotype=np.random.normal(args.phenotype_mean+3*args.phenotype_sd,args.phenotype_sd,1)[0]
+            ind_phenotype=np.random.normal(args.phenotype_mean+2*args.phenotype_sd,args.phenotype_sd,1)[0]
+        phenfile.write("msp_"+str(i)+" "+"msp_"+str(i)+" "+str(ind_phenotype)+"\n")
+    phenfile.close()
+#individuals within 5 units of a point have their phenotype mean scaled by distance up to a factor of 2 standard deviations
+if args.phenotype=="patchy":
+    points = [[np.random.uniform(0,50),np.random.uniform(0,50)] for x in range(10)]
+    phenfile=open(os.path.join(args.outdir,simname)+".phenotypes","w")
+    for i in range(args.nSamples):
+        #find distance to closest high-phenotype point
+        mindist=min([scipy.spatial.distance.euclidean(locs[i],points[j]) for j in range(10)])
+        if mindist > 5:
+            ind_phenotype=np.random.normal(args.phenotype_mean,args.phenotype_sd,1)[0]
+        else:
+            ind_mean_scaling=2-(mindist/5)*2
+            ind_phenotype=np.random.normal(args.phenotype_mean+args.phenotype_sd*ind_mean_scaling,args.phenotype_sd,1)[0]
         phenfile.write("msp_"+str(i)+" "+"msp_"+str(i)+" "+str(ind_phenotype)+"\n")
     phenfile.close()
 
