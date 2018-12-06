@@ -6,7 +6,7 @@ import allel
 parser = argparse.ArgumentParser(description='Run a GWAS in plink on individuals \
                                               sampled from a SLiM simulation.\
                                               Requires plink, vcftools, msprime, and pyslim.')
-parser.add_argument('--treeseq', dest='treeseq',
+parser.add_argument('--infile', dest='infile',
                     help='path to simulation tree sequence.')
 parser.add_argument('--outdir', dest='outdir',
                    help='Output file directory')
@@ -40,20 +40,22 @@ parser.add_argument('--seed', dest='seed',type=int,
 args=parser.parse_args()
 
 ### debug
-# args = argparse.Namespace(treeseq='/Users/cj/spaceness/sims/slimout/spatial/W50/coalesced/sigma_0.20156213958750416_.trees1500000.trees',
-#                           outdir="/Users/cj/spaceness/gwas/out/normal_phen/",
+# args = argparse.Namespace(infile='/Users/cj/spaceness/sims/slimout/spatial/W50/coalesced/sigma_0.20156213958750416_.trees1500000.trees',
+#                           outdir="/Users/cj/Desktop/",
 #                           plink_path="plink",
 #                           vcftools_path="vcftools",
 #                           nSamples=1000,
 #                           mu=0.25e-8,
 #                           phenotype="transform_coord",
 #                           phenotype_mean=175,
-#                           phenotype_sd=8)
+#                           phenotype_sd=8,
+#                           seed=123)
 
 #sample individuals and add mutations
+simname=os.path.basename(args.infile)
 ts=sample_treeseq(infile=args.infile,
                   outfile="",
-                  nSamples=100,
+                  nSamples=args.nSamples,
                   recapitate=False,
                   recombination_rate=1e-8,
                   write_to_file=False,
@@ -116,31 +118,30 @@ if args.phenotype=="corner_bimodal":
 
 
 #run plink association analysis with PC coords as covariates
-if args.pca==True:
-    sp.check_output([args.plink_path,
-                     "--noweb",
-                     "--file",
-                     os.path.join(args.outdir,simname),
-                     "--pheno",
-                     os.path.join(args.outdir,simname)+".phenotypes",
-                     "--allow-no-sex",
-                     "--out",
-                     os.path.join(args.outdir,simname),
-                     "--linear",
-                     "--covar",
-                     os.path.join(args.outdir,simname)+".pca",
-                     "--hide-covar"])
-else:
-    sp.check_output([args.plink_path,
-                     "--noweb",
-                     "--file",
-                     os.path.join(args.outdir,simname),
-                     "--pheno",
-                     os.path.join(args.outdir,simname)+".phenotypes",
-                     "--allow-no-sex",
-                     "--out",
-                     os.path.join(args.outdir,simname),
-                     "--linear"])
+sp.check_output([args.plink_path,
+                 "--noweb",
+                 "--file",
+                 os.path.join(args.outdir,simname),
+                 "--pheno",
+                 os.path.join(args.outdir,simname)+".phenotypes",
+                 "--allow-no-sex",
+                 "--out",
+                 os.path.join(args.outdir,simname),
+                 "--linear",
+                 "--covar",
+                 os.path.join(args.outdir,simname)+".pca",
+                 "--hide-covar"])
+
+sp.check_output([args.plink_path,
+                 "--noweb",
+                 "--file",
+                 os.path.join(args.outdir,simname),
+                 "--pheno",
+                 os.path.join(args.outdir,simname)+".phenotypes",
+                 "--allow-no-sex",
+                 "--out",
+                 os.path.join(args.outdir,simname),
+                 "--assoc"])
 
 #clean up big files
 sp.check_output(["rm",

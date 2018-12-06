@@ -3,7 +3,7 @@ library(ggplot2);library(magrittr);library(plyr);library(data.table)
 setwd("~/spaceness/gwas/")
 
 #individual manhattan plot
-gwas <- fread("out/sigma_0.3707859307192668_.trees1500000.trees.assoc.linear")
+gwas <- fread("out_phen_corner/sigma_0.20156213958750416_.trees1500000.trees.assoc.linear")
 
 gwas <- subset(gwas,TEST=="ADD")
 nrow(gwas)
@@ -12,7 +12,7 @@ gwas$p_adj <- p.adjust(gwas$P,method="fdr")
 gwas$p_minus_log_10 <- -log(gwas$P,10)
   
   
-png("gwas_sim_spatial_phen_PCA_corr_sigma0905.png",width=6.5,height=1,units="in",res=1200)
+png("gwas_sim_spatial_phen_corner_PCA_corr_sigma020.png",width=6.5,height=1,units="in",res=1200)
 ggplot(data=gwas,aes(x=BP,y=p_minus_log_10))+
   theme_classic()+theme(axis.text=element_text(size=7),
                         axis.title = element_text(size=7),
@@ -28,7 +28,7 @@ dev.off()
 
 
 #how does the number of genome-wide significant SNPs change with dispersal? 
-files <- list.files("out",full.names = T) %>% grep("assoc.linear",.,value = T)
+files <- list.files("out_phen_corner",full.names = T) %>% grep("assoc.linear",.,value = T)
 pd <- data.frame(sigma=numeric(),n_sig=integer(),n_snps=integer(),prop_sig=numeric())
 for(i in files){
   gwas <- fread(i)
@@ -41,7 +41,7 @@ for(i in files){
 }
 pd$pc_corr <- T
 
-files <- list.files("out",full.names = T) %>% grep("qassoc",.,value = T)
+files <- list.files("out_phen_corner",full.names = T) %>% grep("qassoc",.,value = T)
 for(i in files){
   gwas <- fread(i)
   gwas$p_adj <- p.adjust(gwas$P,method="fdr")
@@ -52,9 +52,9 @@ for(i in files){
   pd <- rbind(pd,data.frame(sigma=sigma,n_sig=n_sig,n_snps=n_snps,prop_sig=prop_sig,pc_corr=F))
 }
 
-ggplot(data=pd,aes(x=sigma,y=n_sig,col=pc_corr))+
+ggplot(data=pd,aes(x=sigma,y=prop_sig,col=pc_corr))+
   theme_classic()+
-  #facet_wrap(~pc_corr,ncol=1,scales="free_y")+
+  facet_wrap(~pc_corr,ncol=1,scales="free_y")+
   geom_point()
 
 
