@@ -1,9 +1,9 @@
 #!/bin/bash
-#SBATCH --partition=kern,preempt       ### queue to submit to
+#SBATCH --partition=kern,preempt,short     ### queue to submit to
 #SBATCH --job-name=gwas    ### job name
 #SBATCH --output=talapas_outs/gwas.out   ### file in which to store job stdout
 #SBATCH --error=talapas_outs/gwas.err    ### file in which to store job stderr
-#SBATCH --time=100                ### wall-clock time limit, in minutes
+#SBATCH --time=200                ### wall-clock time limit, in minutes
 #SBATCH --mem=32G              ### memory limit
 #SBATCH --nodes=1               ### number of nodes to use
 #SBATCH --ntasks-per-node=1     ### number of tasks to launch per node

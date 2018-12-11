@@ -3,6 +3,7 @@ import msprime as msp,pyslim,numpy as np,os,subprocess as sp
 import argparse
 import allel
 import scipy
+import random
 
 parser = argparse.ArgumentParser(description='Run a GWAS in plink on individuals \
                                               sampled from a SLiM simulation.\
@@ -40,16 +41,16 @@ parser.add_argument('--seed', dest='seed',type=int,
 
 args=parser.parse_args()
 
-### debug
-# args = argparse.Namespace(infile='/Users/cj/spaceness/sims/slimout/spatial/W50/coalesced/sigma_0.20156213958750416_.trees1500000.trees',
+# ## debug
+# args = argparse.Namespace(infile='/Users/cj/spaceness/sims/slimout/spatial/W50/coalesced/sigma_0.6544936332655427_.trees1500000.trees',
 #                           outdir="/Users/cj/Desktop/",
 #                           plink_path="plink",
 #                           vcftools_path="vcftools",
 #                           nSamples=1000,
 #                           mu=0.25e-8,
-#                           phenotype="transform_coord",
-#                           phenotype_mean=175,
-#                           phenotype_sd=8,
+#                           phenotype="random_snps",
+#                           phenotype_mean=100,
+#                           phenotype_sd=10,
 #                           seed=123)
 
 #sample individuals and add mutations
@@ -96,21 +97,25 @@ sp.check_output([args.vcftools_path,
 sp.check_output(["rm",
                  os.path.join(args.outdir,simname)+".vcf"])
 
-#create phenotypes
+###create phenotypes
+#normally distributed with no spatial component
 if args.phenotype=="gaussian":
     phenotypes=np.random.normal(args.phenotype_mean,args.phenotype_sd,args.nSamples) #approx US height
     phenfile=open(os.path.join(args.outdir,simname)+".phenotypes","w")
     for i in range(args.nSamples):
         phenfile.write("msp_"+str(i)+" "+"msp_"+str(i)+" "+str(phenotypes[i])+"\n")
     phenfile.close()
-#replace denominator of location with W/sd*n to vary means over n sd's across the map
+
+#x coordinate plus noise
 if args.phenotype=="transform_coord":
     phenfile=open(os.path.join(args.outdir,simname)+".phenotypes","w")
     for i in range(args.nSamples):
-        ind_phenotype=np.random.normal(locs[i][0]/2.5+args.phenotype_mean,args.phenotype_sd,1)[0]
+        ind_scaling=(locs[i][0]/50)*3
+        ind_phenotype=np.random.normal(args.phenotype_mean+ind_scaling*args.phenotype_sd,args.phenotype_sd,1)[0]
         phenfile.write("msp_"+str(i)+" "+"msp_"+str(i)+" "+str(ind_phenotype)+"\n")
     phenfile.close()
 
+#one corner has a mean 2 sd's higher than the rest of the map
 if args.phenotype=="corner_bimodal":
     phenfile=open(os.path.join(args.outdir,simname)+".phenotypes","w")
     for i in range(args.nSamples):
@@ -120,6 +125,7 @@ if args.phenotype=="corner_bimodal":
             ind_phenotype=np.random.normal(args.phenotype_mean+2*args.phenotype_sd,args.phenotype_sd,1)[0]
         phenfile.write("msp_"+str(i)+" "+"msp_"+str(i)+" "+str(ind_phenotype)+"\n")
     phenfile.close()
+
 #individuals within 5 units of a point have their phenotype mean scaled by distance up to a factor of 2 standard deviations
 if args.phenotype=="patchy":
     points = [[np.random.uniform(0,50),np.random.uniform(0,50)] for x in range(10)]
@@ -135,6 +141,34 @@ if args.phenotype=="patchy":
         phenfile.write("msp_"+str(i)+" "+"msp_"+str(i)+" "+str(ind_phenotype)+"\n")
     phenfile.close()
 
+#each of 100 random SNPs adds one-tenth of a standard deviation to an individual's phenotype
+if args.phenotype=="random_snps":
+    phen_snps=np.random.choice([i for i in range(np.shape(haps)[0])],100) #choose 100 SNPs
+    phen_allele_counts=genotype_counts[phen_snps,:,1] #count of alternate alleles
+    phen_allele_counts=[sum(phen_allele_counts[:,i]) for i in range(args.nSamples)]
+    phenfile=open(os.path.join(args.outdir,simname)+".phenotypes","w")
+    for i in range(args.nSamples):
+        ind_phenotype=args.phenotype_mean+phen_allele_counts[i]*(args.phenotype_sd/10) #each alternate allele increases phenotype by one tenth of a standard deviation
+        phenfile.write("msp_"+str(i)+" "+"msp_"+str(i)+" "+str(ind_phenotype)+"\n")
+    phenfile.close()
+    np.savetxt(os.path.join(args.outdir,simname)+"phenotype_snp_indices.txt",phen_snps)
+
+#one active snp with frequency {0.1,0.2}; each alt allele adds one standard deviation
+if args.phenotype=="one_snp":
+    phen_snp_af=0
+    while (phen_snp_af<0.1 or phen_snp_af>0.2):
+        phen_snp=np.random.choice([i for i in range(np.shape(haps)[0])],1)
+        phen_snp_af=sum(genotype_counts[phen_snp,:,1][0])/args.nSamples
+    phenfile=open(os.path.join(args.outdir,simname)+".phenotypes","w")
+    for i in range(args.nSamples):
+        if genotype_counts[phen_snp,i,1]==0:
+            ind_phenotype=np.random.normal(args.phenotype_mean,args.phenotype_sd,1)[0]
+        if  genotype_counts[phen_snp,i,1]==1:
+            ind_phenotype=np.random.normal(args.phenotype_mean+args.phenotype_sd,args.phenotype_sd,1)[0]
+        if  genotype_counts[phen_snp,i,1]==2:
+            ind_phenotype=np.random.normal(args.phenotype_mean+args.phenotype_sd*2,args.phenotype_sd,1)[0]
+        phenfile.write("msp_"+str(i)+" "+"msp_"+str(i)+" "+str(ind_phenotype)+"\n")
+    phenfile.close()
 
 #run plink association analysis with PC coords as covariates
 sp.check_output([args.plink_path,
