@@ -1,10 +1,10 @@
 #!/bin/bash
-#SBATCH --partition=kern,preempt       ### queue to submit to
-#SBATCH --job-name=rm_05    ### job name
-#SBATCH --output=rm_05.out   ### file in which to store job stdout
-#SBATCH --error=rm_05.err    ### file in which to store job stderr
-#SBATCH --time=10000                ### wall-clock time limit, in minutes
-#SBATCH --mem=2G              ### memory limit
+#SBATCH --partition=long,kern       ### queue to submit to
+#SBATCH --job-name=W50_rm    ### job name
+#SBATCH --output=talapas_outs/W50_rm.out   ### file in which to store job stdout 
+#SBATCH --error=talapas_outs/W50_rm.err    ### file in which to store job stderr
+#SBATCH --time=20000                ### wall-clock time limit, in minutes
+#SBATCH --mem=32G              ### memory limit
 #SBATCH --nodes=1               ### number of nodes to use
 #SBATCH --ntasks-per-node=1     ### number of tasks to launch per node
 #SBATCH --cpus-per-task=1       ### number of cores for each task
@@ -15,10 +15,10 @@ module load python3 tskit SLiM
 
 python3 /projects/kernlab/cbattey2/spaceness/scripts/run_slim.py \
 --sampled_param "sigma" \
---min 0.499 \
---max 0.501 \
+--min 0.2 \
+--max 3.5 \
 --slim_path "slim" \
 --slim_recipe "/projects/kernlab/cbattey2/spaceness/slim_recipes/flat_map_random_mating.slim" \
---outdir "/projects/kernlab/cbattey2/spaceness/sims/slimout/random_mating/dist_bins/"
+--outdir "/projects/kernlab/cbattey2/spaceness/sims/slimout/random_mating/W50_sesame/"
 
 

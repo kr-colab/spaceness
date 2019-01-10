@@ -9,10 +9,10 @@ do
  
  command="python scripts/sumstats_from_treeseq.py \
  --infile $f \
- --outfile ~/projects/spaceness/sumstats/ss_spatial_W35.txt \
+ --outfile ~/projects/spaceness/sumstats/ss_spatial_random_W35.txt \
  --sampling random \
  --mu 0.25e-8 \
- --sampling_location 25,25 \
+ --sampling_locs 17,17 \
  --seed 12345"
 
 cp ~/projects/spaceness/batch_scripts/slurm_sumstats_header.srun ~/projects/spaceness/batch_scripts/tmp.srun
@@ -32,10 +32,10 @@ do
  
  command="python scripts/sumstats_from_treeseq.py \
  --infile $f \
- --outfile ~/projects/spaceness/sumstats/ss_randmates_W35.txt \
+ --outfile ~/projects/spaceness/sumstats/ss_randmates_random_W35.txt \
  --sampling random \
  --mu 0.25e-8 \
- --sampling_location 25,25 \
+ --sampling_locs 17,17 \
  --seed 12345"
 
 cp ~/projects/spaceness/batch_scripts/slurm_sumstats_header.srun ~/projects/spaceness/batch_scripts/tmp.srun

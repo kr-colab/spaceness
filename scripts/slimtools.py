@@ -11,6 +11,14 @@ from tqdm import tqdm
 import itertools
 import matplotlib.pyplot as plt
 
+##debug params
+# ts=pyslim.load("/Users/cj/spaceness/sims/slimout/spatial/W50/coalesced/sigma_0.5187220106279465_.trees1500000.trees")
+# ts=sample_treeseq(infile=ts,nSamples=100,outfile="",recapitate=False,recombination_rate=1e-8,write_to_file=False)
+# ts=msp.mutate(ts,1e-8)
+# haps,positions,locs=get_ms_outs(ts)
+# label=float(re.sub("sigma_|_.trees*|.trees","",os.path.basename("/Users/cj/spaceness/sims/slimout/spatial/W50/coalesced/sigma_0.5187220106279465_.trees1500000.trees")))
+# maxlen=1e8
+
 def run_one_slim_sim(sampled_param,
                      min,
                      max,
@@ -108,10 +116,33 @@ def sample_treeseq_directory(indir,outdir,nSamples,recapitate,recombination_rate
     #    np.savetxt(pop_size_outpath,pop_sizes)
     return None
 
-def sample_treeseq(infile,outfile,nSamples,recapitate,recombination_rate,write_to_file,seed=12345):
+def sample_treeseq(infile,
+                   nSamples,
+                   sampling,
+                   recapitate=False,
+                   recombination_rate=1e-9,
+                   write_to_file=False,
+                   outfile='',
+                   sampling_locs=[],
+                   plot=False,
+                   seed=0):
     '''
-    Sample individuals from a tree sequence then simplify and (optionally)
-    recapitate the tree with msprime.
+    Samples a set of individuals from a SLiM tree sequence and returns a
+    tree sequence simplified for those individuals.
+
+    params:
+    infile - string or object. input treesequence file or object
+    nSamples - integer. total samples to return
+    sampling - 'random' (nSamples random individuals);
+               'midpoint' (nSamples closest individuals to the middle of the landscape);
+               'point' (nSamples/len(sampling_locs) individuals closest to each location in sampling_locs).
+    recapitate - boolean. Should simulations be run to coalescence with msprime? False unless you know *exactly* what you're doing hereself.
+    recombination_rate - float. Recombination rate to use for recapitation, in recombination events per base per generation.
+    write_to_file - boolean.
+    outfile - string. File path for output.
+    sampling_locs - list. locations to draw samples from when using sampling='point', as [[x1,y1],[x2,y2]]
+    plot - boolean. plot location of samples?
+    seed - random seed for all numpy operations. 0 uses the system default.
     '''
     if type(infile)==str:
         ts=pyslim.load(infile)
@@ -119,20 +150,82 @@ def sample_treeseq(infile,outfile,nSamples,recapitate,recombination_rate,write_t
         ts=infile
     if(not seed==0):
         np.random.seed(seed)
-    sample_inds=np.unique([ts.node(j).individual for j in ts.samples()]) #final-generation individuals
-    subsample=np.random.choice(sample_inds,nSamples,replace=False) #get nSamples random sample inds
-    subsample_nodes=[ts.individual(x).nodes for x in subsample] #node numbers for sampled individuals
-    subsample_nodes=[a for b in subsample_nodes for a in b] #flatten the list
-    subsample_nodes=np.sort(np.array(subsample_nodes))
-    o=ts.simplify(subsample_nodes)
+    if(sampling=="random"):
+        sample_inds=np.unique([ts.node(j).individual for j in ts.samples()]) #final-generation individuals
+        subsample=np.random.choice(sample_inds,nSamples,replace=False) #get nSamples random sample inds
+        subsample_nodes=[ts.individual(x).nodes for x in subsample] #node numbers for sampled individuals
+        subsample_nodes=[a for b in subsample_nodes for a in b] #flatten the list
+        subsample_nodes=np.sort(np.array(subsample_nodes)) #note this is needed to preserve individual order relative to locations - should build better individual ID verifications later...
+        o=ts.simplify(subsample_nodes)
+        locs=np.array([[x.location[0],x.location[1]] for x in ts.individuals()])
+        olocs=np.array([[x.location[0],x.location[1]] for x in o.individuals()])
+        if plot:
+            plt.scatter(locs[:,0], locs[:,1],s=80,facecolors='none',edgecolors='k')
+            plt.scatter(olocs[:,0],olocs[:,1],s=80,facecolors='r',edgecolors='r')
+            plt.axis([0, 35, 0, 35])
+    if(sampling=="midpoint"):
+        #get final generation individuals
+        extant_inds=np.unique([ts.node(j).individual for j in ts.samples()]) #final-generation individuals
+        extant_nodes=[ts.individual(x).nodes for x in extant_inds] #node numbers for final-generation individuals
+        extant_nodes=[a for b in extant_nodes for a in b]
+        ts=ts.simplify(extant_nodes)
+        #sample nSamples individuals proportional to their distance from the midpoint where p(sample)=(1/dist**4)/sum(dists_to_middle)
+        locs=np.array([[x.location[0],x.location[1]] for x in ts.individuals()])
+        inds=np.array([x.id for x in ts.individuals()])
+        middle=[np.mean(locs[:,0]),np.mean(locs[:,1])]
+        dists_to_middle=[scipy.spatial.distance.euclidean(locs[x],middle) for x in range(len(locs))]
+        weights=[1/x**4 for x in dists_to_middle]
+        weights=weights/np.sum(weights)
+        subsample=np.random.choice(inds,nSamples,p=weights,replace=False)
+        #closest_inds=sorted(range(len(dists_to_middle)), key=lambda e: dists_to_middle[e],reverse=True)[-nSamples*2:] #this works for sampling half the closest nSamples individuals
+        #closest_inds=np.random.choice(closest_inds,int(len(closest_inds)/2),replace=False)
+        #subsample=inds[closest_inds]
+        subsample_nodes=[ts.individual(x).nodes for x in subsample] #node numbers for sampled individuals
+        subsample_nodes=[a for b in subsample_nodes for a in b] #flatten the list
+        subsample_nodes=np.sort(np.array(subsample_nodes))
+        o=ts.simplify(subsample_nodes)
+        olocs=np.array([[x.location[0],x.location[1]] for x in o.individuals()])
+        if plot:
+            plt.scatter(locs[:,0],locs[:,1],s=80,facecolors='none',edgecolors='k')
+            plt.scatter(olocs[:,0],olocs[:,1],s=80,facecolors='r',edgecolors='r')
+            plt.axis([0, 35, 0, 35])
+    if(sampling=="point"):
+        #get final generation individuals
+        extant_inds=np.unique([ts.node(j).individual for j in ts.samples()]) #final-generation individuals
+        extant_nodes=[ts.individual(x).nodes for x in extant_inds] #node numbers for final-generation individuals
+        extant_nodes=[a for b in extant_nodes for a in b]
+        ts=ts.simplify(extant_nodes)
+        #sample nSamples individuals proportional to their distance from the midpoint where p(sample)=(1/dist**4)/sum(dists_to_point)
+        locs=np.array([[x.location[0],x.location[1]] for x in ts.individuals()])
+        inds=np.array([x.id for x in ts.individuals()])
+        if nSamples%len(sampling_locs) == 0:
+            inds_per_pt= int(nSamples/len(sampling_locs))
+        else:
+            print("Error: nSamples must be evenly divisible by len(sampling_locs).")
+            return
+        subsample=[]
+        for i in sampling_locs:
+            dists=[scipy.spatial.distance.euclidean(locs[x],i) for x in range(len(locs))]
+            weights=[1/x**4 for x in dists]
+            weights=weights/np.sum(weights)
+            subsample.append(np.random.choice(inds,inds_per_pt,p=weights,replace=False))
+        subsample=[a for b in subsample for a in b]
+        subsample_nodes=[ts.individual(x).nodes for x in subsample] #node numbers for sampled individuals
+        subsample_nodes=[a for b in subsample_nodes for a in b] #flatten the list
+        subsample_nodes=np.sort(np.array(subsample_nodes))
+        o=ts.simplify(subsample_nodes)
+        olocs=np.array([[x.location[0],x.location[1]] for x in o.individuals()])
+        if plot:
+            plt.scatter(locs[:,0], locs[:,1],s=80,facecolors='none',edgecolors='k')
+            plt.scatter(olocs[:,0],olocs[:,1],s=80,facecolors='r',edgecolors='r')
+            plt.axis([0, 35, 0, 35])
     if(recapitate):
-        ts=ts.recapitate(recombination_rate=recombination_rate)
+        o=o.recapitate(recombination_rate=recombination_rate)
     if(write_to_file):
         o.dump(outfile)
-
     return o
 
-def mutate_treeseqs(indir,outdir,mu,seed):
+def mutate_treeseq_directory(indir,outdir,mu,seed):
     '''
     Add mutations at constant rate "mu" to all tree sequences in directory "indir"
     '''
@@ -186,7 +279,6 @@ def get_ms_outs_directory(direc,subset,start=0,stop=0):
 
     return haps,positions,labels,locs
 
-
 def get_ms_outs(ts):
     '''
     get haplotypes, positions, labels, and spatial locations from a tree sequence.
@@ -200,7 +292,6 @@ def get_ms_outs(ts):
 
     return haps,positions,locs
 
-
 def discretize_snp_positions(ogpositions):
     '''
     Takes an array of SNP positions as floats (ie from msprime) and returns
@@ -209,37 +300,26 @@ def discretize_snp_positions(ogpositions):
     '''
     count=0
     newpositions=[]
-    if(ogpositions.ndim>1):
-        for i in tqdm(range(len(ogpositions))):
-            dpos=[int(x) for x in ogpositions[i]]
-            for j in range(len(dpos)-1):
-                if(dpos[j]==dpos[j+1]):
-                    dpos[j+1]=dpos[j+1]+1
-                    count=count+1
-            newpositions.append(np.sort(dpos)) #NOTE:shouldn't need to sort here but one alignment threw an error (i=1 for the 200 sim set) that indices were not monotonically increasing for unknown reasons. Investigate further...
-    else:
-        dpos=[int(x) for x in ogpositions]
-        for j in range(len(dpos)-1):
-            if(dpos[j]==dpos[j+1]):
-                dpos[j+1]=dpos[j+1]+1
-                count=count+1
-        newpositions=np.sort(dpos)
+    dpos=[int(x) for x in ogpositions]
+    for j in range(len(dpos)-1):
+        if(dpos[j]==dpos[j+1]):
+            dpos[j+1]=dpos[j+1]+1
+            count=count+1
+    newpositions=np.sort(dpos)
     print(str(count)+" SNPs were shifted one base pair")
     return(np.array(newpositions))
 
-def getPairwiseIbsTractLengths(x,y,positions,maxlen):
+def getPairwiseIbsTractLengths(x,y,positions,maxlen,min_len_to_keep=0):
     '''
     input:
     x: haplotype as 1D array
     y: haplotype as 1D array
-    positions: a 1D array of SNP positions (integer, 1-based)
+    positions: a 1D array of SNP positions
+    maxlen: length of chromosome/contig
 
     Returns:
     1d array listing distances between adjacent SNPs in a pair of sequences.
-
-    Example:
-    haps,positions,labels,locs=getHapsPosLabelsLocs(direc="mutated_treeSeq_directory")
-    ibs_lengths_1_2=getPairwiseIbsTractLengths(haps[0][:,0],haps[0][:,1],positions[0])
+    Assumes all sites are accessible.
     '''
     snps=~np.equal(x,y)
     snp_positions=positions[snps]
@@ -249,13 +329,14 @@ def getPairwiseIbsTractLengths(x,y,positions,maxlen):
         ibs_tracts=[maxlen]
     else:
         if(l>1):
-            ibs_tracts=snp_positions[np.arange(1,l,2)]-snp_positions[np.arange(0,l-1,2)] #middle blocks
-        np.append(ibs_tracts,snp_positions[0])          #first block
+            ibs_tracts=snp_positions[np.arange(1,l-1,1)]-snp_positions[np.arange(0,l-2,1)] #middle blocks
+        np.append(ibs_tracts,snp_positions[0]+1)          #first block
         np.append(ibs_tracts,maxlen-snp_positions[l-1]) #last block
+        con=[x>=min_len_to_keep for x in ibs_tracts] #drop blocks < min_len_to_keep
+        ibs_tracts=np.extract(con,ibs_tracts)
     return ibs_tracts
 
-
-def getSLiMSumStats(haps,positions,label,locs,outfile,maxlen,ibs_tracts=True,verbose=True):
+def getSLiMSumStats(haps,positions,label,locs,outfile,maxlen,ibs_tracts=True,verbose=True,min_len_to_keep=0):
     '''
     get summary statistics for a single SLiM tree sequence.
     '''
@@ -269,69 +350,89 @@ def getSLiMSumStats(haps,positions,label,locs,outfile,maxlen,ibs_tracts=True,ver
 
     if(verbose):
          print("calculating sample-wide statistics")
+
     #nonspatial population-wide summary statistics
     segsites=np.shape(genotypes)[0]
-    mpd=np.mean(allel.diversity.mean_pairwise_difference(allele_counts))
-    pi=(mpd*segsites)/maxlen
-    tajD=allel.diversity.tajima_d(ac=allele_counts,start=1,stop=maxlen)
-    thetaW=allel.diversity.watterson_theta(pos=positions,ac=allele_counts,start=1,stop=maxlen)
+    #mpd=np.mean(allel.mean_pairwise_difference(allele_counts))
+    #pi=(mpd*segsites)/n_accessible_sites                               #alternate pi if not all sites are accessible
+    pi=allel.sequence_diversity(positions,allele_counts,start=1,stop=1e8)
+    tajD=allel.tajima_d(ac=allele_counts,start=1,stop=maxlen) #NOTE check for 0 v 1 positions
+    thetaW=allel.watterson_theta(pos=positions,ac=allele_counts,start=1,stop=maxlen)
     het_o=np.mean(allel.heterozygosity_observed(genotypes))
     fis=np.mean(allel.inbreeding_coefficient(genotypes))
     sfs=allel.sfs(allele_counts[:,1]) #last entry seems to be the highest *non-zero* SFS entry (wtf?) so adding zeros
     sfs=np.append(sfs,[np.repeat(0,np.shape(haps)[1]-len(sfs)+1)])
-
     #Isolation by distance
     if(verbose):
         print("calculating pairwise statistics")
     gen_dist=allel.pairwise_dxy(pos=positions,
                                 gac=genotype_allele_counts,
-                                start=0,stop=maxlen) #SLOOOOOW - issue with noninteger positions?
+                                start=0,stop=maxlen)
     sp_dist=np.array(scipy.spatial.distance.pdist(locs))
+    gen_sp_corr=np.corrcoef(gen_dist,np.log(sp_dist))[0,1]
+    gen_dist_skew=scipy.stats.skew(gen_dist)
+    gen_dist_var=np.var(gen_dist)
+    gen_dist_mean=np.mean(gen_dist)
 
     #IBS tract length summaries
     if(verbose):
         print("calculating IBS tract lengths")
     if(ibs_tracts):
         pairs=itertools.combinations(range(np.shape(haps)[1]),2)
-        ibs=[]
-        spat_dists=[]
+        ibs=[];spat_dists=[];ibs_mean_pair=[];ibs_95p_pair=[]
+        ibs_var_pair=[];ibs_skew_pair=[];ibs_blocks_over_1e6_pair=[]
+        ibs_blocks_pair=[]
         locs2=np.repeat(locs,2,0)
         for j in pairs:
-            ibs.append(getPairwiseIbsTractLengths(haps[:,j[0]],
-                                                  haps[:,j[1]],
-                                                  positions,
-                                                  maxlen))
-            spat_dists.append(scipy.spatial.distance.euclidean(locs2[j[0]],locs2[j[1]]))
+            spdist=scipy.spatial.distance.euclidean(locs2[j[0]],locs2[j[1]])
+            if spdist>0:
+                ibspair=getPairwiseIbsTractLengths(haps[:,j[0]],
+                                                      haps[:,j[1]],
+                                                      positions,
+                                                      maxlen,
+                                                      min_len_to_keep)
+                if len(ibspair)>0:
+                    spat_dists.append(spdist)
+                    ibs.append(ibspair)
+                    ibs_mean_pair.append(np.mean(ibspair))
+                    #ibs_95p_pair.append(np.percentile(ibspair,95))
+                    #ibs_var_pair.append(np.var(ibspair))
+                    ibs_skew_pair.append(scipy.stats.skew(ibspair))
+                    ibs_blocks_over_1e6_pair.append(len([x for x in ibspair if x>1e6]))
+                    ibs_blocks_pair.append(len(ibspair))
 
-        ibs_flat=[x for y in ibs for x in y]
-        ibs_95p=np.percentile(ibs_flat,95)
+        #ibs stat ~ spatial distance correlations
+        ibs_mean_spat_corr=np.corrcoef(ibs_mean_pair,np.log(spat_dists))[0,1] #v noisy - seems to reflect prob of sampling close relatives...
+        ibs_1e6blocks_spat_corr=np.corrcoef(ibs_blocks_over_1e6_pair,np.log(spat_dists))[0,1] #better
+        ibs_skew_spat_corr=np.corrcoef(ibs_skew_pair,np.log(spat_dists))[0,1] #good
+        ibs_blocks_spat_corr=np.corrcoef(ibs_blocks_pair,np.log(spat_dists))[0,1] #best
+
+        #summaries of the full distribution
+        ibs_blocks_over_1e6=np.sum(ibs_blocks_over_1e6_pair)
+        ibs_blocks_per_pair=np.mean(ibs_blocks_pair)
+        ibs_flat=np.array([x for y in ibs for x in y])
         ibs_mean=np.mean(ibs_flat)
         ibs_var=np.var(ibs_flat)
         ibs_skew=scipy.stats.skew(ibs_flat)
-        ibs_mean_spat_corr=np.corrcoef([np.mean(x) for x in ibs],spat_dists)[0,1]
-        #ibs_over_1e6=len([x for x in ibs_flat if x>=1e6]) #way too slow
-        ibs_num_blocks_per_pair=len(ibs_flat)/scipy.special.comb(np.shape(haps)[1],2)
-
-        #summaries of pairwise stats as a function of geographic distance
-        gen_sp_corr=np.corrcoef(gen_dist,sp_dist)[0,1]
 
     if(ibs_tracts):
         if os.path.exists(outfile)==False:
-            sfsnames=["sfs_"+str(x)+"," for x in range(np.shape(haps)[1])]
+            sfsnames=["sfs_"+str(x)+" " for x in range(np.shape(haps)[1])]
             sfsnames.append("sfs_"+str(np.shape(haps)[1]))
             out=open(outfile,"w")
-            out.write("label,segsites,pi,thetaW,tajD,het_o,fis,gen_sp_corr,ibs_mean,ibs_var,ibs_skew,ibs_95p,ibs_num_blocks_per_pair,ibs_mean_spat_corr,"+
+            out.write("sigma segsites pi thetaW tajD het_o fis gen_dist_mean gen_dist_var gen_dist_skew gen_sp_corr ibs_mean ibs_var ibs_skew ibs_95p ibs_blocks_per_pair ibs_mean_spat_corr ibs_1e6blocks_spat_corr ibs_skew_spat_corr ibs_blocks_spat_corr"+
             "".join(sfsnames)+"\n")
-        row=[label,segsites,pi,thetaW,tajD,het_o,fis,gen_sp_corr,
-             ibs_mean,ibs_var,ibs_skew,ibs_95p,ibs_num_blocks_per_pair,ibs_mean_spat_corr]
+        row=[label,segsites,pi,thetaW,tajD,het_o,fis,gen_dist_mean,gen_dist_var,gen_dist_skew,gen_sp_corr,
+             ibs_mean,ibs_var,ibs_skew,ibs_blocks_per_pair,ibs_mean_spat_corr,ibs_1e6blocks_spat_corr,ibs_skew_spat_corr,
+             ibs_blocks_spat_corr]
         row=np.append(row,sfs)
         row=" ".join(map(str, row))
     else:
         if os.path.exists(outfile)==False:
-            sfsnames=["sfs_"+str(x)+"," for x in range(np.shape(haps)[1])]
+            sfsnames=["sfs_"+str(x)+" " for x in range(np.shape(haps)[1])]
             sfsnames.append("sfs_"+str(np.shape(haps)[1]))
             out=open(outfile,"w")
-            out.write("label,segsites,pi,thetaW,tajD,het_o,fis,gen_sp_corr,"+"".join(sfsnames)+"\n")
+            out.write("sigma segsites pi thetaW tajD het_o fis gen_dist_mean gen_dist_var gen_dist_skew gen_sp_corr"+"".join(sfsnames)+"\n")
         row=[label,segsites,pi,thetaW,tajD,het_o,fis,gen_sp_corr]
         row=np.append(row,sfs)
         row=" ".join(map(str, row))
@@ -474,6 +575,31 @@ def getSLiMSumStats_directory(haps,positions,labels,locs,outfile,maxlen,ibs_trac
 # o.close()
 
 ###################################################
+#
+# def sample_treeseq(infile,outfile,nSamples,recapitate,recombination_rate,write_to_file,seed=12345):
+#     '''
+#     Sample individuals from a tree sequence then simplify and (optionally)
+#     recapitate the tree with msprime.
+#     '''
+#     if type(infile)==str:
+#         ts=pyslim.load(infile)
+#     else:
+#         ts=infile
+#     if(not seed==0):
+#         np.random.seed(seed)
+#     sample_inds=np.unique([ts.node(j).individual for j in ts.samples()]) #final-generation individuals
+#     subsample=np.random.choice(sample_inds,nSamples,replace=False) #get nSamples random sample inds
+#     subsample_nodes=[ts.individual(x).nodes for x in subsample] #node numbers for sampled individuals
+#     subsample_nodes=[a for b in subsample_nodes for a in b] #flatten the list
+#     subsample_nodes=np.sort(np.array(subsample_nodes)) #note this is needed to preserve individual order relative to locations - should build better individual ID verifications later...
+#     o=ts.simplify(subsample_nodes)
+#     if(recapitate):
+#         ts=ts.recapitate(recombination_rate=recombination_rate)
+#     if(write_to_file):
+#         o.dump(outfile)
+#
+#     return o
+
 ## old pipeline using multiple presampled param values
 # def sample_sim_params(params_to_sample,
 #                       min,

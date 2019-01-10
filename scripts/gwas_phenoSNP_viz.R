@@ -22,9 +22,9 @@ rsnps2$PCcovar <- T
 rsnps2$pheno_snp <- F
 rsnps2$pheno_snp[pheno_snps] <- T
 
-rsnps3 <- rbind(rsnps[,c("BP","P","fdr_cutoff","bonferroni_cutoff","PCcovar","q","pheno_snp")],
-               rsnps2[,c("BP","P","fdr_cutoff","bonferroni_cutoff","PCcovar","q","pheno_snp")])
-rsnps3$minus_log_10_P <- -log(rsnps$P,10)
+rsnps3 <- rbind(rsnps[,c("BP","P","fdr_cutoff","bonferroni_cutoff","PCcovar","q","pheno_snp","BETA")],
+               rsnps2[,c("BP","P","fdr_cutoff","bonferroni_cutoff","PCcovar","q","pheno_snp","BETA")])
+rsnps3$minus_log_10_P <- -log(rsnps3$P,10)
 
 ggplot(data=rsnps3,aes(x=BP,y=minus_log_10_P))+
   facet_wrap(~PCcovar,ncol=1)+
@@ -34,11 +34,5 @@ ggplot(data=rsnps3,aes(x=BP,y=minus_log_10_P))+
 
 #how similar is the p distribution for phenotype vs neutral snps?
 wilcox.test(rsnps$P,rsnps[pheno_snps,]$P)
-
-#n significant hits by correction and true snp status
-ddply(rsnps3,.(PCcovar,pheno_snp),function(e){
-  nrow(subset(e,P<bonferroni_cutoff))/nrow(e)
-})
-
 
 

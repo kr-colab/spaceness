@@ -1,8 +1,8 @@
 #!/bin/bash
-#SBATCH --partition=kern,preempt       ### queue to submit to
+#SBATCH --partition=short,kern,preempt       ### queue to submit to
 #SBATCH --job-name=sumstats    ### job name
-#SBATCH --output=talapas_outs/sumstats.out   ### file in which to store job stdout
-#SBATCH --error=talapas_outs/sumstats.err    ### file in which to store job stderr
+#SBATCH --output=talapas_outs/sumstats_%J.out   ### file in which to store job stdout
+#SBATCH --error=talapas_outs/sumstats_%J.err    ### file in which to store job stderr
 #SBATCH --time=100                ### wall-clock time limit, in minutes
 #SBATCH --mem=32G              ### memory limit
 #SBATCH --nodes=1               ### number of nodes to use

@@ -67,12 +67,12 @@ ts=msp.mutate(ts,args.mu,random_seed=args.seed)
 
 #get haplotypes and locations
 haps=ts.genotype_matrix()
-sample_inds=np.unique([ts.node(j).individual for j in ts.samples()])
+sample_inds=np.unique([ts.node(j).individual for j in ts.samples()]) #add check that nodes corresponding to individuals are sequential
 locs=[[ts.individual(x).location[0],ts.individual(x).location[1]] for x in sample_inds]
 np.savetxt(os.path.join(args.outdir,simname)+"_locs.txt",locs)
 
 #run a PCA
-genotype_counts=allel.HaplotypeArray(haps).to_genotypes(ploidy=2).to_allele_counts()
+genotype_counts=allel.HaplotypeArray(haps).to_genotypes(ploidy=2).to_allele_counts() #add arg for n pc's to keep
 pca=allel.pca(genotype_counts[:,:,0])
 pcfile=open(os.path.join(args.outdir,simname)+".pca","w")
 for i in range(args.nSamples):
@@ -153,10 +153,10 @@ if args.phenotype=="random_snps":
     phenfile.close()
     np.savetxt(os.path.join(args.outdir,simname)+"phenotype_snp_indices.txt",phen_snps)
 
-#one active snp with frequency {0.1,0.2}; each alt allele adds one standard deviation
+#one active snp with frequency {0.1,0.9}; each alt allele adds one standard deviation
 if args.phenotype=="one_snp":
     phen_snp_af=0
-    while (phen_snp_af<0.1 or phen_snp_af>0.2):
+    while (phen_snp_af>0.1 and phen_snp_af<0.9):
         phen_snp=np.random.choice([i for i in range(np.shape(haps)[0])],1)
         phen_snp_af=sum(genotype_counts[phen_snp,:,1][0])/args.nSamples
     phenfile=open(os.path.join(args.outdir,simname)+".phenotypes","w")
