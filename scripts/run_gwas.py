@@ -42,16 +42,18 @@ parser.add_argument('--seed', dest='seed',type=int,
 args=parser.parse_args()
 
 # ## debug
-# args = argparse.Namespace(infile='/Users/cj/spaceness/sims/slimout/spatial/W50/coalesced/sigma_0.6544936332655427_.trees1500000.trees',
+# args = argparse.Namespace(infile='/Users/cj/spaceness/sims/slimout/spatial/W50_run3/sigma_0.5196493297511975_.trees_3918732',
 #                           outdir="/Users/cj/Desktop/",
 #                           plink_path="plink",
 #                           vcftools_path="vcftools",
-#                           nSamples=1000,
+#                           nSamples=10000,
 #                           mu=0.25e-8,
 #                           phenotype="random_snps",
 #                           phenotype_mean=100,
 #                           phenotype_sd=10,
 #                           seed=123)
+#ts=pyslim.load('/Users/cj/Desktop/sigma_0.3130183601576863_.trees2000000.trees')
+#ts=ts.recapitate(recombination_rate=1e-9)
 
 #sample individuals and add mutations
 np.random.seed(args.seed)
@@ -59,20 +61,23 @@ simname=os.path.basename(args.infile)
 ts=sample_treeseq(infile=args.infile,
                   outfile="",
                   nSamples=args.nSamples,
+                  sampling="random",
                   recapitate=False,
                   recombination_rate=1e-8,
                   write_to_file=False,
+                  sampling_locs=[[12.5,12.5],[12.5,37.5],[37.5,37.5],[37.5,12.5]],
+                  plot=False,
                   seed=args.seed)
 ts=msp.mutate(ts,args.mu,random_seed=args.seed)
 
 #get haplotypes and locations
 haps=ts.genotype_matrix()
-sample_inds=np.unique([ts.node(j).individual for j in ts.samples()]) #add check that nodes corresponding to individuals are sequential
+sample_inds=np.unique([ts.node(j).individual for j in ts.samples()]) #add check that nodes corresponding to individuals are sequential for future versions?
 locs=[[ts.individual(x).location[0],ts.individual(x).location[1]] for x in sample_inds]
 np.savetxt(os.path.join(args.outdir,simname)+"_locs.txt",locs)
 
 #run a PCA
-genotype_counts=allel.HaplotypeArray(haps).to_genotypes(ploidy=2).to_allele_counts() #add arg for n pc's to keep
+genotype_counts=allel.HaplotypeArray(haps).to_genotypes(ploidy=2).to_allele_counts() #add arg for n pc's to keep, default is 10
 pca=allel.pca(genotype_counts[:,:,0])
 pcfile=open(os.path.join(args.outdir,simname)+".pca","w")
 for i in range(args.nSamples):
