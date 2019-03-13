@@ -36,11 +36,11 @@
 \RequirePackage[colorlinks=true, allcolors=blue]{hyperref}
 \RequirePackage{lettrine}
 
-\newcommand{\watermarkfont}{\color{white}\normalfont\fontsize{10}{12}\selectfont}
-\newcommand{\headerfont}{\color{white}\normalfont\sffamily\bfseries\fontsize{10}{12}\selectfont}
+\newcommand{\watermarkfont}{\color{color2}\normalfont\fontsize{10}{12}\selectfont}
+\newcommand{\headerfont}{\color{color2}\normalfont\sffamily\bfseries\fontsize{10}{12}\selectfont}
 \newcommand{\titlefont}{\normalfont\sffamily\bfseries\fontsize{21}{23}\selectfont}
 \newcommand{\datesfont}{\normalfont\sffamily\itshape\fontsize{8}{10}\selectfont}
-\renewcommand\UrlFont{\color{color1}\sffamily}
+\renewcommand\UrlFont{\color{color2}\sffamily}
 \newcommand{\absfont}{\normalfont\sffamily\linespread{1.2}\fontsize{10}{12}\selectfont}
 \newcommand{\keywordsfont}{\normalfont\sffamily\linespread{1.2}\fontsize{8}{10}\selectfont}
 \newcommand{\copyrightfont}{\normalfont\sffamily\fontsize{7}{9}\selectfont}
@@ -209,7 +209,7 @@
 \newcommand{\marginmark}{
 \begin{textblock}{2}(200,9.5) 
 \begin{tikzpicture}
-\fill[color=white] (0,0) rectangle (1.2,0.25);
+\fill[color=color2] (0,0) rectangle (1.2,0.25);
 \end{tikzpicture}
 \end{textblock}
 }
