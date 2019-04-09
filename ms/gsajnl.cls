@@ -134,7 +134,7 @@
 \pagestyle{fancy}          % Enables the custom headers/footers
 
 \fancypagestyle{firststyle}{
-   \fancyhead[R]{{\watermarkfont  |} \headerfont \articletypename}
+   \fancyhead[R]{{\watermarkfont  } \headerfont \articletypename}
    % v1.6: Remove volume and month information
 %    \fancyfoot[R]{\footnotesize Genetics, Vol. XXX, XXXX–XXXX \hspace{1em} \monthyeardate\today \hspace{2em} \thepage\ }
    \fancyfoot[R]{\footnotesize \hspace{2em}\thepage}

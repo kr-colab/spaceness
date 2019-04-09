@@ -12,8 +12,9 @@
         \renewcommand{\thefigure}{\arabic{figure}}%
      }
 
-\documentclass[9pt,twocolumn,twoside,lineno]{gsajnl}
+\documentclass[10pt,twoside,lineno]{gsajnl}
 \usepackage{amsmath}
+\linespread{1.5}
 % Use the documentclass option 'lineno' to view line numbers
 
 \articletype{preprint} % article type
@@ -64,7 +65,7 @@ Individuals exist in continuous space, but standard models in population genetic
 
 \maketitle
 \thispagestyle{firststyle}
-\marginmark
+%\marginmark
 \firstpagefootnote
 
 
@@ -90,7 +91,7 @@ Though some aspects of continuous populations are fairly well described by the W
 
 One method for modeling continuous populations is then to assume the existence of a grid of discrete randomly-mating populations connected by migration, which prevents clustering by forcing all regions to be occupied in every generation. Among many other important results drawn from this class of "lattice" or "stepping stone" models, \cite{Rousset1997} showed that the slope of the a linear regression of genetic differentiation ($F_{st}$) against the logarithm of spatial distance is an estimate of neighborhood size. Though good approximations of continuous structure given high dispersal, these models are not truly continuous, force a uniform realized population density across landscapes, and limit investigation of spatial structure below the level of the deme. An alternative method is to model the geographic spread of ancestry backwards in time through a diffusion approximation -- an approach that has recently made significant progress in modeling both dispersal and demographic parameters \citep{Barton2010,Kelleher2014,Ringbauer2017,Ringbauer2018}.
 
-We took a direct approach to the clustering problem of classical forward-time models by incorporating density dependence. By scaling the probability of survival in each timestep to local population density we shift reproductive output towards regions of low-density and prevent populations from clustering. A similar approach was taken previously by \citep{Doebeli2003} who used an individual based model with continuous space and density dependent fitness to study the probability of speciation along continuous environmental gradients. However to our knowledge previous implementations of continuous space models have focused on a small number of genetic loci as the unit of analysis, which limits the ability to investigate the impacts of continuous space on genome-wide genetic variation as is now routinely sampled from real organisms. By simulating chromosome-scale sequence alignments and complete population histories we are able to treat our simulations as real populations and replicate the sampling designs and analyses commonly conducted on real genomic data.
+We took a direct approach to the clustering problem of classical forward-time models by incorporating density dependence into an individual-based model similar to the analytic models developed by Wright and Malécot. By scaling the probability of survival in each timestep to local population density we shift reproductive output towards regions of low-density and prevent populations from clustering. A similar approach was taken previously by \citep{Doebeli2003} who used an individual based model with continuous space and density dependent fitness to study the probability of speciation along continuous environmental gradients. However to our knowledge previous implementations of continuous space models have focused on a small number of genetic loci as the unit of analysis, which limits the ability to investigate the impacts of continuous space on genome-wide genetic variation as is now routinely sampled from real organisms. By simulating chromosome-scale sequence alignments and complete population histories we are able to treat our simulations as real populations and replicate the sampling designs and analyses commonly conducted on real genomic data.
 
 \section{Materials and Methods}
 \label{sec:materials:methods}
@@ -112,31 +113,29 @@ where
 \end{equation} 
 and $G(x)$ is the Gaussian function used to weight distances to other individuals. 
 
-A major challenge in all spatial models is dealing with range edges. When local population density is used to model competition, edge or corner populations can be assigned artificially high fitness values because they lack neighbors within their interaction radius but outside the bounds of the simulation. We approximate a decline in habitat suitability near edges by decreasing the probability of survival proportional to the square root of distance to edges in units of $\sigma$. The final probability of survival for individuals within one $\sigma$ of an edge is 
+A major challenge in all spatial models is dealing with range edges. When local population density is used to model competition, edge or corner populations can be assigned artificially high fitness values because they lack neighbors within their interaction radius but outside the bounds of the simulation. We approximate a decline in habitat suitability near edges by decreasing the probability of survival proportional to the square root of distance to edges in units of $\sigma$. The final probability of survival for individual \textit{i} is then
 
-\begin{multline}
+\begin{equation}
     s_{i}=d_{i} min(1,\sqrt{x_{i}/\sigma})
     min(1,\sqrt{y_{i}/\sigma})\\
     min(1,\sqrt{(x_{max}-x_{i})/\sigma})
     min(1,\sqrt{(y_{max}-y_{i})/\sigma)}
-\end{multline}
+\end{equation}
 
-where $x$ and $y$ are spatial coordinates. 
+where $x$ and $y$ are spatial coordinates. In practice this creates a one $\sigma$ buffer around the edge of the map in which fitness is depressed.
 
-To isolate spatial effects from other components of the model such as overlapping generations, increased variance in reproductive success, and density-dependent fitness, we  also implemented a second version of the SLiM simulation in which mates are selected at random and offspring disperse to a random location on the landscape. For all simulations the full genealogy and recombination history of final-generation individuals were stored as tree sequences \citep{Kelleher2018}. 
+To isolate spatial effects from other components of the model such as overlapping generations, increased variance in reproductive success, and density-dependent fitness, we  also implemented a second version of the SLiM simulation in which mates are selected at random and offspring disperse to a random location on the landscape. We refer to these two models as the "spatial" and "random mating" models. For all simulations the full genealogy and recombination history of final-generation individuals were stored as tree sequences \citep{Kelleher2018}. 
 
 We ran 400 simulations for the spatial and random-mating SLiM models on a square landscape of size 50 with per-unit carrying capacity $K=5$ (census $N \approx 10,000$), average lifetime $L=4$, genome size $1\times10^{8}$, recombination rate $1\times10^{-9}$, and drawing $/sigma$ values from a uniform distribution bounded by 0.2 and 4. To speed up the simulations and limit memory overhead we used a mutation rate of 0 in SLiM and later applied mutations to the coalesced tree sequence with msprime's 'mutate( )' function. Because msprime assumes that timesteps are in units of generations, we divided the per-generation rate of $1\times10^{-8} mut/site/gen$ by the generation time estimated for each value of $\sigma$ (see 'Genealogical Parameters' below) to convert the rate to units of mutations/site/timestep. We then verified that this procedure produced the correct number of mutations by comparing a subset of simulations with SLiM-generated mutations (which are applied only at mating events) with mutations added by msprime. Simulations were run for 1.6 million timesteps (approximately 30N generations), or until all extant individuals shared a common ancestor within the simulation (i.e. the tree sequence had coalesced). 
 
 \subsection{Genealogical Parameters}
-We recorded the census population size and estimated the variance in number of offspring and generation time for all simulations. To estimate generation times we stored the age of all parents for 200 timesteps after a 100 generation burn-in and took the mean. To estimate variance in offspring we tracked the number of offspring for all individuals for 100 timesteps following a 100-timestep burn-in period, subset the resulting table to include only the last timestep recorded for each individual, and calculated the variance across all individuals in timesteps 50-100.
-
-\cjb{Would it be worthwhile to calculate the rate of spread of ancestry as a function of neighborhood size? IE how long until an individual in the middle of the map has ancestors in every region?}
+We recorded the census population size and estimated the variance in number of offspring and generation time for all simulations. To estimate generation times we stored the age of all parents for 200 timesteps after a 100 generation burn-in and took the mean. To estimate variance in offspring we tracked the number of offspring for all individuals for 100 timesteps following a 100-timestep burn-in period, subset the resulting table to include only the last timestep recorded for each individual, and calculated the variance in number of offspring across all individuals in timesteps 50-100.
 
 \subsection{Sampling}
-Our model records the genealogy and sequence variation of the complete population, but in real data genotypes are only observed from a relatively small number of sampled individuals. We modeled three sampling strategies similar to common data collection methods in empirical genetic studies (Figure 1). "Random" sampling selects individuals at random from across the full landscape, "point" sampling selects individuals proportional to their distance from four equally spaced points on the landscape, and "midpoint" sampling selects individuals in proportion to their distance from the middle of the landscape. Downstream analyses were repeated across all sampling strategies. 
+Our model records the genealogy and sequence variation of the complete population, but in real data genotypes are only observed from a relatively small number of sampled individuals. We modeled three sampling strategies similar to common data collection methods in empirical genetic studies (Figure \ref{fig:samplemap}). "Random" sampling selects individuals at random from across the full landscape, "point" sampling selects individuals proportional to their distance from four equally spaced points on the landscape, and "midpoint" sampling selects individuals in proportion to their distance from the middle of the landscape. Downstream analyses were repeated across all sampling strategies. 
 
 \subsection{Summary Statistics}
-We calculated the site frequency spectrum and a set of 18 summary statistics (Supplementary Table X \cjb{working on this}) from 60 diploid individuals sampled from the final generation of each simulation using the python package scikit-allel \citep{Miles2017}. Statistics included common single-population summaries including mean pairwise divergence ($\pi$), inbreeding coefficient ($F_{is}$), and Tajima's D, as well as the classic isolation-by-distance regression of genetic distance ($D_{xy}$) against the logarithm of geographic distances \citep{Rousset1997}, which we summarized as the correlation coefficient between $log10(spatial distance)$ and the proportion of identical base pairs among individuals. 
+We calculated the site frequency spectrum and a set of 18 summary statistics (Supplementary Table \cjb{working on this}) from 60 diploid individuals sampled from the final generation of each simulation using the python package scikit-allel \citep{Miles2017}. Statistics included common single-population summaries including mean pairwise divergence ($\pi$), inbreeding coefficient ($F_{is}$), and Tajima's D, as well as the classic isolation-by-distance regression of genetic distance ($D_{xy}$) against the logarithm of geographic distances \citep{Rousset1997}, which we summarized as the correlation coefficient between $log10(spatial distance)$ and the proportion of identical base pairs among individuals. 
 
 Following recent studies that showed strong signals for dispersal and demography in the distribution of shared haplotype block lengths \citep{Ringbauer2017,Baharian2016}, we also calculated various summaries of the distribution of pairwise identical-by-state (IBS) block lengths among samples. The full distribution of lengths of IBS tracts for each pair of individuals was first calculated with a custom python function. We then calculated the first three moments of this distribution (mean, variance, and skew) and the number of blocks over $1e6$ base pairs both for each pair of individuals and for the full distribution across all pairwise comparisons. 
 
@@ -161,60 +160,35 @@ We ran linear-model GWAS both with and without the first 10 principal components
 \section{Results}
 
 \subsection{Genealogical Parameters and Run Times}
-Census population size, generation time, and the variance in number of offspring all vary systematically with $\sigma$. Census sizes range from $\approx 14,000$ at low $\sigma$ in the random mating model to $\approx 10,000$ for both models when neighborhood sizes approach 1,000. Generation times vary between 5.2 and 4.9 timesteps per generation in the spatial model, and variance in offspring varies from 2.2 to 2.6. 
+Census population size, generation time, and the variance in number of offspring all vary systematically with $\sigma$ (Figure \ref{fig:genparams}). Census sizes range from $\approx 14,000$ at low $\sigma$ in the random mating model to $\approx 10,000$ for both models when neighborhood sizes approach 1,000. Generation times vary between 5.2 and 4.9 timesteps per generation in the spatial model, and variance in offspring varies from 2.2 to 2.6. 
 
 %The fitness scaling procedure we use to avoid high fitness at range edges shrinks the suitable area by one $\sigma$ on all sides and likely explains part of the variation in census size, but scaling in offspring variance and the U-shaped distribution of census size in spatial models suggests additional processes at work. For spatial models census size initially rises as neighborhood sizes scale from 2 - 10, which seems to reflect an Allee effect \citep{Allee1949} in which some individuals are unable to find mates when the mate selection radius is very small.  
 
 \subsection{Impacts of Sampling on Summary Statistics}
-For spatial models the mean and variance of all summary statistics other than those involving the mean of the IBS block size distribution was significantly different across sampling strategies (Supplementary Table 1). Means were not significantly different across sampling strategies for any statistic under the random mating model. Only spatial correlation coefficients had significantly different variance under the random mating model, though in all cases the mean correlation was near zero.
+For spatial models the mean and variance of all summary statistics other than those involving the mean of the IBS block size distribution was significantly different across sampling strategies (Table \ref{table:sampling}). Means were not significantly different across sampling strategies for any statistic under the random mating model. Only spatial correlation coefficients had significantly different variance under the random mating model, though in all cases the mean correlation was near zero.
 
 \subsubsection{Diversity and Site Frequency Spectra}
-Mean within-population genetic distance ($\pi$), the inbreeding coefficient ($F_{is}$) and Tajima's $D$ are inflated at low dispersal distances (Figure 2). $\pi$ and $F_{is}$ approach the random mating model at neighborhood sizes of roughly 100. Tajima's D varies relatively more across sampling strategies; approaching random mating at $NS\approx65$ with random sampling and $NS>1000$ with midpoint sampling.
+Mean within-population genetic distance ($\pi$), the inbreeding coefficient ($F_{is}$) and Tajima's $D$ are inflated at low dispersal distances (Figure \ref{fig:sumstats}, \ref{fig:allsumstats}). $\pi$ and $F_{is}$ approach the random mating model at neighborhood sizes of roughly 100. Tajima's D varies relatively more across sampling strategies; approaching random mating at $NS\approx65$ with random sampling and $NS>1000$ with midpoint sampling.
 
-The inflation in $F_{is}$ appears to be caused by a deficit of heterozygous individuals in low-dispersal simulations -- a continuous-space version of the Wahlund effect \citep{Wahlund1928}. However under midpoint sampling observed heterozygosity is inflated over the random mating expectation, which we confirmed is caused by a higher proportion of heterozygotes in the middle of the landscape (Supplementary Figure S2). \cite{Shirk2014} observed a similar excess of heterozygosity in the middle of the landscape when simulating under a lattice model. 
+The inflation in $F_{is}$ appears to be caused by a deficit of heterozygous individuals in low-dispersal simulations -- a continuous-space version of the Wahlund effect \citep{Wahlund1928}. However under midpoint sampling observed heterozygosity is inflated over the random mating expectation, which we confirmed is caused by a higher proportion of heterozygotes in the middle of the landscape (Figure S\ref{fig:hetmap}). \cite{Shirk2014} observed a similar excess of heterozygosity in the middle of the landscape when simulating under a lattice model. 
 
-The site frequency spectrum showed minimal differences across sampling strategies for random mating models (Supplementary Figure S1). Spatial models had fewer low frequency alleles and more mid-frequency alleles than random mating models (Figure 2). This effect is relatively weak when sampling is random and strongest for midpoint sampling. 
+The site frequency spectrum showed minimal differences across sampling strategies for random mating models (Supplementary Figure \ref{fig:allsfs}). Spatial models had fewer low frequency alleles and more mid-frequency alleles than random mating models (Figure \ref{fig:sumstats}). This effect is relatively weak when sampling is random and strongest for midpoint sampling. 
 
 \subsubsection{Haplotype Block Lengths}
-Trends in pairwise haplotype block sharing parallel those in SNP-based diversity estimates (Supplementary Figure S1). At low dispersal the distribution of IBS block lengths in a set of samples is shifted towards smaller values -- resulting in lower means and fewer long IBS blocks. The variance and skew of the full IBS tract distribution vary across sampling strategies, but are similar to random-mating models under random sampling. 
+Trends in pairwise haplotype block sharing parallel those in SNP-based diversity estimates (Figure \ref{fig:sumstats}, Supplementary Figure \ref{fig:allsumstats}). At low dispersal the distribution of IBS block lengths in a set of samples is shifted towards smaller values -- resulting in lower means and fewer long IBS blocks. The variance and skew of the full IBS tract distribution vary across sampling strategies, but are similar to random-mating models under random sampling. 
 
 \subsubsection{Spatial Correlations}
 The correlation coefficient between spatial distance and pairwise genetic differentiation ($D_{xy}$) is positive and declines as dispersal increases, as expected under the theory developed by \citep{Rousset1997} and others. As in \citep{Ringbauer2017} and \citep{Baharian2016} we found that the pairwise distribution of haplotype block lengths is more strongly left-skewed under limited dispersal. This is reflected in negative correlation coefficients between spatial distance and the mean, variance, skew, and count of long blocks from the pairwise distribution of identical-by-state block lengths. Of these summaries the mean of the IBS tract length distribution has very weak sigmal for $\sigma$, likely because it is heavily influenced by the small number of very long IBS tracts. Though the count of long IBS blocks and the skew of the full distribution are low and similar to random mating when taken across all samples, the correlation coefficients between spatial distance and the skew or count of long IBS blocks on a pairwise basis varies predictably by neighborhood size. All spatial correlations approach the random mating model near neighborhood sizes of 1000 under either point or random sampling. Midpoint sampling causes weaker correlations in all sampling schemes. 
 
 \subsection{Demographic Modeling}
-Demographic models from Stairwayplot tended to infer patterns of ancient population increases and recent declines when neighborhood sizes were below 20 under all sampling strategies (Figure 4). Inflated past population sizes were common in both point and random sampling, demonstrating that the relatively minor shift in the site frequency spectrum observed with random sampling is enough to alter demographic estimates. Inference of severe population bottlenecks was also common at neighborhood sizes under 100 for midpoint and point sampling strategies. Above neighborhood sizes of 100 the average inferred demography across all simulations was relatively accurate, with minor fluctuations slightly above the expected variance $Ne$. However individual model fits were highly variable and often inferred five-fold or greater population fluctuations even in high-dispersal simulations.  
+Demographic models from Stairwayplot tended to infer patterns of ancient population increases and recent declines when neighborhood sizes were below 20 under all sampling strategies (Figure~\ref{fig:demography}). Inflated past population sizes were common in both point and random sampling, demonstrating that the relatively minor shift in the site frequency spectrum observed with random sampling is enough to alter demographic estimates. Inference of severe population bottlenecks was also common at neighborhood sizes under 100 for midpoint and point sampling strategies. Above neighborhood sizes of 100 the average inferred demography across all simulations was relatively accurate, with minor fluctuations slightly above the expected variance $Ne$. However individual model fits were highly variable and often inferred five-fold or greater population fluctuations even in high-dispersal simulations.  
 
-Standard deviations were significantly greater in all sampling strategies for neighborhood sizes under 20 and for midpoint sampling with neighborhood sizes 20-100, but all other sets performed similarly to the coalescent model. In summary, spatial mate choice and dispersal causes strong bias in SFS-based demographic estimates for neighborhood sizes below 20 or when sampling is clustered, but otherwise any biases are within the range of variability regularly inferred by Stairwayplot. In empirical data, it may be useful to run 10 or more replicate analyses on the same data and take a rolling average, which appears relatively robust for our simulations.   
-
-% latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Mar 22 13:50:47 2019
-\begin{table}[ht]
-\centering
-\caption{\bf T-test results comparing standard deviations of inferred $N_{e}$ between spatial and coalescent models, by neighborhood size (NS) and sampling strategy. $p$ is the probability that spatial models have higher standard deviations.}
-\begin{tabular}{rllrrrrr}
-  \hline
-sampling & NS range & t & df & $p$ \\ 
-  \hline
-random & 2-20 & 4.2572 & 41.6166 & 0.0001 \\ 
-random & 20-100 & -1.8473 & 171.9905 & 0.9668 \\ 
-random & 100-500 & -2.1297 & 164.3864  & 0.9827 \\ 
-random & 500-1000 & -3.9681 & 147.0497 & 0.9999 \\ 
-point & 2-20 & 7.0802 & 44.3615  & 0.0000 \\ 
-point & 20-100 & -0.2038 & 169.3799 & 0.5806 \\ 
-point & 100-500 & -2.4945 & 152.5000 & 0.9932 \\ 
-point & 500-1000 & -3.8329 & 162.6443& 0.9999 \\ 
-midpoint & 2-20 & 5.9253 & 59.5462 & 0.0000 \\ 
-midpoint & 20-100 & 3.8940 & 171.7005  & 0.0001 \\ 
-midpoint & 100-500 & -2.2764 & 139.5221 & 0.9878 \\ 
-midpoint & 500-1000 & -3.2223 & 165.0792 & 0.9992 \\ 
-   \hline
-\end{tabular}
-\end{table}
+Standard deviations were significantly greater in all sampling strategies for neighborhood sizes under 20 and for midpoint sampling with neighborhood sizes 20-100, but all other sets performed similarly to the coalescent model (Table \ref{table:demography}). In summary, spatial mate choice and dispersal causes strong bias in SFS-based demographic estimates for neighborhood sizes below 20 or when sampling is clustered, but otherwise any biases are within the range of variability regularly inferred by Stairwayplot. In empirical data, it may be useful to run 10 or more replicate analyses on the same data and take a rolling average, which appears relatively robust for our simulations.   
 
 \subsection{GWAS}
-Spatially correlated phenotypes in populations with low neighborhood size cause uncorrected linear-regression GWAS to report significant associations at most genome-wide SNPs (Figure 1). When PCA positions are included as covariates the vast majority of SNPs no longer pass a 5\% FDR significance threshold, but up to 1000 genome-wide significant hits (out of an average of 132,000 SNPs) were observed even in relatively high dispersal simulations for the corner and clinal distributions. Corner and patchy phenotype distributions produced the largest number of significant SNPs, and patchy phenotypes in particular showed little difference in the count of significant SNPs after PC correction.
+Spatially correlated phenotypes in populations with low neighborhood size cause uncorrected linear-regression GWAS to report significant associations at most genome-wide SNPs \ref{fig:gwas}. When PCA positions are included as covariates the vast majority of SNPs no longer pass a 5\% FDR significance threshold, but up to 1000 genome-wide significant hits (out of an average of 132,000 SNPs) were observed even in relatively high dispersal simulations for the corner and clinal distributions. Corner and patchy phenotype distributions produced the largest number of significant SNPs, and patchy phenotypes in particular showed little difference in the count of significant SNPs after PC correction.
 
-For clinal phenotypes PCA covariates perform well in correcting for population stratification at low dispersal distances but the correction breaks down above neighborhood sizes of $\approx250$. This pattern appears to reflect a loss of descriptive power in the first ten axes of the PCA, which describe less of the total variation in the data as neighborhood size increases (Figure 4). 
+For clinal phenotypes PCA covariates perform well in correcting for population stratification at low dispersal distances but the correction breaks down above neighborhood sizes of $\approx250$. This pattern appears to reflect a loss of descriptive power in the first ten axes of the PCA, which describe less of the total variation in the data as neighborhood size increases (see Figure 4B-C). 
 
 Quantile-quantile plots show that $p$ value deflation is most pronounced for the corner phenotype distribution and is particularly strong for simulations with neighborhood sizes of less than 20. Quantile-quantile plots of clinal and nonspatial phenotypes also show evidence of $p$ value $inflation$ (i.e. points below the 1:1 line), which is observed only when PCA covariates are included in the analysis (see Supplementary Figure X for plots of uncorrected GWAS results). 
 
@@ -239,9 +213,6 @@ Quantile-quantile plots show that $p$ value deflation is most pronounced for the
 - recs: run a gwas for sample x & y coordinates with whatever correction you're using. If there are significant values you're not correcting enough.
 - for clinal traits, include x and y as covariates. 
 
-% As in \citep{Mathieson2012} we observed that the deflation in $p$ values after PCA correction is largest for spatially discrete phenotypes, and is weaker for phenotypes that are clinal over space. When dispersal is low and isolation by distance is strong this effect is pronounced enough to create statistically significant associations at nearly every variable site in the genome unless statistical corrections for population structure are implemented. For strongly structure populations and phenotypes that vary systematically over space, the estimated effect sizes and biological interpretations of linear-regression GWAS are therefore controlled primarily by the method of stratification control rather than underlying causal associations between phenotype and genotype. 
-
-%This is unlikely to be a significant issue for studies seeking to identify a small number of causal alleles as long as there is variation within populations at those sites. However analyses of putatively polygenic phenotypes may be badly affected both by deflation of $p$ values from uncontrolled stratification and by inflation of $p$ values caused by the use of PCA covariates. Though many studies now employ mixed-model methods \citep{Kang2008,Yu2006,Kang2010} which are likely more robust to stratification (though not immune, see \citep{Berg2018}), using principal components regression as the method of stratification control is still common in analyses of human genetics [quality time w nature genetics]. 
 
 \section{Data Availability}
 
@@ -250,39 +221,39 @@ Quantile-quantile plots show that $p$ value deflation is most pronounced for the
 \newpage
 
 \begin{figure}[htbp]
-\includegraphics{sampling_maps.pdf}
+\includegraphics{figures/sampling_maps.pdf}
 \caption{Example sampling maps for 60 individuals on a 50x50 landscape under midpoint, point, and random sampling strategies.}
-\label{fig:spectrum}
+\label{fig:samplemap}
 \end{figure}
 
 \begin{figure}[htbp]
-\includegraphics{pop_params.pdf}
+\includegraphics{figures/pop_params.pdf}
 \caption{Genealogical parameters from spatial and random mating SLiM simulations, by neighborhood size.}
-\label{fig:spectrum}
+\label{fig:genparams}
 \end{figure}
 
 
 \begin{figure*}[p]
 \centering
-\includegraphics[width=\textwidth]{sfs_w_sumstats.pdf}
+\includegraphics[width=\textwidth]{figures/sfs_w_sumstats.pdf}
 \caption{A: Site frequency spectra under midpoint, point, and random sampling schemes. Lines are loess curves over the site frequency spectrum from each simulation with colors scaled to neighborhood size. Random mating models showed no differences by sampling scheme -- see supplementary figure S1. Spatial models have fewer low-frequency alleles and more mid-frequency alleles when neighborhood sizes are small, and this effect is stronger when sampling is more concentrated. B: Summary statistics under each sampling strategy, by neighborhood size.}
-\label{fig:spectrum}
+\label{fig:sumstats}
 \end{figure*}
 
 \afterpage{\clearpage}
 \begin{figure*}[p]
 \centering
-\includegraphics[width=\textwidth]{stairwayplot_facet_rollmean.pdf}
+\includegraphics[width=\textwidth]{figures/stairwayplot_facet_rollmean.pdf}
 \caption{Inferred demographic histories for spatial SLiM simulations from Stairwayplot, by sampling scheme and neighborhood size (NS) range. The thick line is a rolling mean and thin lines are individual model fits. Dashed horizontal lines are the average $N_{e}$ across random-mating SLiM models estimated from $\pi$.}
-\label{fig:spectrum}
+\label{fig:demography}
 \end{figure*}
 
 \afterpage{\clearpage}
 \begin{figure*}[p]
 \centering
-\includegraphics[width=\textwidth]{gwas_summary_nsig_qqplots_loglog.pdf}
+\includegraphics[width=\textwidth]{figures/gwas_summary_nsig_qqplots_loglog.pdf}
 \caption{Impacts of spatially correlated phenotypes and isolation by distance on linear regression GWAS.  A: example phenotype distributions and sampling maps, with colors scaled to phenotype values. B: proportion of total variance explained by the first 10 PC axes, by neighborhood size. C: numbers of significant SNPs after FDR correction for linear-model GWAS conducted with (top) or without (bottom) PC covariates. D: Quantile-quantile plots of observed $p$ values relative to those expected from a uniform distribution. The dotted lines show the 95\% confidence region assuming binomial sampling and an alpha level of 0.05. Points above the 1:1 line reflect deflated $p$ values.}
-\label{fig:spectrum}
+\label{fig:gwas}
 \end{figure*}
 
 \afterpage{\clearpage}
@@ -295,26 +266,26 @@ Quantile-quantile plots show that $p$ value deflation is most pronounced for the
 \afterpage{\clearpage}
 \begin{figure*}[p]
 \centering
-\includegraphics[width=\textwidth]{sumstats_by_neighbors_allstats.pdf}
+\includegraphics[width=\textwidth]{figures/sumstats_by_neighbors_allstats.pdf}
 \caption{Change in summary statistics by neighborhood size and sampling scheme calculated from simulated sequence data of 60 individuals.}
-\label{fig:spectrum} 
+\label{fig:allsumstats} 
 \end{figure*}
 
 
 \afterpage{\clearpage}
 \begin{figure*}[p]
 \centering
-\includegraphics[width=\textwidth]{fig_S1_sfs_grid_model_by_sampling.pdf}
+\includegraphics[width=\textwidth]{figures/fig_S1_sfs_grid_model_by_sampling.pdf}
 \caption{Site frequency spectra for random mating and spatial SLiM models under all sampling schemes.}
-\label{fig:spectrum}
+\label{fig:allsfs}
 \end{figure*}
 
 \afterpage{\clearpage}
 \begin{figure*}[p]
 \centering
-\includegraphics[]{het_z_by_ind.pdf}
+\includegraphics[]{figures/het_z_by_ind.pdf}
 \caption{Normalized mean observed heterozygosity by location across 200 randomly-sampled individuals}
-\label{fig:spectrum}
+\label{fig:hetmap}
 \end{figure*}
 
 %\afterpage{\clearpage}
@@ -374,10 +345,37 @@ ibs\_blocks\_spat\_corr & spatial & \textbf{0.000000} & \textbf{0.000000} \\
 \hline
 \end{tabularx}
 \end{tableminipage}
-
+\label{table:sampling}
 \end{table*}
 
-\endsupplement
+% latex table generated in R 3.5.1 by xtable 1.8-3 package
+% Fri Mar 22 13:50:47 2019
+\begin{table}[ht]
+\centering
+\caption{\bf T-test results comparing standard deviations of inferred $N_{e}$ between spatial and coalescent models, by neighborhood size (NS) and sampling strategy. $p$ is the probability that spatial models have higher standard deviations.}
+\begin{tabular}{rllrrrrr}
+  \hline
+sampling & NS range & t & df & $p$ \\ 
+  \hline
+random & 2-20 & 4.2572 & 41.6166 & 0.0001 \\ 
+random & 20-100 & -1.8473 & 171.9905 & 0.9668 \\ 
+random & 100-500 & -2.1297 & 164.3864  & 0.9827 \\ 
+random & 500-1000 & -3.9681 & 147.0497 & 0.9999 \\ 
+point & 2-20 & 7.0802 & 44.3615  & 0.0000 \\ 
+point & 20-100 & -0.2038 & 169.3799 & 0.5806 \\ 
+point & 100-500 & -2.4945 & 152.5000 & 0.9932 \\ 
+point & 500-1000 & -3.8329 & 162.6443& 0.9999 \\ 
+midpoint & 2-20 & 5.9253 & 59.5462 & 0.0000 \\ 
+midpoint & 20-100 & 3.8940 & 171.7005  & 0.0001 \\ 
+midpoint & 100-500 & -2.2764 & 139.5221 & 0.9878 \\ 
+midpoint & 500-1000 & -3.2223 & 165.0792 & 0.9992 \\ 
+   \hline
+\end{tabular}
+\label{table:demography}
+\end{table}
+
+
+\stopsupplement
 
 
 
