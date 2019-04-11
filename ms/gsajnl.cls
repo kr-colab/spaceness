@@ -83,9 +83,9 @@
 \RequirePackage{algorithm}
 \RequirePackage[noend]{algpseudocode}
 \RequirePackage{changepage}
-\RequirePackage[left=48pt,%
-                right=42pt,%
-                top=48pt,%
+\RequirePackage[left=60pt,%
+                right=60pt,%
+                top=60pt,%
                 bottom=60pt,%
                 headheight=15pt,%
                 headsep=10pt,%
