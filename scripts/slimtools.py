@@ -140,7 +140,7 @@ def sample_treeseq(infile,
     recombination_rate - float. Recombination rate to use for recapitation, in recombination events per base per generation.
     write_to_file - boolean.
     outfile - string. File path for output.
-    sampling_locs - list. locations to draw samples from when using sampling='point', as [[x1,y1],[x2,y2]]
+    sampling_locs - list. locations to draw samples from when using sampling='point', as [[x1,y1],[x2,y2],...]
     plot - boolean. plot location of samples?
     seed - random seed for all numpy operations. 0 uses the system default.
     '''
@@ -176,7 +176,7 @@ def sample_treeseq(infile,
         inds=np.array([x.id for x in ts.individuals()])
         middle=[np.mean(locs[:,0]),np.mean(locs[:,1])]
         dists_to_middle=[scipy.spatial.distance.euclidean(locs[x],middle) for x in range(len(locs))]
-        weights=[1/x**4 for x in dists_to_middle]
+        weights=[1/x**2 for x in dists_to_middle]
         weights=weights/np.sum(weights)
         subsample=np.random.choice(inds,nSamples,p=weights,replace=False)
         #closest_inds=sorted(range(len(dists_to_middle)), key=lambda e: dists_to_middle[e],reverse=True)[-nSamples*2:] #this works for sampling half the closest nSamples individuals
@@ -338,7 +338,7 @@ def getSLiMSumStats(haps,positions,label,locs,outfile,maxlen,ibs_tracts=True,ver
     thetaW=allel.watterson_theta(pos=positions,ac=allele_counts,start=1,stop=maxlen)
     het_o=np.mean(allel.heterozygosity_observed(genotypes))
     fis=np.mean(allel.inbreeding_coefficient(genotypes))
-    sfs=allel.sfs(allele_counts[:,1]) #last entry seems to be the highest *non-zero* SFS entry (wtf?) so adding zeros
+    sfs=allel.sfs(allele_counts[:,1])
     sfs=np.append(sfs,[np.repeat(0,np.shape(haps)[1]-len(sfs)+1)])
     #Isolation by distance
     if(verbose):
@@ -348,8 +348,8 @@ def getSLiMSumStats(haps,positions,label,locs,outfile,maxlen,ibs_tracts=True,ver
                                 start=0,
                                 stop=maxlen)
     sp_dist=np.array(scipy.spatial.distance.pdist(locs))
-    #sp_dist=[x+0.1 for x in sp_dist if x==0] #add 0.1 to avoid 0 distances for intra-population comparisons when taking logs (? better way to deal with this ?)
-    gen_sp_corr=np.corrcoef(gen_dist,np.log(sp_dist))[0,1]
+    gen_sp_corr=np.corrcoef(gen_dist[sp_dist>0],np.log(sp_dist[sp_dist>0]))[0,1]
+    print(gen_sp_corr)
     gen_dist_skew=scipy.stats.skew(gen_dist)
     gen_dist_var=np.var(gen_dist)
     gen_dist_mean=np.mean(gen_dist)

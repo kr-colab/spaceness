@@ -1,6 +1,5 @@
 from slimtools import *
 from numpy.polynomial.polynomial import polyfit
-ts=pyslim.load("/Users/cj/spaceness/sims/slimout/spatial/W35/sigma_0.3003441596629088_.trees")
 maxlen=1e8
 ts=sample_treeseq(infile="/Users/cj/spaceness/sims/slimout/spatial/W35/sigma_1.065973462406566_.trees",
                outfile="",

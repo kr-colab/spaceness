@@ -1,138 +1,188 @@
 setwd("~/spaceness/")
-library(plyr);library(ggplot2);library(magrittr);library(data.table);library(wesanderson)
-
-theme_set(theme_classic()+theme(axis.text=element_text(size=7),
-                                axis.title=element_text(size=7),
-                                strip.text = element_text(size=7),
-                                title = element_text(size=8,hjust=0.5),
-                                legend.title = element_text(size=7),
-                                legend.text = element_text(size=7),
+library(plyr);library(ggplot2);library(magrittr);library(data.table);library(car);library(wesanderson)
+library(cowplot)
+source("~/R/colordict.R")
+pal <- grDevices::colorRampPalette(color=c("steelblue4","skyblue","lightgoldenrod1","orangered","red4"),
+                                   bias=1,space="rgb",interpolate="linear")
+theme_set(theme_classic()+theme(axis.text=element_text(size=8),
+                                axis.title=element_text(size=8),
+                                strip.text = element_text(size=8),
+                                title = element_text(size=9,hjust=0.5),
+                                legend.title = element_text(size=8),
+                                legend.text = element_text(size=8),
                                 strip.background = element_blank()))
 
-ss_m <- fread("sumstats/ss_spatial_midpoint_W35.txt",data.table=F)
-rm_m <- fread("sumstats/ss_randmates_midpoint_W35.txt",data.table=F)
-ss_r <- fread("sumstats/ss_spatial_W35.txt",data.table=F)
-rm_r <- fread("sumstats/ss_randmates_W35.txt",data.table=F)
-ss_p <- fread("sumstats/ss_spatial_point_W35.txt",data.table=F)
-rm_p <- fread("sumstats/ss_randmates_point_W35.txt",data.table=F)
+ss_m <- fread("sumstats/ss_spatial_midpoint_W50.txt",data.table=F)
+ss_r <- fread("sumstats/ss_spatial_random_W50.txt",data.table=F)
+ss_p <- fread("sumstats/ss_spatial_point_W50.txt",data.table=F)
+rm_r <- fread("sumstats/ss_randmates_random_W50.txt",data.table=F)
+rm_m <- fread("sumstats/ss_randmates_midpoint_W50.txt",data.table=F)
+rm_p <- fread("sumstats/ss_randmates_point_W50.txt",data.table=F)
 ss_m$model <- "spatial"
 ss_m$sampling <- "midpoint"
-#rm_m$model <- "random mating"
-#rm_m$sampling <- "midpoint"
 ss_r$model <- "spatial"
 ss_r$sampling <- "random"
 rm_r$model <- "random mating"
-rm_r$sampling <- ""
+rm_r$sampling <- "random"
+rm_m$model <- "random mating"
+rm_m$sampling <- "midpoint"
+rm_p$model <- "random mating"
+rm_p$sampling <- "point"
 ss_p$model <- "spatial"
 ss_p$sampling <- "point"
-#rm_p$model <- "random mating"
-#rm_p$sampling <- "point"
-ss <- rbind(ss_m,ss_r,ss_p,rm_r)
-sfs <- ss[,grepl("sfs",colnames(ss))]
-ss <- ss[,!grepl("sfs",colnames(ss))]
-
-#ss <- subset(ss,sigma != 0)
-popsize <- fread("sumstats/ss_spatial_W35.txt.popsizes")
-rmpopsize <- fread("sumstats/ss_randmates_W35.txt.popsizes")
+ss <- rbind(ss_m,ss_r,ss_p,rm_r,rm_m,rm_p)
+popsize <- fread("sumstats/ss_spatial_random_W50.txt.popsizes")
+rmpopsize <- fread("sumstats/ss_randmates_random_W50.txt.popsizes")
 popsize <- rbind(popsize,rmpopsize)
 names(popsize) <- c("sigma","census_n")
 ss <- merge(ss,popsize,by="sigma",all.x=T,all.y=F)
-
-############ mixed summary stat blocks ###########
-ss$census_n_2 <- ss$census_n
-ss$theta_4Nmu <- 4*ss$census_n*1e-8
-ss$mean_neighbors <- ((ss$sigma^2*pi)/35^2)*ss$census_n
-ss$max_neighbors <- (((ss$sigma*3)^2*pi)/35^2)*ss$census_n
+sfs <- ss[,grepl("sfs",colnames(ss))] #split off sfs for separate analysis
+ss <- ss[,!grepl("sfs",colnames(ss))]
+ss$neighborhood_size <- 4*pi*ss$sigma^2*5
 ss$col <- paste(ss$model,ss$sampling)
-mss <- melt(ss,id.vars=c("sigma","model","sampling","census_n_2","mean_neighbors","max_neighbors","col"))
-mss <- subset(mss,sigma > 0.25 & sigma < 3)
 
-p <- ggplot(data=mss,aes(x=sigma,y=value,col=col,fill=col))+
-  facet_wrap(~variable,scales="free")+
-  theme(legend.position = c(0.8,0.08),legend.background = element_blank())+
-  xlab(expression(sigma))+ylab("")+
-  scale_color_manual(values=c("steelblue","darkgoldenrod1","darkorange","firebrick4"),name="Model")+
-  scale_fill_manual(values=c("steelblue","darkgoldenrod1","darkorange","firebrick4"))+
+#test for differences by sampling in spatial and random mating summary stat distributions
+mss <- melt(ss,id.vars=c("sigma","model","sampling","neighborhood_size","col"))
+mss <- subset(mss,variable!="census_n")
+sampling_diffs <- ddply(mss,.(variable,model),function(e){
+  meantest <- summary(aov(value~sampling,data=e))[[1]][,5][1]
+  vartest <- leveneTest(value~sampling,data=e)[[3]][1] 
+  return(c(round(meantest,5),round(vartest,5)))
+}) #40 warnings for forcing sampling to factor, which is fine
+sampling_diffs <- arrange(sampling_diffs,model,variable)
+colnames(sampling_diffs) <- c("variable","model","p(different\nmeans)","p(different\nvariance)")
+xtable(sampling_diffs,digits=6)
+
+#drop alternate sampling schemes for random mating simulations
+ss <- rbind(ss_m,ss_r,ss_p,rm_r)
+popsize <- fread("sumstats/ss_spatial_random_W50.txt.popsizes")
+rmpopsize <- fread("sumstats/ss_randmates_random_W50.txt.popsizes")
+popsize <- rbind(popsize,rmpopsize)
+names(popsize) <- c("sigma","census_n")
+ss <- merge(ss,popsize,by="sigma",all.x=T,all.y=F)
+sfs <- ss[,grepl("sfs",colnames(ss))] 
+ss <- ss[,!grepl("sfs",colnames(ss))]
+ss$neighborhood_size <- 4*pi*ss$sigma^2*5
+ss$col <- paste0(ss$model,"\n",ss$sampling," sampling")
+
+############ plot all summary stats ###########
+mss <- melt(ss,id.vars=c("sigma","model","sampling","neighborhood_size","col"))
+mss <- subset(mss,variable!="gen_dist_mean")
+mss$variable <- factor(mss$variable,levels=c("segsites","pi","thetaW","tajD",
+                                             "het_o","fis","gen_dist_var","gen_dist_skew",
+                                             "ibs_mean","ibs_var","ibs_skew",
+                                             "ibs_blocks_per_pair","ibs_blocks_over_1e6_per_pair",
+                                             "gen_sp_corr","ibs_mean_spat_corr","ibs_blocks_spat_corr",
+                                             "ibs_1e6blocks_spat_corr","ibs_skew_spat_corr",
+                                             "census_n"))
+mss$variable <- mapvalues(mss$variable,from=c("segsites","pi","thetaW","tajD",
+                                              "het_o","fis","gen_dist_var","gen_dist_skew",
+                                              "ibs_mean","ibs_var","ibs_skew",
+                                              "ibs_blocks_per_pair","ibs_blocks_over_1e6_per_pair",
+                                              "gen_sp_corr","ibs_mean_spat_corr","ibs_blocks_spat_corr",
+                                              "ibs_1e6blocks_spat_corr","ibs_skew_spat_corr",
+                                              "census_n"),
+                          to=c("segregating\nsites","pi","Watterson's\ntheta","Tajima's\nD",
+                             "observed\nheterozygosity","Fis","var(dxy)","skew(dxy)",
+                             "mean(IBS)","var(IBS)","skew(IBS)","nIBS","mean(IBS>1e6)",
+                             "corr(dxy,dist)","corr(mean(IBS),dist)","corr(nIBS,dist)",
+                             "corr(IBS>1e6,dist)","corr(skew(IBS),dist)",
+                             "census N"))
+
+mss <- subset(mss,sigma<=4)
+p <- ggplot(data=mss,aes(x=neighborhood_size,y=value,col=col,fill=col))+
+  facet_wrap(~variable,scales="free",ncol=4)+
+  theme(legend.position = "bottom",legend.direction = "horizontal")+
+  xlab("Neighborhood Size")+ylab("")+
+  scale_color_manual(values=pal(4),name="Model")+
   scale_y_continuous(labels = function(x) format(x, scientific = TRUE))+
-  geom_point(shape=21,stroke=0.25,fill=NA,alpha=0.5,size=.75)+
-  geom_smooth(lwd=0.5,fill=NA,span=0.35)
+  scale_x_log10()+
+  geom_point(shape=21,stroke=0.4,fill=NA,size=.9)+
+  geom_smooth(lwd=0.3,fill=NA,span=0.2)
+p <- p+guides(color=guide_legend(keyheight = 0.15,nrow = 1,title.position = "top",
+                                 default.unit = "in",override.aes = list(size=5,shape=16)))
 
-ggplot(data=mss,aes(x=mean_neighbors,y=value,col=col,fill=col))+
-  facet_wrap(~variable,scales="free")+
-  xlab("Mean Neighborhood Size")+ylab("")+
-  scale_color_manual(values=c("steelblue1","steelblue","midnightblue","darkgoldenrod1","darkorange","darkorange3"))+
-  scale_fill_manual(values=c("steelblue1","steelblue","midnightblue","darkgoldenrod1","darkorange","darkorange3"))+
-  geom_point(shape=21,stroke=0.25,fill=NA,alpha=0.5,size=1)+
-  geom_smooth(lwd=0.75,fill=NA,span=0.35)
 
-ggplot(data=mss,aes(x=max_neighbors/census_n_2,y=value,col=col,fill=col))+
-  facet_wrap(~variable,scales="free")+
-  xlab("Potential Mates / Total Population")+ylab("")+
-  scale_color_manual(values=c("steelblue1","steelblue","midnightblue","darkgoldenrod1","darkorange","darkorange3"))+
-  scale_fill_manual(values=c("steelblue1","steelblue","midnightblue","darkgoldenrod1","darkorange","darkorange3"))+
-  geom_point(shape=21,stroke=0.25,fill=NA,alpha=0.5,size=1)+
-  geom_smooth(lwd=0.75,fill=NA,span=0.35)
-
-pdf("~/spaceness/figures/sumstats_by_sigma.pdf",width=6.5,height=4)
-p+guides(color=guide_legend(ncol=1,byrow=F,keyheight = 0.15,default.unit = "in"))
+pdf("~/spaceness/figures/sumstats_by_neighbors_allstats.pdf",width=6,height=6)
+print(p)
 dev.off()
 
+#subset of sumstats for main figure 
+mss <- subset(mss,variable %in% c("pi","Watterson's\ntheta","observed\nheterozygosity","Fis",
+                                  "Tajima's\nD","var(dxy)","nIBS","mean(IBS>1e6)",
+                                  "corr(dxy,dist)","corr(mean(IBS),dist)",
+                                  "corr(skew(IBS),dist)","corr(IBS>1e6,dist)"))
+mss$variable <- factor(mss$variable,levels=c("pi","Watterson's\ntheta","observed\nheterozygosity","Fis",
+                                             "Tajima's\nD","var(dxy)","nIBS","mean(IBS>1e6)",
+                                             "corr(dxy,dist)","corr(mean(IBS),dist)",
+                                             "corr(skew(IBS),dist)","corr(IBS>1e6,dist)"))
+p <- ggplot(data=mss,aes(x=neighborhood_size,y=value,col=col,fill=col))+
+  facet_wrap(~variable,scales="free",ncol=4)+
+  theme(legend.position = "bottom",
+        legend.direction = "horizontal",
+        legend.margin=margin(0,0,0,0),
+        legend.box.margin=margin(-10,0,0,-30),)+
+  xlab("Neighborhood Size")+ylab("")+
+  scale_color_manual(values=getcolordict(list('dark_medici_blue',
+                                              'burnt_sienna',
+                                              'isabella_color',
+                                              'red_orange')),name="Model")+
+  #scale_color_manual(values=c("black","steelblue4","steelblue2","forestgreen"),name="Model")+
+  #scale_color_brewer(palette = "Paired",name="Model")+
+  scale_y_continuous(labels = function(x) format(x, scientific = TRUE))+
+  scale_x_log10()+
+  geom_point(shape=21,stroke=0.4,fill=NA,size=.9)+
+  geom_smooth(lwd=0.3,fill=NA,span=0.2)
+p <- p+guides(color=guide_legend(keyheight = 0.15,nrow = 1,title.position = "top",
+                                 default.unit = "in",override.aes = list(size=5,shape=16)))
+
+#SFS plots
+sfs <- cbind(sfs,ss[,c("sigma","sampling","model","segsites")])
+sfs$neighbors <- 4*pi*sfs$sigma^2*5
+colnames(sfs) <- sapply(colnames(sfs),function(e) gsub("sfs_","",e))
+msfs <- melt(sfs,id.vars=c("sigma","neighbors","sampling","model","segsites"))
+msfs$value <- msfs$value/msfs$segsites
+msfs$variable <- as.numeric(as.character(msfs$variable))
+msfs$variable <- msfs$variable/120
+msfs <- subset(msfs,sigma<4)
+msfs <- msfs[msfs$neighbors %in% unique(msfs$neighbors)[sample(1:length(unique(msfs$neighbors)),100)],]
+p2 <- ggplot(data=msfs,aes(x=variable,y=value,z=neighbors))+
+  theme(axis.text.x=element_text(size=7,angle=45,hjust=1),plot.background = element_blank())+
+  facet_wrap(paste0(model,"\n",sampling," sampling")~.,nrow=1)+
+  #facet_grid(sampling~model)+
+  scale_y_log10()+
+  #scale_color_distiller(palette = "RdYlBu",name="Neighborhood\nSize")+
+  scale_color_gradientn(colors=pal(100),name="Neighborhood\nSize")+
+  xlab("Allele Frequency")+ylab("Proportion of\nSegregating Sites")+
+  geom_smooth(fill=NA,lwd=0.25,alpha=0.5,span=0.3,aes(group=neighbors,col=neighbors))
+  #geom_line(aes(col=neighbors,group=neighbors))
+  #stat_summary_hex(fun=median,bins=100)
+p2 <- p2+guides(color=guide_colorbar(barwidth=unit(4,"mm"),barheight=unit(22,"mm")))
 
 
-#SFS plots for binned runs
-spat_sfs <- fread("sumstats/ss_spatial_bins.txt",data.table=F)
-rm_sfs <- fread("sumstats/ss_randmates_bins.txt",data.table=F)
-spat_sfs$model <- "Spatial Mate Choice"
-rm_sfs$model <- "Random Mating"
-sfs <- rbind(spat_sfs,rm_sfs)
-
-sfs <- sfs[,c(1,2,8:(ncol(sfs)))]
-colnames(sfs) <- c("sigma","segsites",paste(0:100),"model")
-sfs$dispersal_class <- round(sfs$sigma,2)
-sfs$sim <- 1:nrow(sfs)
-sfs <- subset(sfs,sigma<=1)
-sfs <- melt(sfs,id.vars=c("sigma","dispersal_class","sim","segsites","model"))
-sfs$sfs_class <- as.numeric(as.character(sfs$variable))
-sfs <- na.omit(sfs)
-sfs <- subset(sfs,sfs_class>0 & sfs_class<100)
-
-sfsbins <- ddply(sfs,.(variable,dispersal_class,model),summarize,meanCount=mean(value),meanSegsites=mean(segsites))
-sfsbins$sfs_class <- as.numeric(as.character(sfsbins$variable))
-sfsbins$log_segscaled_n <- log(sfsbins$meanCount/sfsbins$meanSegsites)
-
-sfsbins <- subset(sfsbins,dispersal_class != 0.5) #can remove once rm 0.5 sims are done
-
-sfs_diffs <- ddply(sfsbins,.(sfs_class,dispersal_class),function(e){
-  diff <- e$log_segscaled_n[e$model=="Spatial Mate Choice"]-e$log_segscaled_n[e$model=="Random Mating"]
-  return(diff)
-})
-
-sfsplot <- ggplot(data=sfsbins,aes(x=sfs_class,y=log_segscaled_n,col=factor(dispersal_class)))+
-  facet_grid(.~model)+
-  theme(legend.position = "none",
-  )+
-  scale_color_manual(values=wes_palette("Zissou1",nlevels(factor(sfsbins$dispersal_class)),"continuous"),
-                     name="Interaction\nRadius")+
-  ylab("log(count per segregating site)")+xlab("SFS Class")+
-  geom_line(lwd=0.25)
-
-sfsplot_diffs <- ggplot(data=sfs_diffs,aes(x=sfs_class,col=factor(dispersal_class),fill=factor(dispersal_class),y=V1))+
-  scale_color_manual(values=wes_palette("Zissou1",nlevels(factor(sfs_diffs$dispersal_class)),"continuous"),
-                     name="Interaction\nRadius",guide=F)+
-  scale_fill_manual(values=wes_palette("Zissou1",nlevels(factor(sfs_diffs$dispersal_class)),"continuous"),
-                    name="Interaction\nRadius")+
-  xlab("SFS Class")+ylab(expression(italic(SFS[spatial])-italic(SFS[random~mating])))+
-  geom_point(shape=21,col="black",stroke=0.05,size=1.05,alpha=0.7)+
-  geom_smooth(fill=NA,lwd=0.5)
-
-sfsplot_diffs <- sfsplot_diffs+guides(fill=guide_legend(override.aes = list(size=4),
-                                                        keyheight = 3,
-                                                        default.unit = "mm"))
-
-pdf("~/spaceness/figures/sfs_spatial_v_rm.pdf",width=6.5,height=2)
+pdf("~/spaceness/figures/sfs_w_sumstats.pdf",width=6.5,height=6,useDingbats = F)
 ggdraw()+
-  draw_plot(sfsplot,0,0,0.5,1)+
-  draw_plot(sfsplot_diffs,0.5,0,0.5,1)
+  draw_plot(p,0,0,1,0.7)+
+  draw_plot(p2,0,0.7,1,0.3)+
+  draw_label("A",0.07,0.96)+
+  draw_label("B",0.07,0.72)
 dev.off()
 
+
+#example sampling maps
+rs <- fread("~/Desktop/spaceviz/random_sampling_locs.txt")[sample(1:nrow(rs),60),]
+ps <- fread("~/Desktop/spaceviz/point_sampling_locs.txt")[sample(1:nrow(ps),60),]
+ms <- fread("~/Desktop/spaceviz/midpoint_sampling_locs.txt")[sample(1:nrow(ms),60),]
+rs$sampling <- "random"
+ps$sampling <- "point"
+ms$sampling <- "midpoint"
+sampling <- rbind(rs,ps,ms)
+
+samplemaps <- ggplot(data=sampling,aes(x=V1,y=V2))+coord_fixed()+
+  theme(axis.title=element_blank())+
+  facet_wrap(~sampling)+
+  geom_point(size=0.5)
+pdf("~/spaceness/figures/sampling_maps.pdf",width=5.5,height=1.5,useDingbats = F)
+print(samplemaps)
+dev.off()
 

@@ -1,0 +1,189 @@
+---
+title: "Generation Time Scaling in Continuous Space Models"
+author: "CJ Battey"
+date: "2/15/2019"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(reticulate);library(data.table);library(ggplot2);library(magrittr)
+theme_set(theme_classic())
+```
+
+## The issue
+
+In a non-Wright-Fisher SLiM simulation time is measured in timesteps rather than generations, so the branch lengths stored in the edge table are also in units of timesteps. If msprime or tskit are later used to add mutations to a NWF tree sequence, the mutation rate input by the user is also interpreted as mutations per timestep. 
+
+This is a non-issue if you add mutations in SLiM (but that slows down already slow simulations) and isn't a big issue if you're comparing simulations with a constant generation time (then you can scale all the mutation rates by the same value). But if generation time varies across simulations then applying a single rate in msprime.mutate( ) will lead to different per-generation rates and bias any genetic measure correlated with theta=4Nmu, which is to say, all of them. 
+
+Here I try to figure out if generation time scales with dispersal distance in continuous-space non-Wright-Fisher models (we need a better name for these (cspan??)), see whether we can correct for it by appropriately scaling mu in msprime, and check if it explains some earlier weird results from simulations with high dispersal distance. 
+
+## Generation Time Scales with Sigma
+I ran some short simulations on small landscapes with mutations in SLiM (16x16, census sizes 1,100 - 400) for 200 generations, remembered all individuals for the second 100 generations, and saved the treeseqs to disk. Peter wrote up this nice code to calculate the average age of parents for individuals born during the all-individuals period. (We also talked about an improved version to estimate "effective generation time" by stepping up sparsetrees of final-generation individuals that would be nice to implement later).
+```{python}
+import os,numpy as np, msprime, pyslim, re
+from tqdm import tqdm
+import altair
+import pandas
+from matplotlib import pyplot as plt
+os.chdir("/Users/cj/spaceness")
+
+#read through all-individual ts to get mean parent ages
+sims=[x for x in os.listdir("/Users/cj/Desktop/spaceviz/all_ind_trees/w16/") if not x.startswith(".")]
+gen_times=np.zeros((len(sims),2))
+for i in range(len(sims)):
+    ts=pyslim.load(os.path.join("/Users/cj/Desktop/spaceviz/all_ind_trees/w16/",sims[i]))
+    sigma=float(re.split("_|s",sims[i])[1])
+    node_times = ts.tables.nodes.time
+    parent_nodes = ts.tables.edges.parent
+    child_nodes = ts.tables.edges.child
+    max_T = 100 # number of time steps you recorded everyone for
+    # which edges in the EdgeTable correspond to reproduction events we have parent and offspring remembered
+    use_these = (node_times[parent_nodes] < max_T)
+    parent_ages = node_times[parent_nodes] - node_times[child_nodes]
+    gen_times[i,:]= [np.mean(parent_ages[use_these]),sigma]
+   
+gen_times=pandas.DataFrame(gen_times,columns=["gen_time","sigma"])
+```
+
+```{r,fig.width=4,fig.height=3,fig.align="center"}
+ggplot(data=py$gen_times,aes(x=sigma,y=gen_time))+
+  geom_point()
+```
+
+I also ran a set of small-landscape simulations to coalescence while adding mutations in SLiM -- this slows things down but this size landscape still coalesces in under an hour. I also didn't remember all individuals here, which *really* slows things down. Then I estimated the effective generation time by trying to get msprime.mutate( ) to produce the same number of mutations as SLiM while stochastically optimizing the generation time as a scaling constant for mu. 
+
+```{python}
+os.chdir("/Users/cj/spaceness")
+def guess_gen_time(ts):
+    t=pyslim.load(ts)
+    slim_muts=t.num_mutations
+    g=4
+    msp_t=msprime.mutate(t,1e-8/g,keep=False) #slim mutation rate was set to 1e-8
+    msp_muts=msp_t.num_mutations
+    while abs(msp_muts-slim_muts) > 0.01*slim_muts:
+        new_g=g+np.random.uniform(-1,1,1)
+        new_msp_t=msprime.mutate(t,1e-8/new_g,keep=False)
+        new_msp_muts=new_msp_t.num_mutations
+        if abs(new_msp_muts-slim_muts) < abs(msp_muts-slim_muts):
+            msp_muts=new_msp_muts
+            g=new_g
+    return g[0]
+    
+sims=os.listdir("sims/slimout/spatial/W16_muts")
+gen_times2=np.zeros((len(sims),2))
+for i in range(len(sims)):
+    g=guess_gen_time(os.path.join("sims/slimout/spatial/W16_muts/",sims[i]))
+    sigma=float(re.split("_",sims[i])[1])
+    gen_times2[i,:]=[g,sigma]
+gen_times2=pandas.DataFrame(gen_times2,columns=["gen_time","sigma"])
+```
+
+```{r,fig.width=4.5,fig.height=3,fig.align="center"}
+g1 <- py$gen_times
+g1$method <- "parent ages"
+g2 <- py$gen_times2
+g2$method <- "compare n muts"
+gen_times <- rbind(g1,g2)
+ggplot(data=gen_times,aes(x=sigma,y=gen_time,col=method))+
+  scale_color_manual(values=c("forestgreen","cornflowerblue"))+
+  geom_point(shape=1)+
+  geom_smooth(fill=NA)
+```
+
+Mostly consistent, though the estimated generation times are slightly higher when comparing *n* mutations (model artifact or "effective" gen time?). The generation time scaling here is way more severe than in the larger 50x50 simulations I've been working with, but the trend is the same. In the big simulations it looks like generation time still scales by around 10% - enough to mess with pi, theta, IBS distributions, etc. So we can't use the same per-timestep mutation rate across simulations with different sigma.
+
+### msprime v SLiM mutation effects
+I ran summary stats using my old method of putting a constant value in msprime.mutate() and compared them to summary stats using SLiM simulations to get an idea of whether or not this matters. 
+
+```{r,fig.width=6.5,fig.height=3,fig.align="center"}
+setwd("~/spaceness/sumstats")
+
+slim_spat <- fread("ss_spatial_random_W16muts.txt")
+slim_spat$model <- "spatial"
+slim_spat$muts <- "slim"
+msp_spat <- fread("ss_spatial_random_W16_msp_muts.txt")
+msp_spat$model <- "spatial"
+msp_spat$muts <- "msp"
+slim_rand <- fread("ss_random_random_W16muts.txt")
+slim_rand$model <- "random"
+slim_rand$muts <- "slim"
+msp_rand <- fread("ss_random_random_W16_msp_muts.txt")
+msp_rand$model <- "random"
+msp_rand$muts <- "msp"
+ss <- rbind(slim_spat,msp_spat,slim_rand,msp_rand)
+ss <- data.frame(ss)[,!grepl("sfs",colnames(ss))]
+
+popsize_spat <- fread("ss_spatial_random_W16muts.txt.popsizes")
+popsize_rand <- fread("ss_random_random_W16muts.txt.popsizes")
+popsize <- rbind(popsize_spat,popsize_rand)
+colnames(popsize) <- c("sigma","census_n")
+ss <- merge(ss,popsize,by="sigma")
+ss$theta <- 4*(ss$census_n/2)*1e-8
+ss$census_n2 <- ss$census_n
+
+mss <- melt(ss,id.vars=c("model","muts","sigma","census_n2"))
+pd <- subset(mss,variable %in% c("pi","theta"))
+ggplot(data=pd,aes(x=sigma,y=value,col=paste(variable,model)))+
+  #ggtitle("Ne estimates for constant mu applied in msprime v SLiM")+
+  facet_wrap(~muts)+ylab("")+
+  scale_color_brewer(palette = "Paired")+
+  geom_point(shape=21,size=0.8,stroke=0.2)+
+  geom_smooth(fill=NA,lwd=0.5,span=0.6)
+```
+
+Seems like yes. 
+
+### Runtime and memory usage for spatial models with mutations
+How much longer will it take to simulate spatial models and do the mutations in SLiM? These are runtimes for the "full-size" spatial model with and without mutations. It seems like runtime differences are small past NS=~150 (sigma=~1.5). Memory usage per-generation is around 50% higher to start, but the shape here should change as runtime increases because the whole treeseq is loaded into memory when writing to file. I haven't run long enough simulations yet to compare, but in practice I could get simulations with sigma below 1 to run on talapas with 8G memory without mutations, but those got killed when run with mutations when they tried to write out the treeseq. I have some running with 32G now.  
+
+```{r,fig.width=6.5,fig.height=3,fig.align="center"}
+runtimes <- fread("~/spaceness/spatial_runtimes.csv")
+p1 <- ggplot(data=runtimes,aes(x=NS,y=time/100,col=muts))+geom_point(shape=1)+
+  geom_line()+
+  ylab("seconds per timestep")
+
+runtimes$time_to_50N_timesteps <- (runtimes$time*5e3)/60^2
+p2 <- ggplot(data=runtimes,aes(x=NS,y=time_to_50N_timesteps,col=muts))+geom_point(shape=1)+
+  geom_line()
+
+cowplot::plot_grid(p1,p2)
+
+#memory usage
+ggplot(data=runtimes,aes(x=NS,y=mem,col=muts))+geom_point(shape=1)+
+  geom_line()+
+  ylab("max memory in first 100 gen (mb)")
+
+```
+
+
+
+<!-- ```{r fig.width=4.5,fig.height=3,fig.align="center",} -->
+<!-- model <- loess(gen_time~sigma,py$gen_times,span=0.5) -->
+<!-- preds <- predict(model,seq(0.2,5,0.02)) -->
+<!-- ggplot(data=data.frame(sigma=seq(0.2,5,0.02),preds),aes(x=sigma,y=preds))+ -->
+<!--   geom_line() -->
+
+<!-- sims <- list.files("~/spaceness/sims/slimout/spatial/W16_muts/") -->
+<!-- sigmas <- sapply(sims,function(e) strsplit(e,"_") %>% unlist() %>% .[2] %>% as.numeric()) -->
+<!-- pred_gen_times <- predict(model,sigmas) -->
+<!-- pred_gen_times <- data.frame(sigmas,pred_gen_times) -->
+
+<!-- ggplot(data=pred_gen_times,aes(x=sigma,y=pred_gen_times))+ -->
+<!--   geom_line() -->
+
+<!-- ``` -->
+
+
+
+
+
+
+
+
+
+
+
