@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2019/dev/Debian) (preloaded format=pdflatex 2019.1.26)  25 APR 2019 11:28
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2019/dev/Debian) (preloaded format=pdflatex 2019.1.26)  27 APR 2019 10:34
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1421,7 +1421,7 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [5]
 [6]
-LaTeX Font Info:    Try loading font information for T1+cmtt on input line 238.
+LaTeX Font Info:    Try loading font information for T1+cmtt on input line 240.
 
  (/usr/share/texlive/texmf-dist/tex/latex/base/t1cmtt.fd
 File: t1cmtt.fd 2014/09/29 v2.5h Standard LaTeX font definitions
@@ -1437,10 +1437,10 @@ Underfull \vbox (badness 4120) has occurred while \output is active []
 <figures/sampling_maps.pdf, id=186, 252.945pt x 108.405pt>
 File: figures/sampling_maps.pdf Graphic file (type pdf)
 <use figures/sampling_maps.pdf>
-Package pdftex.def Info: figures/sampling_maps.pdf  used on input line 271.
+Package pdftex.def Info: figures/sampling_maps.pdf  used on input line 273.
 (pdftex.def)             Requested size: 252.94438pt x 108.40472pt.
 LaTeX Font Info:    Font shape `T1/ppl/bx/n' in size <10.95> not available
-(Font)              Font shape `T1/ppl/b/n' tried instead on input line 272.
+(Font)              Font shape `T1/ppl/b/n' tried instead on input line 274.
 
 [8]
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -1449,44 +1449,43 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [11]
-<figures/pop_params.pdf, id=270, 252.945pt x 122.4575pt>
+<figures/pop_params.pdf, id=272, 252.945pt x 122.4575pt>
 File: figures/pop_params.pdf Graphic file (type pdf)
 <use figures/pop_params.pdf>
-Package pdftex.def Info: figures/pop_params.pdf  used on input line 339.
+Package pdftex.def Info: figures/pop_params.pdf  used on input line 375.
 (pdftex.def)             Requested size: 252.94438pt x 122.45718pt.
 
-[12 <./figures/pop_params.pdf>]
-<figures/sfs_w_sumstats.pdf, id=282, 469.755pt x 433.62pt>
+[12]
+<figures/sfs_w_sumstats.pdf, id=283, 469.755pt x 433.62pt>
 File: figures/sfs_w_sumstats.pdf Graphic file (type pdf)
 <use figures/sfs_w_sumstats.pdf>
-Package pdftex.def Info: figures/sfs_w_sumstats.pdf  used on input line 357.
+Package pdftex.def Info: figures/sfs_w_sumstats.pdf  used on input line 408.
 (pdftex.def)             Requested size: 444.295pt x 410.11713pt.
- [13] [14 <./figures/sfs_w_sumstats.pdf>]
-Underfull \vbox (badness 6348) has occurred while \output is active []
+ [13 <./figures/pop_params.pdf>] [14 <./figures/sfs_w_sumstats.pdf>]
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [15]
 [16] [17]
-<figures/stairwayplot_facet_rollmean.pdf, id=395, 361.35pt x 252.945pt>
+<figures/stairwayplot_facet_rollmean.pdf, id=403, 361.35pt x 252.945pt>
 File: figures/stairwayplot_facet_rollmean.pdf Graphic file (type pdf)
 <use figures/stairwayplot_facet_rollmean.pdf>
 Package pdftex.def Info: figures/stairwayplot_facet_rollmean.pdf  used on input
- line 389.
+ line 491.
 (pdftex.def)             Requested size: 444.295pt x 311.00858pt.
 
 Underfull \vbox (badness 2486) has occurred while \output is active []
 
  [18]
 [19 <./figures/stairwayplot_facet_rollmean.pdf>]
-<figures/gwas_summary.pdf, id=423, 433.62pt x 361.35pt>
+<figures/gwas_summary.pdf, id=431, 433.62pt x 361.35pt>
 File: figures/gwas_summary.pdf Graphic file (type pdf)
 <use figures/gwas_summary.pdf>
-Package pdftex.def Info: figures/gwas_summary.pdf  used on input line 406.
+Package pdftex.def Info: figures/gwas_summary.pdf  used on input line 532.
 (pdftex.def)             Requested size: 444.295pt x 370.26485pt.
+ [20] [21 <./figures/gwas_summary.pdf>]
+Underfull \vbox (badness 2486) has occurred while \output is active []
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [20]
-[21 <./figures/gwas_summary.pdf>] [22]
+ [22]
 Underfull \vbox (badness 2486) has occurred while \output is active []
 
  [23]
@@ -1496,9 +1495,7 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 Underfull \vbox (badness 2486) has occurred while \output is active []
 
  [25]
-Underfull \vbox (badness 1048) has occurred while \output is active []
-
- [26]
+[26]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [27]
@@ -1506,15 +1503,15 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [28]
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 10.42007pt on input line 467.
+(Font)              scaled to size 10.42007pt on input line 594.
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 7.91925pt on input line 467.
+(Font)              scaled to size 7.91925pt on input line 594.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 10.42007pt on input line 467.
+(Font)              scaled to size 10.42007pt on input line 594.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 7.91925pt on input line 467.
+(Font)              scaled to size 7.91925pt on input line 594.
 
-Underfull \vbox (badness 2486) has occurred while \output is active []
+Underfull \vbox (badness 4303) has occurred while \output is active []
 
  [29]
 [30]
@@ -1524,7 +1521,7 @@ Underfull \vbox (badness 2486) has occurred while \output is active []
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [32]
-Overfull \hbox (18.07771pt too wide) in paragraph at lines 512--513
+Overfull \hbox (18.07771pt too wide) in paragraph at lines 639--640
 \T1/ppl/m/n/10.95 (-20) Scripts used for all anal-y-ses and fig-ures are avail-
 able at https://github.com/petrelharp/spaceness. 
  []
@@ -1545,26 +1542,26 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [38])
-<figures/sumstats_by_neighbors_allstats.pdf, id=24969, 433.62pt x 433.62pt>
+<figures/sumstats_by_neighbors_allstats.pdf, id=24979, 433.62pt x 433.62pt>
 File: figures/sumstats_by_neighbors_allstats.pdf Graphic file (type pdf)
 <use figures/sumstats_by_neighbors_allstats.pdf>
 Package pdftex.def Info: figures/sumstats_by_neighbors_allstats.pdf  used on in
-put line 528.
+put line 655.
 (pdftex.def)             Requested size: 444.295pt x 444.31781pt.
-<figures/fig_S1_sfs_grid_model_by_sampling.pdf, id=24970, 469.755pt x 469.755pt
+<figures/fig_S1_sfs_grid_model_by_sampling.pdf, id=24980, 469.755pt x 469.755pt
 >
 File: figures/fig_S1_sfs_grid_model_by_sampling.pdf Graphic file (type pdf)
 <use figures/fig_S1_sfs_grid_model_by_sampling.pdf>
 Package pdftex.def Info: figures/fig_S1_sfs_grid_model_by_sampling.pdf  used on
- input line 537.
+ input line 664.
 (pdftex.def)             Requested size: 444.295pt x 444.29356pt.
-<figures/het_z_by_ind.pdf, id=24971, 433.62pt x 289.08pt>
+<figures/het_z_by_ind.pdf, id=24981, 433.62pt x 289.08pt>
 File: figures/het_z_by_ind.pdf Graphic file (type pdf)
 <use figures/het_z_by_ind.pdf>
-Package pdftex.def Info: figures/het_z_by_ind.pdf  used on input line 545.
+Package pdftex.def Info: figures/het_z_by_ind.pdf  used on input line 672.
 (pdftex.def)             Requested size: 433.61894pt x 289.07928pt.
 
-Overfull \hbox (36.77893pt too wide) in paragraph at lines 555--579
+Overfull \hbox (36.77893pt too wide) in paragraph at lines 682--706
  [][] 
  []
 
@@ -1572,23 +1569,23 @@ Overfull \hbox (36.77893pt too wide) in paragraph at lines 555--579
 sfs_grid_model_by_sampling.pdf>] [42 <./figures/het_z_by_ind.pdf>] [43]
 [44] 
 AED: lastpage setting LastPage
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 667.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 667.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 794.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 794.
 (./spaceness.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 667.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 667.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 794.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 794.
 Package rerunfilecheck Info: File `spaceness.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 667.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 794.
  ) 
 Here is how much of TeX's memory you used:
- 25677 strings out of 494485
- 449572 string characters out of 6175792
- 615239 words of memory out of 5000000
- 28314 multiletter control sequences out of 15000+600000
- 108323 words of font info for 361 fonts, out of 8000000 for 9000
+ 25703 strings out of 494485
+ 449941 string characters out of 6175792
+ 615523 words of memory out of 5000000
+ 28320 multiletter control sequences out of 15000+600000
+ 109217 words of font info for 373 fonts, out of 8000000 for 9000
  59 hyphenation exceptions out of 8191
- 62i,21n,94p,1948b,629s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 62i,21n,94p,1948b,633s stack positions out of 5000i,500n,10000p,200000b,80000s
 pdfTeX warning (dest): name{Hfootnote.2} has been referenced but does not exi
 st, replaced by a fixed one
 
@@ -1608,10 +1605,10 @@ hare/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/share/texlive
 /texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></usr/share/texlive/texmf-dist/
 fonts/type1/urw/palatino/uplr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/
 urw/palatino/uplri8a.pfb>
-Output written on spaceness.pdf (44 pages, 9344639 bytes).
+Output written on spaceness.pdf (44 pages, 9348982 bytes).
 PDF statistics:
- 25124 PDF objects out of 26593 (max. 8388607)
- 12863 compressed objects within 129 object streams
- 138 named destinations out of 1000 (max. 500000)
+ 25135 PDF objects out of 26593 (max. 8388607)
+ 12874 compressed objects within 129 object streams
+ 140 named destinations out of 1000 (max. 500000)
  57909 words of extra memory for PDF output out of 61914 (max. 10000000)
 
