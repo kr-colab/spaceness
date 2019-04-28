@@ -544,7 +544,7 @@ abstract = "The n-coalescent is a continuous-time Markov chain on a finite set o
 }
 
 @article {Leblois2004,
-	author = {Leblois, Raphael and Rousset, Fran{\c c}ois and Estoup, Arnaud},
+	author = {Leblois, Raphael and Rousset, Fran\c{c}ois and Estoup, Arnaud},
 	title = {Influence of Spatial and Temporal Heterogeneities on the Estimation of Demographic Parameters in a Continuous Population Using Individual Microsatellite Data},
 	volume = {166},
 	number = {2},
@@ -863,7 +863,7 @@ abstract = "Whole-genome association studies (WGAS) bring new computational, as 
 
 @article {Rousset1997,
 	author = {Rousset, Fran{\c c}ois},
-	title = {Genetic Differentiation and Estimation of Gene Flow from F-Statistics Under Isolation by Distance},
+	title = {Genetic Differentiation and Estimation of Gene Flow from {F}-Statistics Under Isolation by Distance},
 	volume = {145},
 	number = {4},
 	pages = {1219--1228},
@@ -1422,4 +1422,47 @@ Benjamini and Hochberg suggest that the false discovery rate may be the appropri
   url = {http://www.genetics.org/cgi/content/abstract/168/4/2227},
   volume = 168,
   year = 2004
+}
+
+@article{robledoarnuncio2010isolation,
+  abstract = {The local density of individuals is seldom uniform in space and time within natural populations. Yet, formal approaches to the process of isolation by distance in continuous populations have encountered analytical difficulties in describing genetic structuring with demographic heterogeneities, usually disregarding local correlations in the movement and reproduction of genes. We formulate exact recursions for probabilities of identity in continuous populations, from which we deduce definitions of effective dispersal () and effective density (De) that generalize results relating spatial genetic structure, dispersal and density in lattice models. The latter claim is checked in simulations where estimates of effective parameters obtained from demographic information are compared with estimates derived from spatial genetic patterns in a plant population evolving in a heterogeneous and dynamic habitat. The simulations further suggest that increasing spatio-temporal correlations in local density reduce  and generally decrease the product , with dispersal kurtosis influencing their sensitivity to density fluctuations. As in the lattice model, the expected relationship between the product  and the genetic structure statistic ar holds under fluctuating density, irrespective of dispersal kurtosis. The product D σ2 between observed census density and the observed dispersal rate over one generation will generally be an upwardly biased (up to 400% in simulations) estimator of  in populations distributed in spatially aggregated habitats.},
+  added-at = {2015-10-19T22:59:42.000+0200},
+  author = {Robledo-Arnuncio, J. J. and Rousset, F.},
+  biburl = {https://www.bibsonomy.org/bibtex/28aa715e83497400f1bb31b7441696782/peter.ralph},
+  doi = {10.1111/j.1420-9101.2009.01860.x},
+  interhash = {23fcf4d6d7f42c636f82b6d9c46e89db},
+  intrahash = {8aa715e83497400f1bb31b7441696782},
+  issn = {1420-9101},
+  journal = {Journal of Evolutionary Biology},
+  keywords = {Wrights_neighborhood_size demographic_fluctuations effective_dispersal isolation_by_distance spatial_coalescent wright-malecot},
+  number = 1,
+  pages = {53--71},
+  publisher = {Blackwell Publishing Ltd},
+  timestamp = {2015-10-19T22:59:42.000+0200},
+  title = {Isolation by distance in a continuous population under stochastic demographic fluctuations},
+  url = {http://dx.doi.org/10.1111/j.1420-9101.2009.01860.x},
+  volume = 23,
+  year = 2010
+}
+
+@article{rousset2011likelihoodbased,
+  abstract = {{Likelihood-based methods of inference of population parameters from genetic data in structured populations have been implemented but still little tested in large networks of populations. In this work, a previous software implementation of inference in linear habitats is extended to two-dimensional habitats, and the coverage properties of confidence intervals are analyzed in both cases. Both standard likelihood and an efficient approximation are considered. The effects of misspecification of mutation model and dispersal distribution, and of spatial binning of samples, are considered. In the absence of model misspecification, the estimators have low bias, low mean square error, and the coverage properties of confidence intervals are consistent with theoretical expectations. Inferences of dispersal parameters and of the mutation rate are sensitive to misspecification or to approximations inherent to the coalescent algorithms used. In particular, coalescent approximations are not appropriate to infer the shape of the dispersal distribution. However, inferences of the neighborhood parameter (or of the product of population density and mean square dispersal rate) are generally robust with respect to complicating factors, such as misspecification of the mutation process and of the shape of the dispersal distribution, and with respect to spatial binning of samples. Likelihood inferences appear feasible in moderately sized networks of populations (up to 400 populations in this work), and they are more efficient than previous moment-based spatial regression method in realistic conditions.}},
+  added-at = {2019-04-28T05:36:28.000+0200},
+  author = {Rousset, François and Leblois, Raphaël},
+  biburl = {https://www.bibsonomy.org/bibtex/2beeb3ccd0b0fe954295a730834e17f68/peter.ralph},
+  doi = {10.1093/molbev/msr262},
+  eprint = {http://oup.prod.sis.lan/mbe/article-pdf/29/3/957/13645718/msr262.pdf},
+  interhash = {bf3963ffd0edea4c5099e2aef106af48},
+  intrahash = {beeb3ccd0b0fe954295a730834e17f68},
+  issn = {0737-4038},
+  journal = {Molecular Biology and Evolution},
+  keywords = {Wrights_neighborhood_size isolation_by_distance landscape_genetics methods},
+  month = {10},
+  number = 3,
+  pages = {957-973},
+  timestamp = {2019-04-28T05:36:28.000+0200},
+  title = {Likelihood-Based Inferences under Isolation by Distance: {Two}-Dimensional Habitats and Confidence Intervals},
+  url = {https://doi.org/10.1093/molbev/msr262},
+  volume = 29,
+  year = 2011
 }

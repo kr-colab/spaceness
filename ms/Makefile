@@ -1,4 +1,5 @@
 .PHONY: all clean submission
+.PRECIOUS: spaceness.bbl spaceness.aux
 
 all: spaceness.pdf
 
@@ -11,14 +12,12 @@ spaceness.pdf : spaceness.bib $(FIGURES)
 clean: 
 	-rm *.aux *.log *.lof *.lot *.fff *.ttt *.out *.bbl *.blg
 
-%.pdf : %.tex %.bbl
+%.pdf : %.tex %.aux
 	while ( pdflatex $<;  grep -q "Rerun to get" $*.log ) do true ; done
 
-%.aux : %.tex
-	-pdflatex $<
-
-%.bbl : %.aux
-	-bibtex $<
+%.aux : %.bbl
+%.bbl : %.tex
+	-pdflatex $< && bibtex $<
 
 %.svg : %.pdf
 	inkscape $< --export-plain-svg=$@
