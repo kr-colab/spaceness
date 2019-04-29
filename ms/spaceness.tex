@@ -86,18 +86,24 @@
 
 \plr{note: address confounding of $\sigma$ and neighborhood size in disco}
 
-\plr{note: conclusions are that Ne(t) is not very biased}
+\plr{note: what are conclusions about bias or not of Ne(t)?}
 
 
 %%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
 
 The inescapable reality that biological organisms live, move, and reproduce in continuous geography is usually omitted from population genetic models. 
-Indeed, a near universal rule of reproduction is that individuals mate with other nearby individuals, leading to a positive correlation between genetic and geographic distances. 
-This pattern of ``isolation by distance'' \citep{Wright1943} is one of the most widely replicated empirical findings in population genetics \citep{Chen2017,Jay2012,Sharbel2000}, 
-but classical mathematical models describing it \citep{Malecot1948} are flawed approximations of the underlying process \citep{Felsenstein1975,barton2002neutral}.
-Mathematical difficulties have made further development of population models in continuous space difficult,
-so most models describe geographic structure as a set of populations connected by migration \citep[e.g.,][]{Wright1931,epperson2003geographical}, 
+However, mates tend to live near to one another and to their offspring,
+leading to a positive correlation between genetic and geographic distances. 
+% Patterns of genetic variation are influenced by the fact that organisms are more likely, on average, to live nearby to both their parents, in particular when dispersal and mate choice distances are short. 
+This pattern of ``isolation by distance'' \citep{Wright1943}, describing mean relatedness as a function of distance in flat landscapes,
+is one of the most widely replicated empirical findings in population genetics \citep{Chen2017,Jay2012,Sharbel2000}.
+Despite a long history of analytical work describing the genetics of populations distributed across continuous geography
+(e.g., \cite{Wright1943,Rousset1997,barton2002neutral,Barton2010,Ringbauer2017,robledoarnuncio2010isolation}),
+much modern work still describes geographic structure as a set of populations connected by migration 
+\citep[e.g.,][]{Wright1931,epperson2003geographical,rousset2011likelihoodbased,Shirk2014,lundgren2018populations}.
+For this reason,
+most population genetics statistics are interpreted with reference to discrete, well-mixed populations,
 and most empirical papers analyze variation within clusters of genetic variation inferred by programs like \textit{STRUCTURE} \citep{Pritchard2000},
 effectively assuming these are randomly mating units. 
 
@@ -149,18 +155,6 @@ typically analyzed assuming discrete population models.
 We then examine how the fine-scale spatial structures occurring under limited dispersal impact demographic inference from the site frequency spectrum. 
 Lastly, we examine the impacts of evolution in continuous space on genome-wide association studies (GWAS) and identify regions of parameter space under which the results from GWAS may be misleading.
 
-\ak{I think we can cut the following paragraph if we just add the last sentence above} 
-\cjb{agree - commenting out}
-%Last we use our model to study the impacts of isolation by distance in continuous space on genome-wide association studies (GWAS). Variation in ancestry proportions between case and control cohorts is expected to cause inflation of test statistics at SNPs with different allele frequencies among populations \citep{Price2006}. Because most phenotypes are influenced by the environment and environmental factors are often spatially correlated, subtle spatial structure within continuous populations can also deflate $p$ values in GWAS of traits influenced by the environment \citep{Mathieson2012}. Here we simulate both the underlying genealogy and phenotypes of a continuously distributed population and seek to identify regions of parameter space -- i.e., the strength of isolation by distance and the spatial distribution of environmental effects on phenotypes -- in which common methods employed for GWAS are subject to confounding of environmental and genetic effects on phenotypes. 
-
-\plr{Moved from disco: integrate citations.}
-Patterns of genetic variation are influenced by the fact that organisms are more likely, on average,
-to live nearby to both their parents, in particular when dispersal and mate choice distances are short. 
-Analytical work describing the genetics of populations distributed across continuous geography
-(e.g., \cite{Wright1943,Rousset1997,barton2002neutral,Barton2010,Ringbauer2017,robledoarnuncio2010isolation})
-the theoretical work is challenging and often untenable for realistic biological models. 
-Also discuss lots of work on grids, e.g., \citet{Shirk2014,rousset2011likelihoodbased}.
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Materials and Methods}
 \label{sec:materials:methods}
@@ -168,15 +162,47 @@ Also discuss lots of work on grids, e.g., \citet{Shirk2014,rousset2011likelihood
 %%%%%%%%%%%%%
 \subsection{Modeling Evolution in Continuous Space}
 
-\plr{PETER TO REVISIT THIS SECTION}
+% The best-studied approaches to population genetics in continuous space were developed by \cite{Wright1942,Wright1943} and \cite{Malecot1948}, who derived expressions for genetic differentiation in continuous space assuming Poisson distributed numbers of offspring and independent dispersal among individuals. 
+The degree to which genetic relationships are geographically correlated
+depends on the chance that two geographically nearby individuals are close relatives
+-- in modern terms, by the tension between migration (the chance that one is descended from a distant location)
+and coalescence (the chance that they share a parent).
+A key early observation Wright model is that this balance is nicely summarized by the ``neighborhood size'',
+defined to be $N_W = 4 \pi \rho \sigma^2$, where $\sigma$ is the mean parent--offspring distance and $\rho$ is population density. 
+This can be thought of as proportional to the average number of potential mates for an individual (those within distance $2 \sigma)$,
+or the number of potential parents of a randomly chosen individual.
+\cite{Maruyama1972} found that the rate of decline in genetic diversity in a two-dimensional continuous population 
+approaches the random mating expectation when $\rho\sigma^2 > 1$, 
+and proposed that this had the important implication that most population genetic expectations for randomly mating populations 
+could be applied to continuously distributed populations with relatively little error. 
 
-The best-studied approaches to population genetics in continuous space were developed by \cite{Wright1942,Wright1943} and \cite{Malecot1948}, who derived expressions for genetic differentiation in continuous space assuming Poisson distributed numbers of offspring and independent dispersal among individuals. A key finding of Wright's model is that many important aspects of continuous populations can be described in terms of ``neighborhood size'' -- the number of potential mates for an individual in a given generation, defined as $4\pi\sigma^2d$, where $\sigma$ is the average dispersal distance and $d$ is population density. \cite{Maruyama1972} found that the rate of decline in genetic diversity in a 2-dimensional continuous population approaches the random mating expectation when $d\sigma^2 > 1$, and proposed that this had the important implication that most population genetic expectations for randomly mating populations could be applied to continuously distributed populations with relatively little error. 
+The first approach to modeling continuously-distributed populations
+was to endow individuals in a Wright-Fisher model with locations in continuous space.
+However, since the total size of the population is constrained, this introduces interactions between arbitrarily distant individuals,
+which (aside from being implausible) \cite{Felsenstein1975} showed would eventually lead to unrealistic population clumping
+if the species range is sufficiently large.
+After global population regulation,
+the next method for modeling spatial populations might to assume the existence of a grid of discrete randomly-mating populations connected by migration, 
+thus enforcing regular population density by edict.
+Among many other important results drawn from this class of ``lattice'' or ``stepping stone'' models, 
+\cite{Rousset1997} showed that the slope of the a linear regression of genetic differentiation ($F_{ST}$) against the logarithm of spatial distance is an estimate of neighborhood size. 
+Although these grid models are likely good approximations of continuous geography in many situations,
+these do not model demographic fluctuations, and limit investigation of spatial structure below the level of the deme,
+assumptions whose impacts are unknown. 
+An alternative method for dealing with continuous geography is a new class of coalescent models,
+the Spatial Lambda Fleming-Viot models \citep{Barton2010,Kelleher2014}.
 
-Though some aspects of continuous populations are well described by the Wright and Malécot models, \cite{Felsenstein1975} showed that the assumptions of independent dispersal and Poisson distributed offspring that are the basis of these models are incompatible. Over time, a population meeting them will clump into a small number of geographic clusters occupying only a part of the available range. Although real populations are often clumped on landscapes due to factors like varying habitat quality and competition among species, the Wright and Malécot models produce much more extreme clumping than is observed in practice and fail to account for the density-dependent declines in population growth rate that are widely observed in real populations (CITE). 
-
-One method for modeling continuous populations is then to assume the existence of a grid of discrete randomly-mating populations connected by migration, which prevents clustering by forcing all regions to be occupied in every generation. Among many other important results drawn from this class of ``lattice'' or ``stepping stone'' models, \cite{Rousset1997} showed that the slope of the a linear regression of genetic differentiation ($F_{ST}$) against the logarithm of spatial distance is an estimate of neighborhood size. Though good approximations of continuous structure given high dispersal, these models are not truly continuous, force a uniform realized population density across landscapes, and limit investigation of spatial structure below the level of the deme. An alternative method is to model the geographic spread of ancestry backwards in time through a diffusion approximation -- an approach that has recently made significant progress in modeling both dispersal and demographic parameters \citep{Barton2010,Kelleher2014,Ringbauer2017,Ringbauer2018}.
-
-We took a direct approach to the clustering problem of classical forward-time models by incorporating density dependence into an individual-based model similar to the analytic models developed by Wright and Malécot. By scaling the probability of survival in each timestep to local population density we shift reproductive output towards regions of low-density and prevent populations from clustering. A similar approach was taken previously by \citep{Doebeli2003} who used an individual based model with continuous space and density dependent fitness to study the probability of speciation along continuous environmental gradients. However to our knowledge previous implementations of continuous space models have focused on a small number of genetic loci as the unit of analysis, which limits the ability to investigate the impacts of continuous space on genome-wide genetic variation as is now routinely sampled from real organisms. By simulating chromosome-scale sequence alignments and complete population histories we are able to treat our simulations as real populations and replicate the sampling designs and analyses commonly conducted on real genomic data.
+To avoid questionable assumptions,
+we worked with forwards-time, individual-based simulations.
+By scaling the probability of survival in each timestep to local population density, 
+we shift reproductive output towards regions of low-density, which prevents populations from clustering. 
+% LOTS of people have done models like this: classic ecology?
+% A similar approach was taken previously by \citet{Doebeli2003} who used an individual based model with continuous space and density dependent fitness to study the probability of speciation along continuous environmental gradients. 
+Such models have been used extensively in ecological modeling but rarely in population genetics,
+where to our knowledge previous implementations of continuous space models have focused on a small number of genetic loci, 
+which limits the ability to investigate the impacts of continuous space on genome-wide genetic variation as is now routinely sampled from real organisms. 
+By simulating chromosome-scale sequence alignments and complete population histories we are able to treat our simulations as real populations 
+and replicate the sampling designs and analyses commonly conducted on real genomic data.
 
 %%%%%%%%%%%%
 \subsection{A Forward-Time Model of Evolution in Continuous Space}
@@ -460,7 +486,7 @@ Under midpoint sampling observed heterozygosity is inflated even over the random
 as a result of the a higher proportion of heterozygotes occurring in the middle of the landscape (Figure~\ref{fig:hetmap}). 
 This squares with a report from \cite{Shirk2014} who observed a similar excess of heterozygosity in the middle of the landscape when simulating under a lattice model.
 
-\plr{peter to revisit this paragraph}
+\plr{revisit this paragraph}
 Trends in pairwise haplotype block sharing parallel those in allele-frequency-based diversity estimates (Figure \ref{fig:sumstats}, Supplementary Figure \ref{fig:allsumstats}). At low dispersal the distribution of IBS block lengths in a set of samples is shifted towards smaller values with respect to the random mating expectation -- resulting in lower means and fewer long IBS blocks. The variance and skew of the distribution of haplotype block lengths are only minorly affected by neighborhood size in our simulations when calculated across all pairs of individuals; however, they are strongly dependent on sampling regimes. For example, the number of long haplotype blocks declines as neighborhood size increases under midpoint sampling but changes very little across neighborhood sizes under point or random sampling. Thus sampling strategies with respect to geography will affect conclusions drawn from haplotype length distributions quite dramatically. 
 
 \subsubsection{Correlations of summary statistics with geographic distance}
@@ -471,7 +497,7 @@ This relationship varies across sampling strategies, with the weakest correlatio
 perhaps due to a dearth of long-distance comparisons.
 % Moreover there is clearly strong signal for neighborhood size in the strength of the correlation between $D_{xy}$ and geographic distance.
 
-\plr{peter to revisit this paragraph}
+\plr{revisit this paragraph}
 We next turn our attention to the effect of geographic distance on haplotype block length sharing. 
 As in \citet{Ringbauer2017} and \citet{Baharian2016} we found that the pairwise distribution of haplotype block lengths is more strongly left-skewed under limited dispersal. This is reflected in negative correlation coefficients between spatial distance and the mean, variance, skew, and count of long blocks from the pairwise distribution of identical-by-state block lengths (Figure \ref{fig:sumstats} and Figure \ref{fig:allsumstats}). Of these summaries the mean of the IBS tract length distribution is only weakly affected by neighborhood size, likely because it is heavily influenced by the small number of very long IBS tracts. In contrast the count of long IBS blocks and the skew of the pairwise IBS block distribution are strongly dependent on distance among individuals, and the magnitude of this correlation declines predictably with neighborhood size. In all spatial correlations random and point sampling are similarly correlated with space across neighborhood sizes, but midpoint sampling causes weaker correlations because it incorporates less genetic and geographic distance than the full sample. 
 
@@ -672,9 +698,14 @@ PC regression GWAS in modern human populations does leave residual signal of pop
 Indeed, studies in strongly structured species like \textit{Arabadopsis} have long relied on more sophisticated mixed model approaches to correcting for population structure for precisely this reason \citep{Aranzana2005,Sasaki2015}.
 
 A second point that has received less attention in the literature is the issue of overfitting in GWAS. 
-If a truly causal allele segregates at different frequencies in different populations, then correcting for population structure in a regression analysis will result in an underestimate of its effect size. Though our simulations had no causal alleles, we observed some evidence of this effect in the distribution of $p$-values across the genome (Figure \ref{fig:gwas}D): after PC regression many analyses resulted in $p$-values falling below their expected values from a uniform distribution. This is consistent with a recent empirical study of heritability in human height and body mass index, which found that increasing the number of PC axes used as covariates caused the total proportion of variance explained by SNPs to decline from $\approx0.8$ to $\approx0.75$ \citep{Wainschtein2019}. Indeed SNPs with minor alleles frequencies of 0.001 - 0.01, which are expected to reflect fine scale population structure \citep{Mathieson2012,Novembre2009}, are estimated to explain \textit{negative} proportions of the total phenotypic variance in \citep{Wainschtein2019}.
-\ak{i don't understand what the authors mean here -- how can we have a negative variance?}
-\plr{peter revisit this}
+If a truly causal allele segregates at different frequencies in different populations, then correcting for population structure in a regression analysis will result in an underestimate of its effect size. 
+Though our simulations had no causal alleles, we observed some evidence of this effect in the distribution of $p$-values across the genome (Figure \ref{fig:gwas}D): 
+after PC regression many analyses resulted in $p$-values falling below their expected values from a uniform distribution. 
+This is consistent with a recent empirical study of heritability in human height and body mass index, 
+which found that increasing the number of PC axes used as covariates caused the total proportion of variance explained by SNPs to decline from $\approx0.8$ to $\approx0.75$ \citep{Wainschtein2019}. 
+% Indeed SNPs with minor alleles frequencies of 0.001 - 0.01, which are expected to reflect fine scale population structure \citep{Mathieson2012,Novembre2009}, 
+% are estimated to explain \textit{negative} proportions of the total phenotypic variance in \citep{Wainschtein2019}.
+% \ak{i don't understand what the authors mean here -- how can we have a negative variance?}
 % Searching for genetic associations of polygenic traits that vary systematically across but not within populations through existing GWAS approaches is then unlikely to be successful: the signals are fully confounded, and new analytic methods or experiments controlling for variation in the environment will be necessary to rigorously identify causal variants. 
 
 In summary, spatial covariation in population structure and the environment confound the interpretation of GWAS $p$-values, 

@@ -12,12 +12,14 @@ spaceness.pdf : spaceness.bib $(FIGURES)
 clean: 
 	-rm *.aux *.log *.lof *.lot *.fff *.ttt *.out *.bbl *.blg
 
-%.pdf : %.tex %.aux
+%.pdf : %.tex %.bbl
 	while ( pdflatex $<;  grep -q "Rerun to get" $*.log ) do true ; done
 
-%.aux : %.bbl
-%.bbl : %.tex
-	-pdflatex $< && bibtex $<
+%.aux : %.tex
+	-pdflatex $<
+
+%.bbl : %.aux
+	-bibtex $<
 
 %.svg : %.pdf
 	inkscape $< --export-plain-svg=$@
