@@ -33,7 +33,7 @@
 \RequirePackage[scaled]{helvet}
 \RequirePackage[T1]{fontenc}
 \RequirePackage{url}
-\RequirePackage[colorlinks=false, allcolors=blue, hidelinks]{hyperref}
+\RequirePackage[colorlinks=false, allcolors=blue]{hyperref}
 \RequirePackage{lettrine}
 
 \newcommand{\watermarkfont}{\color{color2}\normalfont\fontsize{10}{12}\selectfont}
