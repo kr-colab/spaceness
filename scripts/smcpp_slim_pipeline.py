@@ -55,16 +55,17 @@ def run_smcpp_plot(input_file, generation_time):
     logging.info("Running:" + cmd)
     subprocess.run(cmd, shell=True, check=True)
 
+#the business
 simdir="/home/cbattey2/spaceness/sims/slimout/spatial/W50_run3"
 outdir="/home/cbattey2/spaceness/demography/smcpp/random_sampling/"
-
 os.chdir(outdir)
 sims=os.listdir(simdir)
+existingfits=os.listdir(outdir)
 #f=sims[1]
 for f in sims:
     simname=os.path.basename(f)
     label=float(re.split("_",simname)[1])
-    if label < 4:
+    if label < 4 and str(label)+".trees" not in existingfits:
         ts=sample_treeseq(infile=os.path.join(simdir,f),
                           outfile="",
                           nSamples=20,
@@ -81,5 +82,8 @@ for f in sims:
         ts=msp.mutate(ts,1e-8/gentime[0],random_seed=12345)
         ts.dump(os.path.join(outdir,str(label)+".trees"))
         write_smcpp_file(str(label)+".trees")
-        run_smcpp_estimate(str(label)+".trees"+".smc.gz",1e-8,50)
-        run_smcpp_plot(str(label)+".trees"+".smc.gz"+".final.json",1)
+        try:
+            run_smcpp_estimate(str(label)+".trees"+".smc.gz",1e-8,50)
+            run_smcpp_plot(str(label)+".trees"+".smc.gz"+".final.json",1)
+        except:
+            print("estimate failed for sigma="+str(label))

@@ -197,21 +197,17 @@ def sample_treeseq(infile,
         extant_nodes=[ts.individual(x).nodes for x in extant_inds] #node numbers for final-generation individuals
         extant_nodes=[a for b in extant_nodes for a in b]
         ts=ts.simplify(extant_nodes)
-        #sample nSamples individuals proportional to their distance from the midpoint where p(sample)=(1/dist**4)/sum(dists_to_point)
         locs=np.array([[x.location[0],x.location[1]] for x in ts.individuals()])
         inds=np.array([x.id for x in ts.individuals()])
-        if nSamples%len(sampling_locs) == 0:
-            inds_per_pt= int(nSamples/len(sampling_locs))
-        else:
-            print("Error: nSamples must be evenly divisible by len(sampling_locs).")
-            return
-        subsample=[]
-        for i in sampling_locs:
-            dists=[scipy.spatial.distance.euclidean(locs[x],i) for x in range(len(locs))]
-            weights=[1/x**4 for x in dists]
-            weights=weights/np.sum(weights)
-            subsample.append(np.random.choice(inds,inds_per_pt,p=weights,replace=False))
-        subsample=[a for b in subsample for a in b]
+        mindists=[]
+        for i in range(len(extant_inds)):
+            row=np.array([])
+            for j in range(len(sampling_locs)):
+                row=np.append(row,spatial.distance.euclidean(u=locs[i],v=sampling_locs[j]))
+            mindists=np.append(mindists,np.min(row))
+        mindists=1/mindists**3
+        mindists=mindists/np.sum(mindists)
+        subsample=np.random.choice(extant_inds,nSamples,p=mindists,replace=False)
         subsample_nodes=[ts.individual(x).nodes for x in subsample] #node numbers for sampled individuals
         subsample_nodes=[a for b in subsample_nodes for a in b] #flatten the list
         subsample_nodes=np.sort(np.array(subsample_nodes))
@@ -349,7 +345,7 @@ def getSLiMSumStats(haps,positions,label,locs,outfile,maxlen,ibs_tracts=True,ver
                                 stop=maxlen)
     sp_dist=np.array(scipy.spatial.distance.pdist(locs))
     gen_sp_corr=np.corrcoef(gen_dist[sp_dist>0],np.log(sp_dist[sp_dist>0]))[0,1]
-    print(gen_sp_corr)
+    #print(gen_sp_corr)
     gen_dist_skew=scipy.stats.skew(gen_dist)
     gen_dist_var=np.var(gen_dist)
     gen_dist_mean=np.mean(gen_dist)

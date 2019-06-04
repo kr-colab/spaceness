@@ -44,21 +44,20 @@ parser.add_argument('--seed', dest='seed',type=int,
 
 args=parser.parse_args()
 
-# ## debug
+## debug
 # args = argparse.Namespace(infile='/Users/cj/spaceness/sims/slimout/spatial/W50_run3/sigma_0.5196493297511975_.trees_3918732',
 #                           outdir="/Users/cj/Desktop/",
 #                           plink_path="plink",
 #                           sampling="point",
 #                           vcftools_path="vcftools",
 #                           nSamples=1000,
-#                           mu=0.25e-8,
-#                           phenotype="random_snps",
+#                           mu=1e-8,
+#                           phenotype="corner_bimodal",
 #                           phenotype_mean=100,
 #                           phenotype_sd=10,
 #                           gentimes="/Users/cj/spaceness/W50sp_gentimes.txt",
 #                           seed=123)
-#ts=pyslim.load('/Users/cj/Desktop/sigma_0.3130183601576863_.trees2000000.trees')
-#ts=ts.recapitate(recombination_rate=1e-9)
+
 
 #sample individuals and add mutations
 np.random.seed(args.seed)
@@ -83,6 +82,7 @@ ts=msp.mutate(ts,args.mu/gentime[0],random_seed=args.seed)
 
 #get haplotypes and locations
 haps=ts.genotype_matrix()
+positions=np.array([s.position for s in ts.sites()])
 sample_inds=np.unique([ts.node(j).individual for j in ts.samples()]) #add check that nodes corresponding to individuals are sequential for future versions?
 locs=[[ts.individual(x).location[0],ts.individual(x).location[1]] for x in sample_inds]
 np.savetxt(os.path.join(args.outdir,simname)+"_locs.txt",locs)
@@ -227,6 +227,16 @@ sp.check_output([args.plink_path,
                  "--out",
                  os.path.join(args.outdir,simname),
                  "--assoc"])
+
+#get per-window LD
+# LD_windows=allel.windowed_r_squared(pos=positions,
+#                                     gn=genotype_counts[:,:,1],
+#                                     size=100000,start=1,stop=100000000)
+# out=np.array([LD_windows[0],LD_windows[1][:,0],LD_windows[1][:,1]])
+# np.savetxt(X=np.transpose(out),fname=os.path.join(args.outdir,simname)+".LD")
+
+#TODO: LD scores + regression against summary stats with LDSC
+
 
 #clean up big files
 sp.check_output(["rm",
