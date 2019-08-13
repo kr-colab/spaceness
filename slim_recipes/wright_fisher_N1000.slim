@@ -1,0 +1,27 @@
+// set up a simple neutral simulation
+initialize()
+{
+	 initializeTreeSeq();
+	 defineConstant("G", 1e8);
+	 initializeMutationType("m1", 0.5, "g", 0.0, 2);
+    initializeGenomicElementType("g1", m1, 1.0);
+    initializeGenomicElement(g1, 0, G-1);
+    initializeMutationRate(0.0);
+    initializeRecombinationRate(1e-9);
+    
+    defineConstant("popsize",10000);
+    defineConstant("outpath","/Users/cj/Desktop/test.trees");
+}
+
+// create a population of 10000 individuals
+1
+{
+	sim.addSubpop("p1", popsize);
+}
+
+// run to generation 2e5
+200000
+{
+	sim.treeSeqOutput(outpath);
+	sim.simulationFinished();
+}

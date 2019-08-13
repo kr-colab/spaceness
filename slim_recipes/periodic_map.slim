@@ -1,17 +1,17 @@
 initialize() {
 
     initializeSLiMModelType("nonWF");
-    initializeSLiMOptions(dimensionality="xy");
-    initializeTreeSeq(checkCoalescence=T);
+    initializeSLiMOptions(dimensionality="xy",periodicity="xy");
+    initializeTreeSeq();
 
-	 sigma=0.5;
+	 sigma=2;
 
     defineConstant("K", 5);  // carrying-capacity per unit square (roughly)
     defineConstant("SD", sigma);  // sigma_D, the dispersal distance
     defineConstant("SI", sigma);  // sigma_I, the spatial interaction distance
-    defineConstant("SM", SI);  // sigma_M, the mate choice distance
+    defineConstant("SM", SD);  // sigma_M, the mate choice distance
     defineConstant("L", 4);    // mean lifetime at stationarity
-    defineConstant("W", 50.0);  // width and height of the simulated area
+    defineConstant("W", 16.0);  // width and height of the simulated area
     defineConstant("G", 1e8);  // genome length
     defineConstant("FECUN", 1/L); // mean fecundity
     defineConstant("RHO", FECUN/((1+FECUN) * K)); // constant in spatial competition function
@@ -19,8 +19,8 @@ initialize() {
     initializeMutationType("m1", 0.5, "g", 0.0, 2);
     initializeGenomicElementType("g1", m1, 1.0);
     initializeGenomicElement(g1, 0, G-1);
-    initializeMutationRate(0.0);
-    initializeRecombinationRate(1e-9); //this is per meiosis 
+    initializeMutationRate(1e-8);
+    initializeRecombinationRate(1e-9);
     
     // spatial competition
     initializeInteractionType(1, "xy", reciprocal=T, maxDistance=SI * 3);
@@ -42,7 +42,7 @@ reproduction() {
             pos = individual.spatialPosition + rnorm(2, 0, SD);
             if (p1.pointInBounds(pos)) {
             offspring = subpop.addCrossed(individual, mate);
-          	offspring.setSpatialPosition(p1.pointReflected(pos));
+          	offspring.setSpatialPosition(p1.pointPeriodic(pos));
           	//offspring.tag = 0; // DEBUG
           	}
         }
@@ -72,7 +72,7 @@ early() {
     //inds.tagF = competition;  // DEBUG
     inds.fitnessScaling = pmin(0.95, 1/(1 + RHO * competition));    
     // avoid edge effects
-    inds.fitnessScaling = inds.fitnessScaling * pmin(sqrt(inds.x/SI), 1.0) * pmin(sqrt(inds.y/SI), 1.0) * pmin(sqrt((W - inds.x)/SI), 1.0) * pmin(sqrt((W - inds.y)/SI), 1.0);
+    //inds.fitnessScaling = inds.fitnessScaling * pmin(sqrt(inds.x/SI), 1.0) * pmin(sqrt(inds.y/SI), 1.0) * pmin(sqrt((W - inds.x)/SI), 1.0) * pmin(sqrt((W - inds.y)/SI), 1.0);
 }
 
 1: late() {
@@ -105,16 +105,14 @@ early() {
     //for (ind in p1.individuals) {
     //	ind.color = rgb2color(c(ind.tag/max_n, ind.tagF/max_f, ind.age/max_a));
     //}
-    if((sim.generation % 1e3)==0){
-    	if(sim.treeSeqCoalesced()){
-    	   outname=outpath+"_"+format("%.0f",runif(1,1e6,1e7-1));
-    	   sim.treeSeqOutput(outpath);
-    	   sim.simulationFinished();
-    	}
-	 }
+    //if((sim.generation % 5e4)==0){
+    //  //outpath = "/Users/cj/Desktop/testsim.trees";
+    //  outname = outpath+sim.generation+".trees";
+    //  sim.treeSeqOutput(outname);
+	 //}
 }
 
-1000000 late() {
+150000 late() {
 	//needlessly complicated way of appending integers to file names if they already exist 
 	//tmp=strsplit(outpath,"/"); 
 	//outdir=paste(tmp[0:(length(tmp)-2)],"/");
@@ -127,7 +125,7 @@ early() {
 	//    }
 	//  j=j+1;
 	//}
-	outname=outpath+"_"+format("%.0f",runif(1,1e6,1e7-1));
-   sim.treeSeqOutput(outpath);
+   //sim.treeSeqOutput(outpath);
+   //p1.outputVCFSample(50,F,filePath="/Users/cj/spaceness/demography/smcpp/data/spatial_s0.2.vcf");
    sim.simulationFinished();
 }

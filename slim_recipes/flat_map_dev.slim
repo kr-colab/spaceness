@@ -6,8 +6,8 @@ initialize() {
 
 	 //outpath="/Users/cj/Desktop/test.slim";
 	 //sigma_d=1;
-	 sigma_i=0.3;
-	 recomb=1e-9;
+	 sigma_i=0.5;
+	 recomb=1e-8;
 
     defineConstant("K", 5);  // carrying-capacity per unit square (roughly)
     defineConstant("SD", sigma_i);  // sigma_D, the dispersal distance
@@ -65,7 +65,8 @@ reproduction() {
 
     // header info
     cat("gen" + " " + "stage" + " " + "age" + " " + "density");
-    catn(" " + "neighbor" + " " + "harm_neigh" + " " + "num_off" + " " + "time");
+    catn(" " + "neighbor" + " " + "harm_neigh" + " " + "num_off" + 
+    " " +"var_off"+" "+ "time");
 }
 
 early() {
@@ -86,7 +87,7 @@ early() {
 2: early() {
     if ((sim.generation % 20) == 0) {
         cat(sim.generation + " " + "early" + " " + mean(p1.individuals.age) + " " + p1.individualCount/W^2);
-        cat(" " + mean(p1.individuals.tagF) + " " + 1/mean(1/p1.individuals.tagF) + " " + mean(p1.individuals.tag));
+        cat(" " + mean(p1.individuals.tagF) + " " + 1/mean(1/p1.individuals.tagF) + " " + mean(p1.individuals.tag)+" "+var(p1.individuals.tag));
         catn(" " + clock());
     }
 }
@@ -94,7 +95,7 @@ early() {
 2: late() {
     if ((sim.generation % 20) == 0) {
         cat(sim.generation + " " + "late " + " " + mean(p1.individuals.age) + " " + p1.individualCount/W^2);
-        cat(" " + mean(p1.individuals.tagF) + " " + 1/mean(1/p1.individuals.tagF) + " " + mean(p1.individuals.tag));
+        cat(" " + mean(p1.individuals.tagF) + " " + 1/mean(1/p1.individuals.tagF) + " " + mean(p1.individuals.tag)+" "+var(p1.individuals.tag));
         catn(" " + clock());
     }
     

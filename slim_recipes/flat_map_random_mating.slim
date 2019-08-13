@@ -4,16 +4,12 @@ initialize() {
     initializeSLiMOptions(dimensionality="xy");
     initializeTreeSeq();
 
-	 //outpath="/Users/cj/Desktop/test.slim";
-	 //sigma_d=1;
-	 //sigma=0.25;
-
     defineConstant("K", 5);  // carrying-capacity per unit square (roughly)
     defineConstant("SD", sigma);  // sigma_D, the dispersal distance
     defineConstant("SI", sigma);  // sigma_I, the spatial interaction distance
     defineConstant("SM", SI);  // sigma_M, the mate choice distance
     defineConstant("L", 4);    // mean lifetime at stationarity
-    defineConstant("W", 16.0);  // width and height of the simulated area
+    defineConstant("W", 50.0);  // width and height of the simulated area
     defineConstant("G", 1e8);  // genome length
     defineConstant("FECUN", 1/L); // mean fecundity
     defineConstant("RHO", FECUN/((1+FECUN) * K)); // constant in spatial competition function
@@ -47,7 +43,7 @@ reproduction() {
             if (p1.pointInBounds(pos)) {
             offspring = subpop.addCrossed(individual, mate);
           	offspring.setSpatialPosition(p1.pointReflected(pos));
-          	offspring.tag = 0; // DEBUG
+          	//offspring.tag = 0; // DEBUG
           	}
         }
     }
@@ -109,9 +105,27 @@ early() {
    // for (ind in p1.individuals) {
    // 	ind.color = rgb2color(c(ind.tag/max_n, ind.tagF/max_f, ind.age/max_a));
    // }
+   if((sim.generation % 4e4)==0){
+   	sim.treeSeqRememberIndividuals(p1.individuals);
+      outname = outpath+sim.generation+".trees";
+      sim.treeSeqOutput(outname);
+	 }
 }
 
-500000 late() {
-	sim.treeSeqOutput(outpath);
+2000000 late() {
+	//needlessly complicated way of appending integers to file names if they already exist 
+	//tmp=strsplit(outpath,"/"); 
+	//outdir=paste(tmp[0:(length(tmp)-2)],"/");
+	//j=1;
+	//while(any(filesAtPath(outdir,T)==outpath)){
+	//  if(j==1){
+	//    outpath=substr(outpath,0,nchar(outpath)-7)+j+"_.trees";
+	//    } else {
+	//    outpath=substr(outpath,0,nchar(outpath)-9)+j+"_.trees";
+	//    }
+	//  j=j+1;
+	//}
+   sim.treeSeqOutput(outpath);
    sim.simulationFinished();
 }
+
