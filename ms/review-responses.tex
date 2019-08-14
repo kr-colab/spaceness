@@ -1,0 +1,526 @@
+%%%%%%
+%%
+%%  Don't reorder the reviewer points; that'll mess up the automatic referencing!
+%%
+%%%%%
+
+\begin{minipage}[b]{2.5in}
+  Resubmission Cover Letter \\
+    {\it Genetics}
+\end{minipage}
+\hfill
+\begin{minipage}[b]{2.5in}
+    C.~J.~Battey, \\
+    Peter Ralph, \\
+    \emph{and} Andrew Kern \\
+  \today
+\end{minipage}
+ 
+\vskip 2em
+ 
+\noindent
+{\bf To the Editor(s) -- }
+ 
+\vskip 1em
+
+We are writing to submit a revised version of our manuscript, 
+``Space is the Place: Effects of Continuous Spatial Structure on Analysis of Population Genetic Data''.
+
+
+
+\vspace{5em}
+
+\noindent \hspace{4em}
+\begin{minipage}{3in}
+\noindent
+{\bf Sincerely,}
+
+\vskip 2em
+
+{\bf 
+C.~J.~Battey, Peter Ralph, and Andrew Kern
+}\\
+\end{minipage}
+
+\vskip 4em
+
+\pagebreak
+\setcounter{page}{1}
+
+%%%%%%%%%%%%%%
+\reviewersection{AE}
+
+\begin{quote}
+    The manuscript admirably explores a lot of consequences of
+    isolation-by-distance in the context of a novel model that is easily amenable
+    to forward simulation; however, given that this model may be used in a lot of
+    future studies based on the precedent set here, there is some concern about the
+    model and its support. Reviewers 2 and 3 highlight this in particular (it
+    underlies the main 2 points of reviewer 2's review, and the core of Reviewer
+    3's comment), and I agree. Whatever can be done to strengthen the standing of
+    this model, and/or connect it to more thoroughly studied models, will be
+    helpful for the manuscript. The concern would be that there are peculiarities
+    of this model that do not generalize well. A new supplemental section or opener
+    to the results section establishing the model more thoroughly would make the
+    strongest response.
+\end{quote}
+
+\plr{I would generally cut down the quoted bits like the above to only what's essential,
+     but haven't done that yet.}
+
+ \plr{IMPORTANT: don't reorder or delete "points" below - it messes up the automatic numbering!}
+
+\begin{point}{Line 35:}
+    Also cite Wilkins and Wakeley, Genetics 2002; Wilkins 2004
+\end{point}
+
+\reply{
+}
+
+\begin{point}{\revref}
+    "Such models have been used extensively in ecological modeling but rarely in population genetics " Detailing these previous uses via citations and elaboration may help alleviate the major concern about the provenenance of this model and its unique behaviors (see general comments above and R2 and R3 comments).
+\end{point}
+
+\reply{
+}
+
+\begin{point}{\revref}
+    Please describe computation time needed per replicate
+\end{point}
+
+\reply{
+}
+
+\begin{point}{\revref}
+    I read the acknowledgement to the Hearth and Creative Sky Brewing with a sense of familiarity in feeling of gratitude to my own favorite cafes and breweries, but I it's not a great precedent for Acknowledgements to be filled this way. Please cut.
+\end{point}
+
+\reply{
+    Good point; we have done this.
+}
+
+\begin{point}{Figure 4:}
+    Show random-mating expectation
+\end{point}
+
+\reply{
+}
+
+\begin{point}{Figure 3A, S2:}
+    Perhaps more revealing to show on log-log scale?
+\end{point}
+
+\reply{
+}
+
+\begin{point}{Figure S3:}
+    Caption seems to be missing detail 
+\end{point}
+
+\reply{
+}
+
+
+
+%%%%%%%%%%%%%%
+\reviewersection{1}
+
+
+\begin{quote}
+    This study explores biases arising in population-based inference when 1)
+    real population samples are coming from spatial habitat with various degree
+    of structuring while inference is made assuming random mating population;
+    2) imperfect sampling in practice that fails to represent full diversity
+    across entire population habitat; 3) phenotypes that vary across geography
+    and create spurious associations with genotypes. While earlier studies
+    explored the effect of strong structure on population genetic inference and
+    GWAS, this work focuses on less extreme scenarios of structuring that
+    arises in populations evolving in continuous habitat. By using
+    non-Wright-Fisher model, authors simulated chromosome-scale samples from
+    populations that evolved in continuous space, and that can model
+    environmental factors to create phenotypes varying over space. As a result,
+    this study identified spatial structuring scenarios (small neighbourhood
+    size ~ 10-100) that coupled with imperfect sampling strategies lead to a
+    biased inference of widely used population genetic statistics (altogether
+    18 statistics) such as pi (average pairwise sequence differences),
+    heterozygosity (and inbreeding coefficient), and IBS tract sharing.
+    Accordingly, inference of the effective population size history was also
+    strongly affected under these parameter ranges. Finally, the authors use
+    their spatial modelling to demonstrate that typical GWAS with PC-based
+    correction cannot entirely remove spurious signals of genotype-phenotype
+    associations arising from purely environmental factors.  Overall, the
+    authors explore an important but often neglected source of bias that can
+    affect inference in many population-based studies (in medical genetics,
+    evolutionary biology and ecology). This study can be of interest to a
+    broader audience of readership, and I have only minor comments to improve
+    clarity and increase accessibility for readers:
+\end{quote}
+
+
+\begin{point}{}
+    When neighbourhood size is small (10-100), the mean number of IBS tracts > 2bp (nIBS as in Table S1) is elevated similar to Wright's inbreeding coefficient, but mean of the distribution of pairwise IBS (mean(IBS)) is decreased. What could be the source of this discrepancy? How exactly mean(IBS) was calculated?
+\end{point}
+
+\reply{
+}
+
+\begin{point}{}
+    The authors use K to denote both carrying capacity \llname{ll:K_defn}
+    and population density \llname{ll:K_again}. 
+    It might be better to use a different notation for these quantities since carrying capacity is fixed while density is an emergent quantity in the non-Wright-Fisher model. Use of K to denote carrying capacity and density is a bit confusing. For example, on \llname{ll:K_more} it is said that ' the "population density" (K) and "mean lifetime" (L) parameters were the same in all simulations'. Here K seems to indicate carrying capacity rather than density? The latter is an emergent quantity and varies across simulation runs?
+\end{point}
+
+\reply{
+    We agree that this distinction is worth emphasizing!
+    We've adjusted our language to hopefully remind the reader that
+    $K$ is a parameter that controls population density, rather than being equal to it,
+    at \llname{ll:K_again} and \revref{} and \llname{ll:K_more}.
+}
+
+\begin{point}{}
+    Concerning the non-Wright-Fisher model used, it would be helpful to emphasize that some of the parameters are emergent in contrast to Wright-Fisher model. For example, on Page 11, lines 306-308, the author's goal was to look at census size variation and variation in other quantities. This would be better understood if to emphasize that these parameters are emergent properties in the non-Wright-Fisher model used.
+\end{point}
+
+\reply{
+}
+
+\begin{point}{}
+    Page 9, line 242, Perhaps 'Demographic Inference' might better reflect the content of this section.
+\end{point}
+
+\reply{
+}
+
+\begin{point}{\revref}
+    This sentence with 'Gaussian noise with mean zero and standard deviation 10' is confusing since it was mentioned earlier that the modelled phenotype must vary as human height across Europe, and human height varies 2 standard deviations. Only after reading the whole paragraph it becomes clear that 'standard deviation 10' here referes to unit of height. Please consider rephrasing this sentence.
+\end{point}
+
+\reply{
+}
+
+\begin{point}{\revref}
+    In the sentence, 'We also examined p values for systemic inflation' I think the authors meant 'systematic inflation'.
+\end{point}
+
+\reply{
+    Whoops; thanks. Fixed.
+}
+
+\begin{point}{}
+    Page 11, Please correct the legend in Figure 2: must be 'spatial model' and 'random mating' model.
+\end{point}
+
+\reply{
+}
+
+\begin{point}{}
+    Optional: a dashed line in Figure 2 that shows the total carrying capacity of 50*50*5=12500 would be helpful.
+\end{point}
+
+\reply{
+}
+
+\begin{point}{}
+    Page 13, line 349, The phrase 'affect summaries of variation' is better to replace with 'summaries of genetic variation'.
+\end{point}
+
+\reply{
+}
+
+\begin{point}{}
+    Please add or correct references to supplementary figures: For example, Figure S2 was probably meant to accompany Figure 3A, while Figure S1 Figure 3B, but references in the text are absent. In fact, the first reference is made to Figure S3 on page 15.
+\end{point}
+
+\reply{
+}
+
+
+\begin{point}{}
+    There are also several typos and errors in the text. For example, on Page 12, lines 309; Page 27, line 655.
+\end{point}
+
+\reply{
+}
+
+
+
+%%%%%%%%%%%%%%
+\reviewersection{2}
+
+
+\begin{quote}
+    Battey et al. use spatially explicit population genetic simulations to
+    analyze the effects of spatial structure on (i) the estimation of key
+    population genetic parameters, in turn used to (ii) make inferences about
+    population history, and on (iii) confounding in genome-wide association
+    studies (GWAS). I Liked the paper a lot. It's interesting, well-written and
+    addresses an important question - the effect of spatial population
+    structure on population genetic statistics and inference-and I enjoyed
+    reading it. The most positive aspects were:
+
+    \begin{enumerate}
+        \item It nice to actually see spatially explicit simulations and I'm happy that forward simulation is now fast enough that you can do this sort of thing.
+        \item The paper is very clear and well-written, easy to understand the motivation and most of the details. That's not always the case for this sort of paper.
+        \item I felt that the section about the effect on GWAS was the most interesting and novel part of the paper and gave me some intuition that I hadn't had before.
+    \end{enumerate}
+
+    I don't have any major criticisms. There were a few aspects that I thought might warrant some additional discussion, and a few specific questions below. The general questions I had after reading it were:
+\end{quote}
+
+\begin{point}{}
+    To what extent are any of the results dependent on the exact method of simulation. There are a number of choices about the exact details of the simulations (e.g. the way the overlapping generations are handled, the edge effects and, particularly, the form of Equation 1 - see below). It's not so much that these are non-standard (since I don't think there is a standard) and they all sort of make sense heuristically, and I was left wondering whether these sorts of choices actually make a difference. Do the authors have some thoughts/intuition/results about that? Given that the results in Fig. 3 seem quite consistent with expectations, I suspect that on some level it doesn't make much difference but then there are intermediate results like Fig. 2 which seem a bit counter-intuitive and I wonder if those aspects depend on the simulation scheme.
+\end{point}
+
+\reply{
+}
+
+\begin{point}{}
+    Related to the first point, to what extent are the results qualitatively different to those that would be obtained in a stepping-stone model? My interpretation is that they are actually very similar, but I didn't see whether that was explicitly discussed. In some sense, it's still easier to do large simulations in a stepping-stone model so it would be nice to be reassured that that's still ok.
+\end{point}
+
+\reply{
+}
+
+
+\begin{point}{}
+    The source of equation (1) is not obvious to me. I sort of see how it makes sense, but a little but more intuition or a brief derivation or an illuminating either in the main text or the supplement, would be helpful.
+\end{point}
+
+\reply{
+}
+
+\begin{point}{}
+    The authors use a scaling factor in equation (2) to counteract the increase in fitness of individuals at the edges. Can they provide a figure showing that this is the case. What does "roughly" mean on line 164. Perhaps a heatmap of the fitness of individuals across the grid with and without the scaling factor?
+\end{point}
+
+\reply{
+}
+
+\begin{point}{}
+    It would be helpful provide the figure showing that generating mutations during the forward simulations in SLIM is equivalent to applying mutations using msprime on pre-generated trees (line 185)? It sounds like this procedure would underestimate the variance in the number of mutations, since you remove the effect of random generation time. Is this effect small?
+\end{point}
+
+\reply{
+}
+
+\begin{point}{}
+    Can the authors provide a bit more intuition behind the patterns of variation seen in generation time, census population size, and variance in the number of offspring with respect to neighborhood size seen in Figure 2? For example, it is not obvious to me why the census population size, for example, should decline systematically with respect to neighborhood size. Presumably this isn't just due to the local demographic stochasticity. Could the authors briefly interpret the observed patterns or cite appropriate literature?
+\end{point}
+
+\reply{
+}
+
+\begin{point}{}
+    Fig. 7D: I am surprised by the extent to which the observed values of -log10(p) fall below the y=x line. Particularly in the lower right panel for large neighbourhood sizes. I would expect that to be close to panmictic - why are the P-values underdispersed? That seems like a potential bug, or else something weird is going on.
+\end{point}
+
+\reply{
+}
+
+\begin{point}{}
+    Lines 706-716, It might be worth citing Haworth et al Nature Communications 2019 (https://doi.org/10.1038/s41467-018-08219-1) who do the proposed test (GWAS for birth location) in UK Biobank to illustrate the population structure.
+\end{point}
+
+\reply{
+}
+
+\begin{point}{}
+    The analysis and discussion around the effect of GWAS is focused on PCA correction. Do mixed models help at all?
+\end{point}
+
+\reply{
+}
+
+\begin{point}{}
+    The github link to the code didn't work for me. I assume it will be made public later, but at this point I can't tell whether the code is available/useable.
+\end{point}
+
+\reply{
+}
+
+
+%%%%%%%%%%%%%%%%%%%
+\reviewersection{3}
+
+\begin{quote}
+    The present study deals with a "hot topic" in spatial population genetics. Most
+    inferential and descriptive methods in statistical spatial population
+    genetic rely on a discrete approximation of space and it is not clear what
+    impact this approximation may have when individuals migrate along a
+    continuum instead. Spatial patterns in sampling is also another major issue
+    which is often simply dismissed, mainly because of the paucity of
+    statistical methods to deal with it. This work touches on these important
+    issues in a timely manner.
+\end{quote}
+
+\begin{quote}
+    Although I was enthusiastic about the topic, I was quite disappointed with
+    the core of the study, i.e., the forward-in-time simulation of populations in
+    continuous space. The field has been struggling with this issue for decades --
+    examples of spectacular failures like the Wright-Malecot model (see
+    Felsenstein's "pain in the torus' article, 1975) or, more recently, the
+    ``mugration' or ``discrete trait analysis' model in phylodynamics (see De Maio
+    et al. 2015) have probably mostly harmed our research field -- that one cannot
+    make the economy of using a sound probabilistic model for generating
+    geo-referenced genetic data. It does not seem to be the case here
+    unfortunately.  
+\end{quote}
+
+\begin{point}{}
+    First, the simulation starts with individuals distributed uniformly at random in space. Is there any indication that the three-step algorithm used here maintains this distribution during the course of evolution? If it does not, then is there any stationary regime and how many generations does one need to wait before reaching it? I do appreciate that the competitive interaction term was introduced in order to avoid seeing the ``clumping' of individuals that hampers the Wright-Malecot model. Yet, just because there are no such clusters does not mean that the spatial distribution of individuals reaches a stable regime and that the distribution reached, if any, is reasonable from a biological perspective.
+\end{point}
+
+\reply{
+}
+
+Second, the demographic process used here involves birth and death of individuals. Does the population survive asymptotically or, like any birth-death process, eventually dies with probability one? In fact, one needs to know a little about the dynamics of the population size to decide whether the corresponding process is reasonable from a biological standpoint.
+\begin{point}{}
+
+\end{point}
+
+\reply{
+}
+
+\begin{point}{}
+    Third, it is not clear what the relationship between the expected lifespan and the probability of survival is. The expected lifespan, L, is first defined as the inverse of the expected number of offspring produced by a parent. The authors also define the probability of survival of a given individual at a given point in space, $p_i$. Hence, the expected lifespan at a point in space (and time) is the mean of a geometric distribution with parameter $p_i$, i.e., $1/p_i$. Now, it is far from being obvious what the relationship between these two approaches for defining the expected lifespan actually is.
+\end{point}
+
+\reply{
+}
+
+\begin{point}{}
+    Also, the web page https://github.com/petrelharp/spaceness does not seem to exist so that I was not able to experiment with the forward-in-time generator used here unfortunately.
+\end{point}
+
+\reply{
+}
+
+\begin{point}{}
+    All in all, more efforts need to be made here in my opinion to show that the forward-in-time simulations generate sensible outcomes. Sensible in terms of the behavior of the population demography at equilibrium (provided such equilibrium indeed exists) along with that of the spatial distribution of individuals. The authors could provide some guarantee of the good behavior of their model as evidenced from simulations using a broad range of parameter values for generating data. Alternatively, they could elect to use the spatial-Lambda-Fleming-Viot model for their simulations, which, in my opinion would seem the most sensible option given that (1) it is possible to run backward-in-time simulations under this model, thereby saving a lot of computation time and (2) it is a well-studied model with good mathematical and biological properties and (3) it is implemented in a publicly available software program (https://github.com/jeromekelleher/discsim)
+\end{point}
+
+\reply{
+}
+
+\begin{point}{}
+    Figure 2: I do not understand why the neighborhood size varies to the same extent in the random mating model as it does for the spatial model. For the random mating model, I would have expected the neighborhood size to be equal to the census size since all individuals have the same probability of being a parent of any given offspring. From lines 166->171, it is clear that the spatial model would converge to the random mating model when the mean parent-offspring distance tends to infinity only if we were to ignore the impact of range edges. I am thus wondering whether the variation of neighborhood size one observes in Fig 2 for the random mating model is just a consequence of border effects. If that is the case, then the authors should state it clearly and try to justify it from a biological perspective.
+\end{point}
+
+\reply{
+}
+
+\begin{point}{}
+    Line 729-731: "Many more species occur in a middle range of neighborhood sizes between 100 and 1000 - a range in which spatial processes play a minor role in our analyses [...]". Do the authors think that the spatial processes would still play a minor role when neighborhood sizes exceed 100-1000 if the habitat was larger than that taken in the present simulations? It would also probably be useful to mention that neighborhood sizes given in Table 1 should be compared with extreme caution since the size of the corresponding habitats vary across species. More generally, I suspect that the size of the habitat has a substantial impact on the vast majority of statistics examined in this study. Indeed, the mean parent-offspring distance, which is at the core of the definition of Wright's neighborhood size, is only small or large relative to the size of the habitat.
+\end{point}
+
+\reply{
+}
+
+\begin{point}{}
+    Line 753-757: please add a reference to Guindon, Guo and Welch (2016). This study clearly shows that population density and dispersal parameters are identifiable and can indeed be estimated in practice under the spatial Lambda-Fleming-Viot model.
+\end{point}
+
+\reply{
+}
+
+
+%%%%%%%%%%%%%%%%%%%
+\reviewersection{4}
+
+
+\begin{quote}
+    The manuscript by Battey et al explores the consequence of a well-known
+    violation to population genetic models: the fact that populations are
+    spatially structured and mate along a geographical cline, rather than
+    randomly. This topic is important, particularly in light of recent working
+    describing how spatially correlated genetic and environmental impacts can
+    confound some population genetic insights, such as positive selection for
+    height in Europe. The analyses and investigations presented here are
+    thorough and sensible, and my comments are primarily intended to broaden
+    accessibility for this interesting topic.
+\end{quote}
+
+\begin{point}{}
+    Introduction. The discussion is very clear, articulating the three primary goals of the project: the impact of failing to model spatial population structure on 1) population genetic summary statistics, 2) inference on demographic history from population genetic data, and 3) impacts on GWAS summary statistics. I found the discussion a bit easier to follow than the introduction and would suggest streamlining and introducing the topic a bit more. Since the paper follows the flow described in the discussion, it might help orient readers by introducing these topics in the same order.
+\end{point}
+
+\reply{
+}
+
+\begin{point}{}
+    I agree that most modern work describes structure as discrete populations connected by migration. However, some methods/studies have explicitly modeled spatial structure, e.g. especially in ecology or using methods like dadi (diffusion approximations). Highlighting some examples of previously identified structure not possible to infer without modeling geography would be helpful to contextualize this work.
+\end{point}
+
+\reply{
+}
+
+\begin{point}{}
+    There is some reference to spatial models using grids (e.g. Rousset 1997). Some additional discussion contextualizing more recent methods like EEMS that also construct demes and model migration through divergence between neighboring demes would be helpful and interesting.
+\end{point}
+
+\reply{
+}
+
+\begin{point}{}
+    Demographic modeling. Both approaches tested, stairwayplot and SMC++, are most sensitive to older demographic events, and consequently are very noisy and underestimate effect population sizes, especially in smaller neighborhood sizes. Models that consider haplotype structure are much better suited to this time period. It would be helpful to either 1) discuss the varying time sensitivities of different classes of demographic inference methods and how spatial patterns of genetic variation would influence these inferences, or 2) apply a method of this class (many options, e.g. DoRIS, IBDNe, Tracts, Globetrotter, etc) and show how it performs.
+\end{point}
+
+\reply{
+}
+
+\begin{point}{}
+    GWAS mixed models. To what extent can spatial signals (e.g. corner, patchy) be corrected with mixed models, e.g. with PCs and PC-adjusted GRM as in Conomos et al, 2016 using PC-AiR and PC-Relate)? Is patchiness related to dispersal? I'm curious how this relates to the predictive ability of GWAS phenotypes with some spatial association that may or may not be associated with environmental effects.
+\end{point}
+
+\reply{
+}
+
+\begin{point}{}
+    Code availability. This github link doesn't work, but is important to be able to evaluate for review: https://github.com/petrelharp/spaceness
+\end{point}
+
+\reply{
+}
+
+\begin{point}{}
+    Definitions and interpretations. There are quite a large number of metrics discussed in Figure 3B, and it's a lot to take in. It might be helpful to have a table with a reminder of what the metric is, its interpretation, and how it is computed.
+\end{point}
+
+\reply{
+}
+
+\begin{point}{}
+    Notation: "Offspring disperse a Gaussian-distributed distance away from the parent with mean zero and standard deviation $\sigma$ in both the x and y coordinates. Each offspring is produced with a mate selected randomly from those within distance $3\sigma$, with probability of choosing a neighbor at distance $x$ proportional to $\exp(-x^2/2\sigma^2)$." I think x may be overloaded here, or I'm confused. Clarify?
+\end{point}
+
+\reply{
+}
+
+\begin{point}{}
+    When introducing the "spatial model" as opposed to this "random model," the more concrete illustration in Figure 1 hasn't yet been referenced, which makes it harder to follow. It would be helpful to introduce this figure with the model. Additionally, when Figure 1 is introduced, the order is from right to left (random, then point, then midpoint). It would be helpful to rearrange the figure to mirror what's in the text.
+\end{point}
+
+\reply{
+}
+
+\begin{point}{}
+    Not sure I follow this example: "Concretely, an individual at position (x, y) in a 50 × 50 landscape has mean phenotype 100 + 2x/5."
+\end{point}
+
+\reply{
+}
+
+\begin{point}{}
+    Minor typo (through vs though): "This occurs because, even through the "population density" (K) and "mean lifetime" (L) parameters..."
+\end{point}
+
+\reply{
+}
+
+\begin{point}{}
+    Define NS abbreviation in Figure 5.
+\end{point}
+
+\reply{
+}
+

@@ -7,7 +7,7 @@ all: spaceness.pdf
 #   echo $(grep includegr spaceness.tex | sed -e 's/.*{\([^}]*\)}.*/\1/')
 FIGURES = figures/sampling_maps.pdf figures/pop_params.pdf figures/sfs_w_sumstats.pdf figures/stairwayplot_facet_rollmean.pdf figures/gwas_summary.pdf figures/sumstats_by_neighbors_allstats.pdf figures/fig_S1_sfs_grid_model_by_sampling.pdf figures/het_z_by_ind.pdf 
 
-spaceness.pdf : spaceness.bib $(FIGURES)
+spaceness.pdf : spaceness.bib review-responses.tex $(FIGURES)
 
 clean: 
 	-rm *.aux *.log *.lof *.lot *.fff *.ttt *.out *.bbl *.blg

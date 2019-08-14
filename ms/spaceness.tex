@@ -31,6 +31,16 @@
 \newcommand{\plr}[1]{\ifcomments{{\color{purple} \it (#1)}}\else{}\fi}
 \newcommand{\ak}[1]{\ifcomments{{\color{red} \it (#1)}}\else{}\fi}
 
+%%%%%%%%%%%
+% for responses to reviewers
+% set this to show line numbers and include responses to reviews or not
+\newif\ifreviewresponses
+\reviewresponsestrue  % include them
+% \reviewresponsesfalse  % don't include them
+\input{review-response-commands}
+\newcommand{\responsefile}{review-responses.tex}  % name of the review reponses file
+
+
 
 %Space is the Place: How Dispersal and Competition Shape Genetic Variation in Continuous Space
 %Impacts of Continuous Spatial Structure on Analyses of Population Genetic Data
@@ -146,7 +156,9 @@ assumptions whose impacts are unknown.
 An alternative method for dealing with continuous geography is a new class of coalescent models,
 the Spatial Lambda Fleming-Viot models \citep{Barton2010,Kelleher2014}.
 
-To avoid questionable assumptions, we here used forward-time, individual-based simulations. By scaling the probability of survival in each timestep to local population density we shift reproductive output towards low-density regions, which prevents populations from clustering. Such models have been used extensively in ecological modeling but rarely in population genetics, where to our knowledge previous implementations of continuous space models have focused on a small number of genetic loci, which limits the ability to investigate the impacts of continuous space on genome-wide genetic variation as is now routinely sampled from real organisms. By simulating chromosome-scale sequence alignments and complete population histories we are able to treat our simulations as real populations and replicate the sampling designs and analyses commonly conducted on real genomic data.
+To avoid questionable assumptions, we here used forward-time, individual-based simulations. By scaling the probability of survival in each timestep to local population density we shift reproductive output towards low-density regions, which prevents populations from clustering. 
+Such models have been used extensively in ecological modeling but rarely in population genetics, where to our knowledge previous implementations of continuous space models have focused on a small number of genetic loci, which limits the ability to investigate the impacts of continuous space on genome-wide genetic variation as is now routinely sampled from real organisms.  \revpoint{AE}{2}
+By simulating chromosome-scale sequence alignments and complete population histories we are able to treat our simulations as real populations and replicate the sampling designs and analyses commonly conducted on real genomic data.
 
 %%%%%%%%%%%%
 \subsection{A Forward-Time Model of Evolution in Continuous Space}
@@ -170,13 +182,14 @@ where $g$ is the Gaussian density with mean zero and standard deviation $\sigma$
 Then, the sum of all competitive interactions with individual $i$ is $n_i = \sum_j g(d_{ij})$,
 where $d_{ij}$ is the distance between individuals $i$ and $j$ and the sum is over all neighbors within distance $3 \sigma$.
 Since $g$ is a probability density, $n_i$ is an estimate of the number of nearby individuals per unit area.
-Then, given a per-unit carrying capacity $K$, the probability of survival until the next time step for individual $i$ is
+Then, given a per-unit carrying capacity $K$, \llabel{ll:K_defn}
+the probability of survival until the next time step for individual $i$ is
 \begin{equation}
     p_i 
     =
     \min\left( 0.95, \frac{1}{1 + n_i / (K (1+L))} \right) .
 \end{equation}
-We chose this functional form so that the equilibrium population density per unit area is around $K$,
+We chose this functional form so that the equilibrium population density per unit area is close to $K$, \llabel{ll:K_again}
 and the mean lifetime is around $L$.
 
 An important step in creating any spatial model is dealing with range edges. 
@@ -203,7 +216,7 @@ We stored the full genealogy and recombination history of final-generation indiv
 as implemented in SLiM \citep{haller2019treesequence}. 
 Scripts for figures and analyses are available at \url{https://github.com/petrelharp/spaceness}.  
 
-We ran 400 simulations for the spatial and random-mating models on a square landscape of width $W=50$ 
+We ran 400 simulations for the spatial and random-mating models on a square landscape of width $W=50$  \revpoint{AE}{3}
 with per-unit carrying capacity $K=5$ (census $N \approx 10,000$), 
 average lifetime $L=4$, 
 genome size = $10^{8}$, 
@@ -220,7 +233,7 @@ Simulations were run for 1.6 million timesteps (approximately $30N$ generations)
 %%%%%%%%%%%%%
 \subsection{Demographic Parameters}
 
-Our demographic model includes parameters for population density ($K$),
+Our demographic model includes parameters that control population density ($K$), \revpoint{1}{2}
 mean life span ($L$), and dispersal distance ($\sigma$).
 However, nonlinearity of local demographic stochasticity causes
 actual realized averages of these demographic quantitites to deviate from the specified values
@@ -283,7 +296,7 @@ To evaluate the performance of these methods we binned simulations by neighborho
 To assess the degree to which spatial structure confounds GWAS we simulated four types of nongenetic phenotype variation for 1000 randomly sampled individuals in each spatial SLiM simulation and conducted a linear regression GWAS with principal components as covariates in PLINK \citep{PURCELL2007}. SNPs with a minor allele frequency less than 0.5\% were excluded from this analysis. Phenotype values were set to vary by two standard deviations across the landscape in a rough approximation of the variation seen in height across Europe \citep{Turchin2012,garcia2006,garcia2007}. Conceptually our approach is similar to that taken by \citet{Mathieson2012}, though here we model fully continuous spatial variation and compare GWAS output across a range of dispersal distances. 
 
 In all simulations, the phenotype of each individual
-is determined by adding independent Gaussian noise with mean zero and standard deviation 10
+is determined by adding independent Gaussian noise with mean zero and standard deviation 10 \revpoint{1}{5}
 to a mean that may depend on spatial position.
 We adjust the geographic pattern of mean phenotype to create spatially autocorrelated environmental influences on phenotype.
 In the first simulation of \emph{nonspatial} environments, the mean did not change,
@@ -302,7 +315,8 @@ SNPs were first filtered to remove strongly linked sites by calculating LD betwe
 
 We ran linear-model GWAS both with and without the first 10 principal components as covariates in PLINK and summarized results across simulations by counting the number of SNPs 
 with $p$-value below $0.05$ after adjusting for an expected false positive rate of less than 5\% \citep{benjamini2001control}. 
-We also examined $p$ values for systemic inflation by estimating the expected values from a uniform distribution (because no SNPs were used when generating phenotypes), plotting observed against expected values for all simulations, and summarizing across simulations by finding the mean $\sigma$ value in each region of quantile-quantile space. 
+We also examined $p$ values for systematic inflation \revpoint{1}{6}
+by estimating the expected values from a uniform distribution (because no SNPs were used when generating phenotypes), plotting observed against expected values for all simulations, and summarizing across simulations by finding the mean $\sigma$ value in each region of quantile-quantile space. 
 Results from all analyses were summarized and plotted with the ``ggplot2'' \citep{Wickham2016} and ``cowplot'' \citep{Wilke2019} packages in R \citep{Rcore2018}. 
 
 
@@ -319,7 +333,7 @@ has a surprisingly large effect on demographic quantities that are usually fixed
 the generation time, census population size, and variance in offspring number.
 These are shown in Figure~\ref{fig:genparams}.
 This occurs because,
-even through the ``population density'' ($K$) and ``mean lifetime'' ($L$) parameters
+even through the parameters $K$ and $L$ that control population density and mean lifetime respectively \llabel{ll:K_more}
 were the same in all simulations,
 the strength of stochastic effects depends strongly on $\sigma$.
 For instance, 
@@ -674,9 +688,10 @@ Scripts used for all analyses and figures are available at \url{https://github.c
 
 \section{Acknowledgements}
 We thank Brandon Cooper, Matt Hahn, Doc Edge, and others for reading and thinking about this manuscript. 
-We thank the Hearth for having such good, nearby coffee, and
-Falling Sky Brewing for creative support during manuscript drafting.
+% We thank the Hearth for having such good, nearby coffee, and
+% Falling Sky Brewing for creative support during manuscript drafting.
 CJB and ADK were supported by NIH award R01GM117241. 
+\revpoint{AE}{4}
 
 \bibliography{spaceness}
 
@@ -841,6 +856,9 @@ $corr(nIBS,dist)$ & spatial & \textbf{0.000000} & \textbf{0.000000} \\
 
 \stopsupplement
 
+\newpage
+
+\includereviews
 
 
 \end{document}
