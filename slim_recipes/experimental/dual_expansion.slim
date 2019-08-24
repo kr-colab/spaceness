@@ -1,0 +1,93 @@
+initialize() {
+
+    initializeSLiMModelType("nonWF");
+    initializeSLiMOptions(dimensionality="xy");
+    initializeTreeSeq(checkCoalescence=T);
+
+	 //defineConstant("outpath","/Users/cj/Desktop/W50_0.2_.trees");
+	 
+	 defineConstant("id",format("%.0f",runif(1,1e6,1e7-1)));
+
+    defineConstant("K", 5);  // carrying-capacity per unit square (roughly)
+    defineConstant("sigma", 1);  // sigma_D, the dispersal distance
+    defineConstant("L", 4);    // mean lifetime at stationarity
+    defineConstant("W", 50.0);  // width and height of the simulated area
+    defineConstant("G", 1e8);  // genome length
+    defineConstant("FECUN", 1/L); // mean fecundity
+    defineConstant("RHO", FECUN/((1+FECUN) * K)); // constant in spatial competition function
+
+    initializeMutationType("m1", 0.5, "g", 0.0, 2);
+    initializeGenomicElementType("g1", m1, 1.0);
+    initializeGenomicElement(g1, 0, G-1);
+    initializeMutationRate(1e-8);
+    initializeRecombinationRate(1e-8);  
+    
+    // spatial competition
+    initializeInteractionType(1, "xy", reciprocal=T, maxDistance=sigma * 3);
+    i1.setInteractionFunction("n", 1.0/(2*PI*sigma^2), sigma);
+    
+    // mate choice
+    initializeInteractionType(2, "xy", reciprocal=T, maxDistance=sigma * 3);
+    i2.setInteractionFunction("n", 1.0/(2*PI*sigma^2), sigma);
+
+}
+
+reproduction() {
+    mate = i2.drawByStrength(individual, 1);
+    if (mate.size()) {
+        nOff = rpois(1, FECUN);
+        for (i in seqLen(nOff)) {
+            pos = individual.spatialPosition + rnorm(2, 0, sigma);
+            if (p1.pointInBounds(pos)) {
+            	offspring = subpop.addCrossed(individual, mate);
+          		offspring.setSpatialPosition(pos);
+          	}
+        }
+    }
+    return;
+}
+
+1 early() {
+    sim.addSubpop("p1", 5000);
+    p1.setSpatialBounds(c(0, 0, W, W));
+    for (ind in p1.individuals[1:4500]) {
+        ind.setSpatialPosition(c(runif(1,0,10),runif(1,0,10)));
+    }
+    for (ind in p1.individuals[4501:4999]) {
+        ind.setSpatialPosition(c(runif(1,40,50),runif(1,40,50)));
+    }
+    i1.evaluate();
+}
+
+early() {
+    i1.evaluate(p1);
+    inds = p1.individuals;
+    competition = i1.totalOfNeighborStrengths(inds);
+    inds.fitnessScaling = pmin(0.95, 1/(1 + RHO * competition));    
+    // scale fitness at edges
+    inds.fitnessScaling = inds.fitnessScaling * pmin(sqrt(inds.x/sigma), 1.0) * pmin(sqrt(inds.y/sigma), 1.0) * pmin(sqrt((W - inds.x)/sigma), 1.0) * pmin(sqrt((W - inds.y)/sigma), 1.0);
+}
+
+1: late() {
+	// to be ready for mate choice
+   i2.evaluate(p1);
+}
+
+2: late() {
+	if((sim.generation % 1e5)==0){ //checkpoints
+	 	if(sim.treeSeqCoalesced()){
+          outname=outpath+"_"+id+"_"+sim.generation+"_coalesced";
+          sim.treeSeqOutput(outname);
+          sim.simulationFinished();
+      } else {
+          outname=outpath+"_"+id+"_"+sim.generation;
+          sim.treeSeqOutput(outname);
+      } 
+    }
+}
+
+2000000 late() { //max timesteps
+	outname=outpath+"_"+id+"_"+sim.generation;
+   sim.treeSeqOutput(outname);
+   sim.simulationFinished();
+}
