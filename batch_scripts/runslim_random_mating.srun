@@ -1,13 +1,13 @@
 #!/bin/bash
-#SBATCH --partition=long,kern       ### queue to submit to
-#SBATCH --job-name=W50_rm    ### job name
-#SBATCH --output=talapas_outs/W50_rm.out   ### file in which to store job stdout 
-#SBATCH --error=talapas_outs/W50_rm.err    ### file in which to store job stderr
+#SBATCH --partition=kern       ### queue to submit to
+#SBATCH --job-name=spasiba_1    ### job name
+#SBATCH --output=spasiba_1.out   ### file in which to store job stdout 
+#SBATCH --error=spasiba_1.err    ### file in which to store job stderr
 #SBATCH --time=20000                ### wall-clock time limit, in minutes
-#SBATCH --mem=32G              ### memory limit
+#SBATCH --mem=128G              ### memory limit
 #SBATCH --nodes=1               ### number of nodes to use
 #SBATCH --ntasks-per-node=1     ### number of tasks to launch per node
-#SBATCH --cpus-per-task=1       ### number of cores for each task
+#SBATCH --cpus-per-task=28       ### number of cores for each task
  
 module load cuda/9.0
 module use /projects/apps/shared/modulefiles/
@@ -16,9 +16,9 @@ module load python3 tskit SLiM
 python3 /projects/kernlab/cbattey2/spaceness/scripts/run_slim.py \
 --sampled_param "sigma" \
 --min 0.2 \
---max 3.5 \
+--max 4 \
 --slim_path "slim" \
---slim_recipe "/projects/kernlab/cbattey2/spaceness/slim_recipes/flat_map_random_mating.slim" \
---outdir "/projects/kernlab/cbattey2/spaceness/sims/slimout/random_mating/W50_sesame/"
+--slim_recipe "/projects/kernlab/cbattey2/spaceness/slim_recipes/spaceness_randmates.slim" \
+--outdir "/projects/kernlab/cbattey2/spaceness/sims/slimout/random_mating/W50_muts/"
 
 

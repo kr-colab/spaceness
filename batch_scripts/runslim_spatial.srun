@@ -1,8 +1,8 @@
 #!/bin/bash
-#SBATCH --partition=long,kern       ### queue to submit to
-#SBATCH --job-name=W50_sp    ### job name
-#SBATCH --output=talapas_outs/W50_sp.out   ### file in which to store job stdout 
-#SBATCH --error=talapas_outs/W50_sp.err    ### file in which to store job stderr
+#SBATCH --partition=kern,long       ### queue to submit to
+#SBATCH --job-name=w50msp_%j    ### job name
+#SBATCH --output=talapas_outs/w50msp_%j.out   ### file in which to store job stdout 
+#SBATCH --error=talapas_outs/w50msp_%j.err    ### file in which to store job stderr
 #SBATCH --time=20000                ### wall-clock time limit, in minutes
 #SBATCH --mem=32G              ### memory limit
 #SBATCH --nodes=1               ### number of nodes to use
@@ -16,8 +16,8 @@ module load python3 tskit SLiM
 python3 /projects/kernlab/cbattey2/spaceness/scripts/run_slim.py \
 --sampled_param "sigma" \
 --min 0.2 \
---max 3.5 \
+--max 4.0 \
 --slim_path "slim" \
---slim_recipe "/projects/kernlab/cbattey2/spaceness/slim_recipes/flat_map.slim" \
---outdir "/projects/kernlab/cbattey2/spaceness/sims/slimout/spatial/W50_sesame/"
+--slim_recipe "/projects/kernlab/cbattey2/spaceness/slim_recipes/spaceness.slim" \
+--outdir "/projects/kernlab/cbattey2/spaceness/sims/slimout/spatial/W50_muts/"
 

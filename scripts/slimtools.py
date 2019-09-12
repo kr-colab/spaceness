@@ -329,11 +329,11 @@ def getSLiMSumStats(haps,positions,label,locs,outfile,maxlen,ibs_tracts=True,ver
     segsites=np.shape(genotypes)[0]
     #mpd=np.mean(allel.mean_pairwise_difference(allele_counts))
     #pi=(mpd*segsites)/n_accessible_sites                               #alternate pi if not all sites are accessible
-    pi=allel.sequence_diversity(positions,allele_counts,start=1,stop=1e8)
+    pi=allel.sequence_diversity(positions,allele_counts,start=1,stop=maxlen)
     tajD=allel.tajima_d(ac=allele_counts,start=1,stop=maxlen) #NOTE check for 0 v 1 positions
     thetaW=allel.watterson_theta(pos=positions,ac=allele_counts,start=1,stop=maxlen)
     het_o=np.mean(allel.heterozygosity_observed(genotypes))
-    fis=np.mean(allel.inbreeding_coefficient(genotypes))
+    fis=np.nanmean(allel.inbreeding_coefficient(genotypes))
     sfs=allel.sfs(allele_counts[:,1])
     sfs=np.append(sfs,[np.repeat(0,np.shape(haps)[1]-len(sfs)+1)])
     #Isolation by distance
@@ -409,7 +409,7 @@ def getSLiMSumStats(haps,positions,label,locs,outfile,maxlen,ibs_tracts=True,ver
             sfsnames=["sfs_"+str(x)+" " for x in range(np.shape(haps)[1])]
             sfsnames.append("sfs_"+str(np.shape(haps)[1]))
             out=open(outfile,"w")
-            out.write("sigma segsites pi thetaW tajD het_o fis gen_dist_mean gen_dist_var gen_dist_skew gen_sp_corr"+"".join(sfsnames)+"\n")
+            out.write("sigma segsites pi thetaW tajD het_o fis gen_sp_corr "+"".join(sfsnames)+"\n")
         row=[label,segsites,pi,thetaW,tajD,het_o,fis,gen_sp_corr]
         row=np.append(row,sfs)
         row=" ".join(map(str, row))

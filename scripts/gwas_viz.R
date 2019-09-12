@@ -2,6 +2,7 @@
 library(ggplot2);library(magrittr);library(plyr);library(data.table)
 library(qvalue);library(cowplot);library(wesanderson)
 setwd("~/projects/spaceness/gwas/")
+setwd("~/spaceness/gwas")
 pal <- grDevices::colorRampPalette(color=c("steelblue4","skyblue","lightgoldenrod1","orangered","red4"),
                                    bias=1,space="rgb",interpolate="linear")
 theme_set(theme_classic()+theme(
@@ -30,71 +31,71 @@ panel.qqconf<-function(n, conf.points=1000, conf.col="gray", conf.alpha=.05, ...
   #grid.polygon(x=mpts[,1],y=mpts[,2], gp=gpar(fill=conf.col, lty=0), default.units="native")
   return(mpts)
 }
-setwd("random_sampling")
-files <- list.files("out_corner",full.names = T) %>% grep(".assoc.linear",.,value = T)
-qq_corner <- data.table(P=NA,sigma=NA,observed=NA,expected=NA,neighbors=NA)[-1]
-for(f in files){
-  sigma <- strsplit(f,"_") %>% unlist() %>% .[3] %>% as.numeric()
-  if(sigma < 4){
-    gwas <- fread(f)
-    gwas <- subset(gwas,TEST=="ADD")
-    expected <- -log10(1:length(gwas$P)/length(gwas$P))
-    observed <- -log10(sort(gwas$P))
-    qq_corner <- rbind(qq_corner,data.table(P=gwas$P,sigma=sigma,observed=observed,expected=expected,neighbors=4*pi*sigma^2*5))
-    print(f)
-  }
-}
-qq_corner$phenotype <- "corner"
-
-files <- list.files("out_clinal",full.names = T) %>% grep(".assoc.linear",.,value = T)
-qq_clinal <- data.table(P=NA,sigma=NA,observed=NA,expected=NA,neighbors=NA)[-1]
-for(f in files){
-  sigma <- strsplit(f,"_") %>% unlist() %>% .[3] %>% as.numeric()
-  if(sigma < 4){
-    gwas <- fread(f)
-    gwas <- subset(gwas,TEST=="ADD")
-    expected <- -log10(1:length(gwas$P)/length(gwas$P))
-    observed <- -log10(sort(gwas$P))
-    qq_clinal <- rbind(qq_clinal,data.table(P=gwas$P,sigma=sigma,observed=observed,expected=expected,neighbors=4*pi*sigma^2*5))
-    print(f)
-  }
-}
-qq_clinal$phenotype <- "clinal"
-
-files <- list.files("out_patchy",full.names = T) %>% grep(".assoc.linear",.,value = T)
-qq_patchy <- data.table(P=NA,sigma=NA,observed=NA,expected=NA,neighbors=NA)[-1]
-for(f in files){
-  sigma <- strsplit(f,"_") %>% unlist() %>% .[3] %>% as.numeric()
-  if(sigma < 4){
-    gwas <- fread(f)
-    gwas <- subset(gwas,TEST=="ADD")
-    expected <- -log10(1:length(gwas$P)/length(gwas$P))
-    observed <- -log10(sort(gwas$P))
-    qq_patchy <- rbind(qq_patchy,data.table(P=gwas$P,sigma=sigma,observed=observed,expected=expected,neighbors=4*pi*sigma^2*5))
-    print(f)
-  }
-}
-qq_patchy$phenotype <- "patchy"
-
-files <- list.files("out_normal",full.names = T) %>% grep(".assoc.linear",.,value = T)
-qq_nonspatial <- data.table(P=NA,sigma=NA,observed=NA,expected=NA,neighbors=NA)[-1]
-for(f in files){
-  sigma <- strsplit(f,"_") %>% unlist() %>% .[3] %>% as.numeric()
-  if(sigma < 4){
-    gwas <- fread(f)
-    gwas <- subset(gwas,TEST=="ADD")
-    expected <- -log10(1:length(gwas$P)/length(gwas$P))
-    observed <- -log10(sort(gwas$P))
-    qq_nonspatial <- rbind(qq_nonspatial,data.table(P=gwas$P,sigma=sigma,observed=observed,expected=expected,neighbors=4*pi*sigma^2*5))
-    print(f)
-  }
-}
-qq_nonspatial$phenotype <- "nonspatial"
-
-qq <- rbind(qq_nonspatial,qq_clinal,qq_corner,qq_patchy)
-setwd("~/projects/spaceness/gwas/")
-
-save(qq,file="qqplot_data.Rdata")
+# setwd("random_sampling")
+# files <- list.files("out_corner",full.names = T) %>% grep(".assoc.linear",.,value = T)
+# qq_corner <- data.table(P=NA,sigma=NA,observed=NA,expected=NA,neighbors=NA)[-1]
+# for(f in files){
+#   sigma <- strsplit(f,"_") %>% unlist() %>% .[3] %>% as.numeric()
+#   if(sigma < 4){
+#     gwas <- fread(f)
+#     gwas <- subset(gwas,TEST=="ADD")
+#     expected <- -log10(1:length(gwas$P)/length(gwas$P))
+#     observed <- -log10(sort(gwas$P))
+#     qq_corner <- rbind(qq_corner,data.table(P=gwas$P,sigma=sigma,observed=observed,expected=expected,neighbors=4*pi*sigma^2*5))
+#     print(f)
+#   }
+# }
+# qq_corner$phenotype <- "corner"
+# 
+# files <- list.files("out_clinal",full.names = T) %>% grep(".assoc.linear",.,value = T)
+# qq_clinal <- data.table(P=NA,sigma=NA,observed=NA,expected=NA,neighbors=NA)[-1]
+# for(f in files){
+#   sigma <- strsplit(f,"_") %>% unlist() %>% .[3] %>% as.numeric()
+#   if(sigma < 4){
+#     gwas <- fread(f)
+#     gwas <- subset(gwas,TEST=="ADD")
+#     expected <- -log10(1:length(gwas$P)/length(gwas$P))
+#     observed <- -log10(sort(gwas$P))
+#     qq_clinal <- rbind(qq_clinal,data.table(P=gwas$P,sigma=sigma,observed=observed,expected=expected,neighbors=4*pi*sigma^2*5))
+#     print(f)
+#   }
+# }
+# qq_clinal$phenotype <- "clinal"
+# 
+# files <- list.files("out_patchy",full.names = T) %>% grep(".assoc.linear",.,value = T)
+# qq_patchy <- data.table(P=NA,sigma=NA,observed=NA,expected=NA,neighbors=NA)[-1]
+# for(f in files){
+#   sigma <- strsplit(f,"_") %>% unlist() %>% .[3] %>% as.numeric()
+#   if(sigma < 4){
+#     gwas <- fread(f)
+#     gwas <- subset(gwas,TEST=="ADD")
+#     expected <- -log10(1:length(gwas$P)/length(gwas$P))
+#     observed <- -log10(sort(gwas$P))
+#     qq_patchy <- rbind(qq_patchy,data.table(P=gwas$P,sigma=sigma,observed=observed,expected=expected,neighbors=4*pi*sigma^2*5))
+#     print(f)
+#   }
+# }
+# qq_patchy$phenotype <- "patchy"
+# 
+# files <- list.files("out_normal",full.names = T) %>% grep(".assoc.linear",.,value = T)
+# qq_nonspatial <- data.table(P=NA,sigma=NA,observed=NA,expected=NA,neighbors=NA)[-1]
+# for(f in files){
+#   sigma <- strsplit(f,"_") %>% unlist() %>% .[3] %>% as.numeric()
+#   if(sigma < 4){
+#     gwas <- fread(f)
+#     gwas <- subset(gwas,TEST=="ADD")
+#     expected <- -log10(1:length(gwas$P)/length(gwas$P))
+#     observed <- -log10(sort(gwas$P))
+#     qq_nonspatial <- rbind(qq_nonspatial,data.table(P=gwas$P,sigma=sigma,observed=observed,expected=expected,neighbors=4*pi*sigma^2*5))
+#     print(f)
+#   }
+# }
+# qq_nonspatial$phenotype <- "nonspatial"
+# 
+# qq <- rbind(qq_nonspatial,qq_clinal,qq_corner,qq_patchy)
+# setwd("~/projects/spaceness/gwas/")
+# 
+# save(qq,file="qqplot_data.Rdata")
 load("qqplot_data.Rdata")
 
 conf <- data.frame(panel.qqconf(2e5,10000)) 
@@ -120,8 +121,8 @@ qqp <- ggplot(data=qq,aes(x=expected,y=observed,z=neighbors))+
   scale_fill_gradientn(colors=pal(50),name="Neighborhood\nSize")+
   #scale_fill_distiller(palette = "YlGnBu",name="Neighborhood\nSize")+
   stat_summary_hex(fun=median,bins=100)+
-  geom_line(data=conf[1:10000,],aes(x=X1,y=X2,z=NULL),linetype=2,lwd=0.35)+
-  geom_line(data=conf[10001:20000,],aes(x=X1,y=X2,z=NULL),linetype=2,lwd=0.35)+
+  #geom_line(data=conf[1:10000,],aes(x=X1,y=X2,z=NULL),linetype=2,lwd=0.35)+
+  #geom_line(data=conf[10001:20000,],aes(x=X1,y=X2,z=NULL),linetype=2,lwd=0.35)+
   annotate(geom="segment",x=0,xend=6,y=0,yend = 6,lwd=0.35,col="black")
 qqp <- qqp+guides(fill=guide_colorbar(barwidth = unit(27,"mm"),barheight = unit(4,"mm")))
 
@@ -204,7 +205,7 @@ nsig_by_sigma <- ggplot(data=pd,aes(x=neighbors,y=prop_sig,col=phenotype))+
         axis.line.y=element_line(size=0.4))+
   coord_cartesian(clip="off")+
   ylab("Proportion Significant SNPs (FDR < 0.05)")+xlab("Neighborhood Size")+
-  #scale_y_continuous(trans="log10")+
+  scale_y_continuous(trans="log10")+
   scale_x_log10()+
   facet_wrap(~pc_corr,ncol=1,scales="free_y")+
   #scale_color_brewer(palette = "Dark2")+
@@ -315,7 +316,7 @@ pt <- ggplot(data=subset(l,type=="patchy"),aes(x=x,y=y,col=phenotype,alpha=pheno
 ###################################################################################
 
 #summary plots for n significant snps and qqplots
-pdf("gwas_summary.pdf",width=6,height=5,useDingbats = F)
+pdf("gwas_summary_loglog.pdf",width=6,height=5,useDingbats = F)
 ggdraw()+
   #draw_plot(maps,0.06,0.72,0.6,.3)+
   draw_plot(n,0.06,0.72,0.15,0.3)+
@@ -333,38 +334,38 @@ dev.off()
 
 
 #individual manhattan plots
-sim <- "out_normal/sigma_0.23113431075824115_.trees_8984045.assoc.linear" %>% gsub("out_normal/","",.)
+sim <- "sigma_3.5976011606040497_.trees_4924299.assoc.linear"
 palette <- wes_palette("Darjeeling1",4)
 palette <- RColorBrewer::brewer.pal(4,"RdYlBu")
 
-normal <- fread(paste0("out_normal/",sim))
+normal <- fread(paste0("random_sampling/out_normal/",sim))
 normal <- subset(normal,TEST=="ADD")
 normal$phenotype <- "nonspatial"
-normal$q <- p.adjust(normal$P,"fdr")#qvalue(normal$P)$qvalues
+normal$q <- p.adjust(normal$P,"fdr")#
 normal$cutoff <- (max(subset(normal,q<=0.05)$P)+min(subset(normal,q>0.05)$P))/2
 if(is.infinite(normal$cutoff[1])) normal$cutoff <- 0.05/nrow(normal) #... must be a better way to do this
 
-clinal <- fread(paste0("out_clinal/",sim))
+clinal <- fread(paste0("random_sampling/out_clinal/",sim))
 clinal <- subset(clinal,TEST=="ADD")
 clinal$phenotype <- "clinal"
-clinal$q <- p.adjust(clinal$P,"fdr")#qvalue(clinal$P)$qvalues
+clinal$q <- p.adjust(clinal$P,"fdr")
 clinal$cutoff <- (max(subset(clinal,q<=0.05)$P)+min(subset(clinal,q>0.05)$P))/2
 if(is.infinite(clinal$cutoff[1])) clinal$cutoff <- 0.05/nrow(normal) 
 
-corner <- fread(paste0("out_corner/",sim))
+corner <- fread(paste0("random_sampling/out_corner/",sim))
 corner <- subset(corner,TEST=="ADD")
 corner$phenotype <- "corner"
-corner$q <- p.adjust(corner$P,"fdr")#qvalue(corner$P)$qvalues
+corner$q <- p.adjust(corner$P,"fdr")
 corner$cutoff <- (max(subset(corner,q<=0.05)$P)+min(subset(corner,q>0.05)$P))/2
 if(is.infinite(corner$cutoff[1])) corner$cutoff <- 0.05/nrow(normal) 
 
-patchy <- fread(paste0("out_patchy/",sim))
+patchy <- fread(paste0("random_sampling/out_patchy/",sim))
 patchy <- subset(patchy,TEST=="ADD")
 patchy$phenotype <- "patchy"
-patchy$q <- p.adjust(patchy$P,"fdr")#qvalue(patchy$P)$qvalues
+patchy$q <- p.adjust(patchy$P,"fdr")
 patchy$cutoff <- (max(subset(patchy,q<=0.05)$P)+min(subset(patchy,q>0.05)$P))/2
 if(is.infinite(patchy$cutoff[1])) patchy$cutoff <- 0.05/nrow(normal) 
-# 
+ 
 # rsnps <- fread(paste0("random_snps/",sim))
 # rsnps$phenotype <- "random_snps"
 # rsnps$q <- p.adjust(rsnps$P,"fdr")
@@ -376,27 +377,32 @@ gwas <- rbind(normal,clinal,corner,patchy)
 gwas$p_minus_log_10 <- -log(gwas$P,10)
 gwas$phenotype <- factor(gwas$phenotype,levels=c("nonspatial","clinal","corner","patchy"))
 
-manhattan_plots <- ggplot(data=gwas,aes(x=BP,y=p_minus_log_10,col=phenotype))+
-  theme(axis.text.x=element_blank(),
+manhattan_plots <- ggplot(data=gwas,aes(x=BP,y=p_minus_log_10))+
+  theme(#axis.text.x=element_blank(),
         plot.title = element_text(size=6),
-        axis.ticks.x=element_blank(),
-        axis.title.x=element_blank(),
+        #axis.ticks.x=element_blank(),
+        #axis.title.x=element_blank(),
         strip.background = element_blank(),
         axis.ticks.y=element_line(size=0.4),
         axis.text.y=element_text(size=6),
         axis.title.y=element_text(size=7),
-        strip.text = element_blank(),#element_text(size=6),
+        #strip.text = element_blank(),#element_text(size=6),
         legend.title = element_text(size=6),
         legend.text=element_text(size=6),
         axis.line=element_line(size=0.4))+
-  ggtitle("Neighbors = 3, PCA covariates")+
+  ggtitle("Neighborhood Size = 800, PCA covariates")+
   facet_grid(phenotype~.)+
-  scale_color_manual(values=pal(4),guide=F)+
-  geom_point(size=0.2,stroke=0.2,shape=21)+
-  geom_point(data=subset(gwas,q<0.05),size=0.2,stroke=0.2,shape=21,color="black")+
-  geom_hline(yintercept=-log(0.05/nrow(normal),10),linetype=2,size=0.35)+
+  #scale_color_manual(values=pal(4),guide=F)+
+  geom_point(size=0.2,stroke=0.2,shape=21,col="grey")+
+  geom_point(data=subset(gwas,q<0.05),size=0.5,stroke=0.2,shape=21,col="red")+
+  geom_hline(yintercept=-log(0.05/nrow(normal),10),linetype=3,size=0.35)+
+  geom_hline(aes(yintercept=-log10(cutoff)),linetype=2,size=0.35)+
   #geom_line(aes(y=min(-log(cutoff,10)),size=0.5))+
   ylab(expression(italic(-log[10](p))))
+
+png("~/projects/spaceness/figures/manhattan_plots_NS800.png",width=3,height=4,units="in",res=300)
+print(manhattan_plots)
+dev.off()
 
 #maps
 locs_name <- tools::file_path_sans_ext(sim) %>% tools::file_path_sans_ext() %>% paste0("_locs.txt")

@@ -24,8 +24,7 @@ for f in $files
 	getsumstats "$f" & 
 done
 )
-i=1
-wait
+wait $!
 
 #midpoint sampling
 getsumstats(){
@@ -46,8 +45,7 @@ for f in $files
 	getsumstats "$f" & 
 done
 )
-i=1
-wait
+wait $!
 
 #point sampling
 getsumstats(){
@@ -68,8 +66,7 @@ for f in $files
 	getsumstats "$f" & 
 done
 )
-i=1
-wait
+wait $!
 
 ############### random mating sims ###############
 files=~/spaceness/sims/slimout/random_mating/W35/*
@@ -92,8 +89,7 @@ for f in $files
 	getsumstats "$f" & 
 done
 )
-i=1
-wait 
+wait $!
 
 #midpoint sampling
 getsumstats(){
@@ -114,8 +110,7 @@ for f in $files
 	getsumstats "$f" & 
 done
 )
-i=1
-wait
+wait $!
 
 #point sampling
 getsumstats(){
@@ -136,7 +131,5 @@ for f in $files
 	getsumstats "$f" & 
 done
 )
-i=1
-wait
-
+wait $!
 

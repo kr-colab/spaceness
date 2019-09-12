@@ -1,0 +1,27 @@
+#!/bin/bash
+#SBATCH --partition=kern     ### queue to submit to
+#SBATCH --job-name=mspstats    ### job name
+#SBATCH --output=talapas_outs/mspstats.out   ### file in which to store job stdout 
+#SBATCH --error=talapas_outs/mspstats.err    ### file in which to store job stderr
+#SBATCH --time=600                ### wall-clock time limit, in minutes
+#SBATCH --mem=48G              ### memory limit
+#SBATCH --nodes=1               ### number of nodes to use
+#SBATCH --ntasks-per-node=1     ### number of tasks to launch per node
+#SBATCH --cpus-per-task=1       ### number of cores for each task
+#SBATCH --account=kernlab
+ 
+module use /projects/apps/shared/modulefiles/
+module load python3 tskit SLiM
+
+python /projects/kernlab/cbattey2/spaceness/scripts/msp_ts_to_sumstats.py \
+--infile $in --outfile /projects/kernlab/cbattey2/spaceness/sumstats/ss_msp_grid_Ne6100_w20.txt \
+--pop_config grid --width 20
+
+
+###### run with:
+#for f in sims/msp_grid_Ne6100_w20/*;do sbatch --export=in=$f batch_scripts/get_msp_sumstats.srun;done
+#or
+parallel -j 20 python scripts/msp_ts_to_sumstats.py \
+--infile /home/cbattey2/spaceness/sims/msp_grid_Ne6100_e5/{1} \
+--outfile /home/cbattey2/spaceness/sumstats/ss_msp_grid_Ne6100_w5.txt \
+--pop_config grid --width 5 ::: `ls sims/msp_grid_Ne6100_w5`

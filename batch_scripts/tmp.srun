@@ -1,11 +1,19 @@
 #!/bin/bash
-#SBATCH --partition=kern,preempt       ### queue to submit to
-#SBATCH --job-name=slimstats    ### job name
-#SBATCH --output=slimstats.out   ### file in which to store job stdout
-#SBATCH --error=slimstats.err    ### file in which to store job stderr
-#SBATCH --time=240                ### wall-clock time limit, in minutes
-#SBATCH --mem=4G              ### memory limit
+#SBATCH --partition=short,kern,preempt       ### queue to submit to
+#SBATCH --job-name=sumstats    ### job name
+#SBATCH --output=talapas_outs/sumstats.out   ### file in which to store job stdout
+#SBATCH --error=talapas_outs/sumstats.err    ### file in which to store job stderr
+#SBATCH --time=60                ### wall-clock time limit, in minutes
+#SBATCH --mem=48G              ### memory limit
 #SBATCH --nodes=1               ### number of nodes to use
 #SBATCH --ntasks-per-node=1     ### number of tasks to launch per node
 #SBATCH --cpus-per-task=1       ### number of cores for each task
-slim -d sigma=0.2 -d simnum=10 /projects/kernlab/cbattey2/spaceness/slim_recipes/flat_map_vcfout.slim
+#SBATCH --requeue
+
+module use /projects/apps/shared/modulefiles/
+module load python3 tskit SLiM
+
+
+
+
+python scripts/msp_ts_to_sumstats.py --infile /home/cbattey2/projects/spaceness/sims/msp/sigma_4.991831029588891_.trees_23879427 --outfile ~/projects/spaceness/sumstats/ss_msp.txt

@@ -1,0 +1,16 @@
+#!/bin/bash
+#SBATCH --partition=kern      ### queue to submit to
+#SBATCH --job-name=mspgrid    ### job name
+#SBATCH --output=talapas_outs/mspgrid.out   ### file in which to store job stdout 
+#SBATCH --error=talapas_outs/mspgrid.err    ### file in which to store job stderr
+#SBATCH --time=4000                ### wall-clock time limit, in minutes
+#SBATCH --mem=4G              ### memory limit
+#SBATCH --nodes=1               ### number of nodes to use
+#SBATCH --ntasks-per-node=1     ### number of tasks to launch per node
+#SBATCH --cpus-per-task=1       ### number of cores for each task
+#SBATCH --account=kernlab
+ 
+module use /projects/apps/shared/modulefiles/
+module load python3 tskit SLiM
+
+python /projects/kernlab/cbattey2/spaceness/scripts/run_msp_grid.py 

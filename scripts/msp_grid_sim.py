@@ -117,7 +117,7 @@ def get_coords_per_sample(width,haploids_per_pop):
 
 #########################running a simulation#################################
 #simulation params equivalent to W50 slim runs w/250-ind demes
-width=10
+width=zz
 haploids_per_pop=20
 joint_N=100000
 rate=10/(joint_N/width**2) #numerator is n migrants per generation
