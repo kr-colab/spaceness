@@ -11,14 +11,27 @@
         \setcounter{figure}{0}
         \renewcommand{\thefigure}{\arabic{figure}}%
      }
+\newcommand{\beginappendix}{%
+        \setcounter{table}{0}
+        \renewcommand{\thetable}{A\arabic{table}}%
+        \setcounter{figure}{0}
+        \renewcommand{\thefigure}{A\arabic{figure}}%
+     }
+\newcommand{\stopappendix}{%
+        \setcounter{table}{0}
+        \renewcommand{\thetable}{\arabic{table}}%
+        \setcounter{figure}{0}
+        \renewcommand{\thefigure}{\arabic{figure}}%
+     }
 
-\documentclass[11pt,twoside,lineno,hidelinks]{preprint}
+
+\documentclass[10pt,twoside,lineno,hidelinks]{preprint}
 \usepackage{amsmath}
 \usepackage[nodisplayskipstretch]{setspace}
 \usepackage{makecell} 
 \usepackage{changepage}
 \usepackage{afterpage}
-\setstretch{1.5}
+\setstretch{1}
 \NeedsTeXFormat{LaTeX2e}
 \newcommand*{\articletypename}{PREPRINT}
 % Use the documentclass option 'lineno' to view line numbers
@@ -698,11 +711,24 @@ CJB and ADK were supported by NIH award R01GM117241.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Supplement %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\beginappendix
 \section{Appendix 1}
 \subsection{Comparisons with Alternate Spatial Models}
-Stepping-stone models have been extremely useful in population genetics and, when simulated in reverse time, remain much faster than our implementation of continuous-space evolution in forward time. Similarly, the Wright-Malécot models have lead to analytic results that have proved reasonable approximations for estimating neighborhood sizes from empirical data \citep{Rousset1997}. When are these models "good enough"?
+Stepping-stone models have been extremely useful in population genetics and, when simulated in reverse time, remain much faster than our implementation of continuous-space evolution in forward time. Similarly, Wright-Malécot models have lead to analytic results that have proved reasonable approximations for estimating neighborhood sizes from empirical data \citep{Rousset1997}. Here we address how these classes of models compare with our implementation of density-dependant continuous space evolution, and try to assess when they are "good enough".  
 
-First we address a two-dimensional Wright-Malécot model. SLiM includes an implementation of a similar model in recipe 14.1. This model simulates a Wright-Fisher population with discrete generations and fixed total population size. Individuals are initially distributed randomly across the landscape, and each generation
+\subsubsection{Stepping Stone Models}
+In this class of models we imagine an $n \times n$ grid of populations exchanging migrants with their vertical and horizontal neighbors at a rate $m$. This model can be implemented in standard coalescent simulators like msprime \citep{Kelleher2016} by setting the migration matrix to allow migration only between adjacent populations. To compare with our continuous-space simulation we then need to estimate neighborhood sizes for the stepping-stone setting. Recall that $NS\approx4\pi\sigma^2d$. To set $d$ (population density) equal among models, we first estimated the effective population size of a random-mating non-Wright-Fisher SLiM model with a census size of 10,000 diploid individuals. We used the $\theta_{\pi}$ estimator and took the mean across all random-mating SLiM simulations (roughly 6100). By distributing this $N_{e}$ evenly among demes in a stepping-stone model we achieve roughly equivalent population densities. 
+
+Next we need to relate migration rates to dispersal distances such that the total number of individuals within an expected dispersal radius is equivalent between stepping-stone and continuous models. Recall that $\sigma$ is the expected dispersal distance for an offspring from its parent in our continuous model. In our stepping stone model the probability of an individual within a deme being a migrant is $4m$ for all interior populations (i.e. two vertical neighbors and two horizontal neighbors, each with probability $m$ of being the source of a migrant), and all migrants move one deme across the grid. To translate this distance to the area containing an equivalent number of individuals in the continuous model we need to scale it by the ratio of landscape widths. That is, for a $5 \times 5$ stepping-stone landscape moving one population is equivalent to moving 20\% of the total landscape width, or 10 map units on the $50 x 50$ continuous landscape in our spatial SLiM model. If $W_{continuous}$ is the width of a continuous landscape and $W_{grid}$ is the number of demes per side in a stepping-stone model with equivalent total $N_{e}$, $m$ can then be related to $\sigma$ as $\sigma\approx4m\frac{W_{continuous}}{W_{grid}}$. By rearranging we can then sample $\sigma$ values from the same uniform distribution used for our continuous-space simulations and convert to the corresponding migration rate with $m=\sigma/(4\frac{W_{continuous}}{W_{grid}})$. 
+
+Using this approach we ran stepping-stone models in msprime by evenly distributing a total Ne of 6100 among $n^2$ populations while drawing $\sigma$ from a $U(0.2,4)$ as in our continuous space model. We ran 500 simulations each for $5 \times 5$, $10 \times 10$, and $20 \times 20$ stepping-stone landscapes. We then calculated the same set of summary statistics as in our continuous model (assigning all individuals in a deme the location of the center of that deme), and plotted them on the same axes for comparison (Figure X). 
+
+
+
+
+%the two-dimensional Wright-Malécot model. SLiM v3 includes an implementation of a similar model in recipe 14.1. This model simulates a Wright-Fisher population with discrete generations and fixed total population size. Individuals are initially distributed randomly across the landscape. In each generation, mates are selected proportional to distance and offspring disperse a normally-distributed distance from the first parent. The total number of offspring per pair is Poisson distributed 
+\stopappendix
+\clearpage 
 
 \section{Supplementary Figures and Tables}
 \beginsupplement
