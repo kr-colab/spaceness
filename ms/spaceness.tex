@@ -240,8 +240,7 @@ and later applied mutations to the tree sequence with msprime's \texttt{mutate} 
 Because msprime applies mutations proportionally to elapsed time,
 we divided the mutation rate of $10^{-8}$ mutations per site per generation
 by the average generation time estimated for each value of $\sigma$ (see `Demographic Parameters' below) to convert the rate to units of mutations per site per unit time.
-(We verified that this procedure produced the correct number of mutations by comparing to a subset of simulations with SLiM-generated mutations, which are applied only at meiosis.)
-Simulations were run for 1.6 million timesteps (approximately $30N$ generations). 
+We show that this procedure produces the same site-frequency spectrum as applying mutations directly in SLiM in Figure XXXXX. Simulations were run for 1.6 million timesteps (approximately $30N$ generations).
 
 %%%%%%%%%%%%%
 \subsection{Demographic Parameters}
@@ -287,6 +286,8 @@ We then calculated the first three moments of this distribution (mean, variance,
 We then estimated correlation coefficients between spatial distance and each moment of the pairwise IBS tract distribution. Because more closely related individuals on average share longer haplotype blocks we expect that spatial distance will be negatively correlated with mean haplotype block length, and that this correlation will be strongest (i.e., most negative) when dispersal is low. The variance, skew, and count of long haplotype block statistics are meant to reflect the relative length of the right (upper) tail of the distribution, which represents the frequency of long haplotype blocks, and so should reflect recent demographic events \citep{chapman2002effect}. For a subset of simulations, we also calculated cumulative distributions for IBS tract lengths across pairs of distant (${}>48$ map units) and nearby (${}<2$ map units) individuals. Last, we examined the relationship between allele frequency and the spatial dispersion of an allele by calculating the average distance among individuals carrying each derived allele in a set of simulations representing a range of neighborhood sizes.
 
 The effects of sampling on summary statistic estimates were summarized by testing for differences in mean (ANOVA, \citep{Rcore2018}) and variance (Levene's test, \citep{Fox2011}) across sampling strategies for each summary statistic. 
+
+Last, we used a subset of summary statistics to compare how our continuous model performs relative to a reverse-time stepping stone model (Appendix 1). 
 
 
 %%%%%%%%%%%
@@ -335,8 +336,6 @@ Results from all analyses were summarized and plotted with the ``ggplot2'' \cite
 
 %%%%%%%%%%%%%%%%%%
 \section{Results}
-
-
 
 %%%%%%%%%%%
 \subsection{Demographic Parameters}
@@ -713,20 +712,45 @@ CJB and ADK were supported by NIH award R01GM117241.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Supplement %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \beginappendix
 \section{Appendix 1}
-\subsection{Comparisons with Alternate Spatial Models}
-Stepping-stone models have been extremely useful in population genetics and, when simulated in reverse time, remain much faster than our implementation of continuous-space evolution in forward time. Similarly, Wright-Malécot models have lead to analytic results that have proved reasonable approximations for estimating neighborhood sizes from empirical data \citep{Rousset1997}. Here we address how these classes of models compare with our implementation of density-dependant continuous space evolution, and try to assess when they are "good enough".  
 
-\subsubsection{Stepping Stone Models}
-In this class of models we imagine an $n \times n$ grid of populations exchanging migrants with their vertical and horizontal neighbors at a rate $m$. This model can be implemented in standard coalescent simulators like msprime \citep{Kelleher2016} by setting the migration matrix to allow migration only between adjacent populations. To compare with our continuous-space simulation we then need to estimate neighborhood sizes for the stepping-stone setting. Recall that $NS\approx4\pi\sigma^2d$. To set $d$ (population density) equal among models, we first estimated the effective population size of a random-mating non-Wright-Fisher SLiM model with a census size of 10,000 diploid individuals. We used the $\theta_{\pi}$ estimator and took the mean across all random-mating SLiM simulations (roughly 6100). By distributing this $N_{e}$ evenly among demes in a stepping-stone model we achieve roughly equivalent population densities. 
+%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Comparisons with Stepping-Stone Models}
+We checked that our model produces reasonable results by comparing it to a reverse-time stepping-stone model implemented in msprime \citep{Kelleher2016}. In this class of models we imagine an $n \times n$ grid of populations exchanging migrants with neighboring populations at rate $m$. If these models are good approximations of the continuous case we expect that results will converge as $n \to \infty$, so we ran simulations while varying $n$ from 5 to 50 (Table \ref{table:grid_params}). To compare with continuous models we first distributed the the same "effective" number of individuals across the landscape as in our continuous-space simulations ($\approx 6100$, estimated from $\theta_{\pi}$ of random-mating continuous-space simulations). We then approximate the mean per-generation dispersal distance $\sigma$ given a total landscape width $W$ as the product of the probability of an individual being a migrant and the distance traveled by migrants: $\sigma \approx 4m(W/n)$. We ran 500 simulations per $n$ while sampling $\sigma$ from $U(0.2,4)$. We then randomly selected 60 diploid individuals from each simulation (approximating diploidy by combining pairs of chromosomes with contiguous indices within demes) and calculated a set of six summary statistics using the scripts described in the summary statistics portion of the main text. 
 
-Next we need to relate migration rates to dispersal distances such that the total number of individuals within an expected dispersal radius is equivalent between stepping-stone and continuous models. Recall that $\sigma$ is the expected dispersal distance for an offspring from its parent in our continuous model. In our stepping stone model the probability of an individual within a deme being a migrant is $4m$ for all interior populations (i.e. two vertical neighbors and two horizontal neighbors, each with probability $m$ of being the source of a migrant), and all migrants move one deme across the grid. To translate this distance to the area containing an equivalent number of individuals in the continuous model we need to scale it by the ratio of landscape widths. That is, for a $5 \times 5$ stepping-stone landscape moving one population is equivalent to moving 20\% of the total landscape width, or 10 map units on the $50 x 50$ continuous landscape in our spatial SLiM model. If $W_{continuous}$ is the width of a continuous landscape and $W_{grid}$ is the number of demes per side in a stepping-stone model with equivalent total $N_{e}$, $m$ can then be related to $\sigma$ as $\sigma\approx4m\frac{W_{continuous}}{W_{grid}}$. By rearranging we can then sample $\sigma$ values from the same uniform distribution used for our continuous-space simulations and convert to the corresponding migration rate with $m=\sigma/(4\frac{W_{continuous}}{W_{grid}})$. 
+\begin{table}[h]
+\centering
+\begin{tabular}{ccc}
+     demes per side ($n$)&$N_e$ per deme  & samples per deme  \\
+     \hline
+     5 & 244 & 20 \\
+     10 & 61 & 10 \\
+     20 & 15.25 & 2 \\
+     50 & 2.44 & 1 \\
+\end{tabular}
+\captionsetup{justification=centering}
+\caption{stepping-stone simulation parameters}
+\label{table:grid_params}
+\end{table}
 
-Using this approach we ran stepping-stone models in msprime by evenly distributing a total Ne of 6100 among $n^2$ populations while drawing $\sigma$ from a $U(0.2,4)$ as in our continuous space model. We ran 500 simulations each for $5 \times 5$, $10 \times 10$, and $20 \times 20$ stepping-stone landscapes. We then calculated the same set of summary statistics as in our continuous model (assigning all individuals in a deme the location of the center of that deme), and plotted them on the same axes for comparison (Figure X). 
 
+\begin{figure*}[h]
+\centering
+\includegraphics[width=\textwidth]{ms/figures/grid_ss_curves.pdf}
+\caption{Summary statistics for 2-dimensional coalescent stepping-stone models with fixed total $N_{e}$ and varying numbers of demes per side. The black "infinite" points are from our forward-time continuous space model. Inter-deme migration rates are related to $\sigma$ as described above.}
+\label{fig:grid_stats}
+\end{figure*}
 
+In general we find many of the qualitative trends are similar among continuous and stepping-stone models and that, in most cases, statistics from stepping-stone models approach the continuous model as the resolution of the grid increases. For example, $\theta_\pi$ is inflated at low neighborhood sizes (i.e. low $m$), and the extent of the inflation increases to approach the continuous case as the resolution of the landscape increases. Similar pattterns are observed for $F_{is}$ and observed heterozygosity. However, $\theta_{W}$ behaves differently, with increased grid resolution leading to lower values. This in turn drives an even more positive Tajima's $D$ in grid simulations at small neighborhood sizes.
 
+\begin{figure*}[h]
+\centering
+\includegraphics[]{ms/figures/grid_thetaW_tajD_zoom.pdf}
+\caption{Zoomed-in view of $\theta_{W}$ and Tajima's $D$ for stepping-stone models under varying neighborhood sizes.}
+\label{fig:grid_stats_zoom}
+\end{figure*}
 
-%the two-dimensional Wright-Malécot model. SLiM v3 includes an implementation of a similar model in recipe 14.1. This model simulates a Wright-Fisher population with discrete generations and fixed total population size. Individuals are initially distributed randomly across the landscape. In each generation, mates are selected proportional to distance and offspring disperse a normally-distributed distance from the first parent. The total number of offspring per pair is Poisson distributed 
+These differences relative to our continuous model mainly reflect two shortcomings of the reverse-time stepping stone model. If we simulate a coarse grid with relatively large populations in each deme, we cannot accurately capture the dynamics of small neighborhood sizes because mating within each deme remains random regardless of the migration rate connecting demes. This likely explains the trends in $\pi$, observed heterozygosity, and $F_{is}$. However increasing the number of demes while holding the total number of individuals constant results in small within-deme populations for which even the minimum sample size of 1 approaches the local $N_e$ (Table \ref{table:grid_params}). This results in an excess of short terminal branches in the coalescent tree, which decreases the total branch length and leads to fewer segregating sites, deflated $\theta_W$, and inflated Tajima's $D$. Overall then our continuous model reproduces important features of spatial structure approximated by reverse-time stepping-stone models at moderate neighborhood sizes while more accurately reflecting the dynamics of populations with small neighborhood sizes. 
+
 \stopappendix
 \clearpage 
 
