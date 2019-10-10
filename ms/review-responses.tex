@@ -75,13 +75,16 @@ C.~J.~Battey, Peter Ralph, and Andrew Kern
 \end{point}
 
 \reply{
+Done.
 }
 
 \begin{point}{\revref}
     "Such models have been used extensively in ecological modeling but rarely in population genetics " Detailing these previous uses via citations and elaboration may help alleviate the major concern about the provenenance of this model and its unique behaviors (see general comments above and R2 and R3 comments).
 \end{point}
 
+\cjb{Peter - did you have any in mind here? I can come up with a couple but don't know the ecology lit on this very well}
 \reply{
+
 }
 
 \begin{point}{\revref}
@@ -89,6 +92,7 @@ C.~J.~Battey, Peter Ralph, and Andrew Kern
 \end{point}
 
 \reply{
+We have added a figure (Figure \ref{fig:runtimes}) and short discussion \llname{runtimesxn} of run times.
 }
 
 \begin{point}{\revref}
@@ -104,6 +108,7 @@ C.~J.~Battey, Peter Ralph, and Andrew Kern
 \end{point}
 
 \reply{
+    \cjb{working on this}
 }
 
 \begin{point}{Figure 3A, S2:}
@@ -111,6 +116,7 @@ C.~J.~Battey, Peter Ralph, and Andrew Kern
 \end{point}
 
 \reply{
+Good suggestion -- the SFS in Fig 3A is now on a log-log scale, which shows the slight decrease in low frequency SNPs a little better. 
 }
 
 \begin{point}{Figure S3:}
@@ -118,6 +124,7 @@ C.~J.~Battey, Peter Ralph, and Andrew Kern
 \end{point}
 
 \reply{
+    Thanks for catching this - we have revised this caption to add details including the simulation parameters. \llname{ll:figs3caption}
 }
 
 
@@ -162,6 +169,9 @@ C.~J.~Battey, Peter Ralph, and Andrew Kern
 \end{point}
 
 \reply{
+The mean of the IBS tract distribution is calculated by building a (very large) vector of lengths of all IBS tracts between all pairs of individuals and taking the mean over this entire vector. This distribution is quite strongly skewed (i.e. see figure 4 and the skew(IBs) panel of fig S1) such that the highest density is in low values. We explain the depressed mean value by noting that at low neighborhood sizes the coalescence time of distant individuals is inflated, which allows more time for recombination and mutation to break up IBS tracts. The flip side of this is that there are then more IBS tracts in total across a random sample of individuals, explaining the corresponding inflation in the number of tracts. Perhaps confusing we also see an increase in the number of very long IBS tracts at low neighborhood sizes, which corresponds to an excess of very recent coalescent events for groups of nearby individuals. 
+\cjb{need to think of something to say we did about this in the text}    
+
 }
 
 \begin{point}{}
@@ -182,6 +192,7 @@ C.~J.~Battey, Peter Ralph, and Andrew Kern
 \end{point}
 
 \reply{
+    We have added to the text at the beginning of the results to emphasize that this analysis is necessary because these parameters are emergent rather than fixed \llname{emergentparams}. 
 }
 
 \begin{point}{}
@@ -189,6 +200,7 @@ C.~J.~Battey, Peter Ralph, and Andrew Kern
 \end{point}
 
 \reply{
+Good suggestion -- we have changed the section heading to "demographic inference" 
 }
 
 \begin{point}{\revref}
@@ -196,6 +208,7 @@ C.~J.~Battey, Peter Ralph, and Andrew Kern
 \end{point}
 
 \reply{
+We have revised this sentence to clarify that we aim to produce a variation in mean phenotype of two standard deviations across the landscape \llname{phenotypescalingsd}.
 }
 
 \begin{point}{\revref}
@@ -211,6 +224,7 @@ C.~J.~Battey, Peter Ralph, and Andrew Kern
 \end{point}
 
 \reply{
+ah, a confusing legend title placement! we moved "model" to after "spatial" as suggested.
 }
 
 \begin{point}{}
@@ -218,6 +232,7 @@ C.~J.~Battey, Peter Ralph, and Andrew Kern
 \end{point}
 
 \reply{
+    This is a good suggestion, but we decided to not include this as we don't have straightforward expectations for the other parameters shown. 
 }
 
 \begin{point}{}
@@ -225,6 +240,7 @@ C.~J.~Battey, Peter Ralph, and Andrew Kern
 \end{point}
 
 \reply{
+    done. \llname{spatialgenetic}
 }
 
 \begin{point}{}
@@ -232,6 +248,7 @@ C.~J.~Battey, Peter Ralph, and Andrew Kern
 \end{point}
 
 \reply{
+\cjb{check on final pass}
 }
 
 
@@ -240,6 +257,7 @@ C.~J.~Battey, Peter Ralph, and Andrew Kern
 \end{point}
 
 \reply{
+    Thank you for noting these -- they have been corrected. 
 }
 
 
@@ -272,6 +290,7 @@ C.~J.~Battey, Peter Ralph, and Andrew Kern
 \end{point}
 
 \reply{
+This is an excellent point also raised by other reviewers. We have added an appendix section comparing our model to a reverse-time stepping stone analysis on several relevant summary statistics \llname{appendix1}. Briefly, we find that many of the qualitative trends we see also occur in a stepping-stone setting, suggesting that they are driven purely by the particularities of our parameterization. We also see several interesting departures from the stepping-stone model reflecting shortcomings in the gridded approach to approximating continuous landscapes, which we think our model helps to avoid. We are also curious how all the other analyses we test would be affected using other simulation schemes, but hope to explore that aspect in future work. 
 }
 
 \begin{point}{}
@@ -279,6 +298,7 @@ C.~J.~Battey, Peter Ralph, and Andrew Kern
 \end{point}
 
 \reply{
+    See above. It is certainly easier and faster, but comes with significant issues either when neighborhood size is lower than the population of a deme, or when demes are small enough that the sample size approaches local $N_e$ (at least in reverse-time simulations). 
 }
 
 
@@ -287,6 +307,7 @@ C.~J.~Battey, Peter Ralph, and Andrew Kern
 \end{point}
 
 \reply{
+    \cjb{peter - any suggestions here?}
 }
 
 \begin{point}{}
@@ -294,6 +315,7 @@ C.~J.~Battey, Peter Ralph, and Andrew Kern
 \end{point}
 
 \reply{
+Good suggestion -- we have added a supplemental figure to show the distribution of individual fitness across the landscape with and without our edge-scaling approach. MAKE THIS FIG AND POINT TO IT HERE.
 }
 
 \begin{point}{}
@@ -301,6 +323,7 @@ C.~J.~Battey, Peter Ralph, and Andrew Kern
 \end{point}
 
 \reply{
+    We have added a figure showing sample site-frequency-spectra generated from a subset of simulations run with SLiM mutations, and then using msprime to apply mutations to the same tree sequences with our generation-time scaling approach. As you can see in \ref{fig:slim_v_msp_sfs}, these approaches yield extremely similar spectra so we believe any error in the approximation is quite small. We also now show variation in simulation times with different mutation and tree sequence recording schemes in Figure \ref{fig:runtimes}, and included a brief discussion of this in \llname{runtimesxn}
 }
 
 \begin{point}{}
@@ -308,6 +331,7 @@ C.~J.~Battey, Peter Ralph, and Andrew Kern
 \end{point}
 
 \reply{
+
 }
 
 \begin{point}{}
@@ -315,6 +339,7 @@ C.~J.~Battey, Peter Ralph, and Andrew Kern
 \end{point}
 
 \reply{
+    We have checked the code to the best of our abilities and did not find a bug causing the underdispersion. It seems to reflect overcorrection in the regression when using PC coordinates as covariates -- the PCA is capturing some information about the spatial genetic variation which itself covaries only weakly with the phenotype, and as a result we see anomalously low $-log10(p)$ when regressing genotype against phenotype. \cjb{Peter or Andy -- any advice here? } 
 }
 
 \begin{point}{}
@@ -322,6 +347,7 @@ C.~J.~Battey, Peter Ralph, and Andrew Kern
 \end{point}
 
 \reply{
+Done - thank you for pointing us to this study. \llname{haworthcite}
 }
 
 \begin{point}{}
@@ -329,6 +355,7 @@ C.~J.~Battey, Peter Ralph, and Andrew Kern
 \end{point}
 
 \reply{
+    We are also very interested to know how mixed models perform here, but think that adding a second GWAS method would make this section too large for the current paper. We have added a note to \llname{mixedmodelcallout} specifically citing mixed models as alternate methods that may perform better. 
 }
 
 \begin{point}{}
@@ -336,6 +363,7 @@ C.~J.~Battey, Peter Ralph, and Andrew Kern
 \end{point}
 
 \reply{
+Apologies, I had forgotten to make the repo public. The link should work for everyone now. 
 }
 
 
@@ -371,6 +399,7 @@ C.~J.~Battey, Peter Ralph, and Andrew Kern
 \end{point}
 
 \reply{
+    This is a good point. We evaluated this while developing the simulation using the built-in visualization tools of the SLiM GUI, and have now added a supplementary figure (Figure \ref{fig:wm_v_dd}) showing the distribution of individuals in our density-dependant spatial model and a continuous-space Wright-Fisher simulation without density dependance. 
 }
 
 Second, the demographic process used here involves birth and death of individuals. Does the population survive asymptotically or, like any birth-death process, eventually dies with probability one? In fact, one needs to know a little about the dynamics of the population size to decide whether the corresponding process is reasonable from a biological standpoint.
@@ -379,6 +408,7 @@ Second, the demographic process used here involves birth and death of individual
 \end{point}
 
 \reply{
+    Similarly here we monitored the population size over time while running SLiM. All simulations maintained asymptotic populations, and none of the runs we started ended because populations crashed. \cjb{is there something else we should show here?}
 }
 
 \begin{point}{}
@@ -386,6 +416,7 @@ Second, the demographic process used here involves birth and death of individual
 \end{point}
 
 \reply{
+    \cjb{Peter -- ideas here?}
 }
 
 \begin{point}{}
@@ -393,6 +424,7 @@ Second, the demographic process used here involves birth and death of individual
 \end{point}
 
 \reply{
+I apologize -- I had forgotten to set the repo to public. It should work now. 
 }
 
 \begin{point}{}
@@ -400,6 +432,7 @@ Second, the demographic process used here involves birth and death of individual
 \end{point}
 
 \reply{
+    This is a good point also raised by other reviewers. We have added an Appendix comparing our model to a stepping-stone, rather than the spatial-Labmda-Fleming-Viot, because we think these are the most familiar and widely used class of spatial models. See Appendix 1. We find that many features of our model are well approximated by stepping-stone models, and that for statistics like $\theta_{\pi}$ the stepping stone model results approach our continuous space model as the number of demes used to describe the landscape increases. 
 }
 
 \begin{point}{}
@@ -407,6 +440,9 @@ Second, the demographic process used here involves birth and death of individual
 \end{point}
 
 \reply{
+    Census population in the random mating model scales with "neighborhood size" because of two effects -- the edge scaling and the competition
+    
+    \cjb{need a better answer here...}
 }
 
 \begin{point}{}
@@ -414,6 +450,8 @@ Second, the demographic process used here involves birth and death of individual
 \end{point}
 
 \reply{
+This is a good point. Wright's work \citep{Wright1943} suggests some aspects of genetic variation such as variance in allele frequencies and inbreeding coefficients can be estimated by looking only at what he would later \citep{Wright1946} call "neighborhood size", but certainly other aspects like the number of segregating sits will also depend on total landscape size. We now note on \llname{popsizecaveat} that we have evaluated only one landscape size, and have added a sentence to the discussion noting that exploration of these patterns in varying landscape sizes is an important avenue for further research \llname{landscapesizecaveat}. 
+
 }
 
 \begin{point}{}
@@ -421,6 +459,7 @@ Second, the demographic process used here involves birth and death of individual
 \end{point}
 
 \reply{
+Done. Thank you for pointing us to this study. 
 }
 
 
@@ -445,6 +484,9 @@ Second, the demographic process used here involves birth and death of individual
 \end{point}
 
 \reply{
+    \cjb{working on this}
+    Thank you for this suggestion. We have slightly revised the introduction and hope it is now clearer; however since we want to cover a little history and motivation for our continuous model vs stepping-stone approaches in the intro it does have a different flow from the discussion. 
+
 }
 
 \begin{point}{}
@@ -452,6 +494,7 @@ Second, the demographic process used here involves birth and death of individual
 \end{point}
 
 \reply{
+    \cjb{working on this}
 }
 
 \begin{point}{}
@@ -459,6 +502,7 @@ Second, the demographic process used here involves birth and death of individual
 \end{point}
 
 \reply{
+    Good point on EEMS. We have added the most recent EEMS paper to the citations on \llname{eemscitation}
 }
 
 \begin{point}{}
@@ -466,6 +510,7 @@ Second, the demographic process used here involves birth and death of individual
 \end{point}
 
 \reply{
+    We now discuss haplotype methods in the relevant discussion section \llname{ibdnesxn}. However though these methods should be more accurate for recent events it is not clear that this will improve performance per se. The dips in recent inferred Ne from stairwayplot are not just prediction noise, but actually reflect an underlying genealogy in which terminal branches are shorter than expected from a constant-size random-mating population (see e.g. figure \ref{fig:sumstats}A and \ref{fig:ibs}). The interpretation error is that these short branches are generated by spatial structure rather than changes in population size over time -- a point also made in the \citep{Mazet2015} paper we discuss in the introduction and discussion. 
 }
 
 \begin{point}{}
@@ -473,6 +518,8 @@ Second, the demographic process used here involves birth and death of individual
 \end{point}
 
 \reply{
+\cjb{is this an ok response? two reviewers asked about mixed models but I feel like including them would require expanding the gwas section quite a bit and I'd rather now. But if either of you feel like it's critical I could probably get it done next week}
+    Good question -- we are also interested to know how mixed models perform here, but think that to properly test that we would want to change our design to generate phenotypes from simulated genotypes. This would allow us to evaluate false-negatives in addition to false-positives. This is important because, if mixed models do provide stronger control for stratification they are also likely to remove true signals of causal SNPs if those SNPs covary with spatial structure. We now point to these methods explicitly in the discussion \llname{mixedmodelcallout}, but think that incorporating that study here would make this paper too long. We also think the PC results are still quite relevant as the method is still seen in many studies. 
 }
 
 \begin{point}{}
@@ -480,6 +527,7 @@ Second, the demographic process used here involves birth and death of individual
 \end{point}
 
 \reply{
+Apologies, it was accidentally set to private. The link should work now. 
 }
 
 \begin{point}{}
@@ -487,6 +535,7 @@ Second, the demographic process used here involves birth and death of individual
 \end{point}
 
 \reply{
+    We have included a table describing the summary statistics in Figure \ref{table:sumstats}.
 }
 
 \begin{point}{}
@@ -494,6 +543,7 @@ Second, the demographic process used here involves birth and death of individual
 \end{point}
 
 \reply{
+\cjb{Peter and Andy -- ideas here?}
 }
 
 \begin{point}{}
@@ -501,6 +551,8 @@ Second, the demographic process used here involves birth and death of individual
 \end{point}
 
 \reply{
+We have rearranged the figure as suggested.
+
 }
 
 \begin{point}{}
@@ -515,6 +567,7 @@ Second, the demographic process used here involves birth and death of individual
 \end{point}
 
 \reply{
+Thanks, this sentence has been revised and fixed. 
 }
 
 \begin{point}{}
@@ -522,5 +575,6 @@ Second, the demographic process used here involves birth and death of individual
 \end{point}
 
 \reply{
+Done. 
 }
 
