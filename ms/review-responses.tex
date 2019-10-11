@@ -131,7 +131,7 @@ Good suggestion -- the SFS in Fig 3A is now on a log-log scale, which shows the 
 
 %%%%%%%%%%%%%%
 \reviewersection{1}
-
+We thank the reviewer for their very constructive comments. Responses follow below:
 
 \begin{quote}
     This study explores biases arising in population-based inference when 1)
@@ -169,7 +169,7 @@ Good suggestion -- the SFS in Fig 3A is now on a log-log scale, which shows the 
 \end{point}
 
 \reply{
-The mean of the IBS tract distribution is calculated by building a (very large) vector of lengths of all IBS tracts between all pairs of individuals and taking the mean over this entire vector. This distribution is quite strongly skewed (i.e. see figure 4 and the skew(IBs) panel of fig S1) such that the highest density is in low values. We explain the depressed mean value by noting that at low neighborhood sizes the coalescence time of distant individuals is inflated, which allows more time for recombination and mutation to break up IBS tracts. The flip side of this is that there are then more IBS tracts in total across a random sample of individuals, explaining the corresponding inflation in the number of tracts. Perhaps confusing we also see an increase in the number of very long IBS tracts at low neighborhood sizes, which corresponds to an excess of very recent coalescent events for groups of nearby individuals. 
+The mean of the IBS tract distribution is calculated by building a (very large) vector of lengths of all IBS tracts between all pairs of individuals and taking the mean over this entire vector. This distribution is quite strongly skewed (i.e. see figure 4 and the skew(IBs) panel of fig S1) such that the highest density is in low values. We explain the depressed mean value by noting that at low neighborhood sizes the coalescence time of distant (in space) individuals is inflated, which allows more time for recombination and mutation to break up IBS tracts. The flip side of this is that there are then more IBS tracts in total across a random sample of individuals, explaining the corresponding inflation in the number of tracts. We also see an increase in the number of very long IBS tracts at low neighborhood sizes, which corresponds to an excess of very recent coalescent events for groups of nearby individuals. 
 \cjb{need to think of something to say we did about this in the text}    
 
 }
@@ -224,7 +224,7 @@ We have revised this sentence to clarify that we aim to produce a variation in m
 \end{point}
 
 \reply{
-ah, a confusing legend title placement! we moved "model" to after "spatial" as suggested.
+Thanks for catching our confusing legend title placement! We have moved "model" to after "spatial" as suggested.
 }
 
 \begin{point}{}
@@ -290,7 +290,7 @@ ah, a confusing legend title placement! we moved "model" to after "spatial" as s
 \end{point}
 
 \reply{
-This is an excellent point also raised by other reviewers. We have added an appendix section comparing our model to a reverse-time stepping stone analysis on several relevant summary statistics \llname{appendix1}. Briefly, we find that many of the qualitative trends we see also occur in a stepping-stone setting, suggesting that they are driven purely by the particularities of our parameterization. We also see several interesting departures from the stepping-stone model reflecting shortcomings in the gridded approach to approximating continuous landscapes, which we think our model helps to avoid. We are also curious how all the other analyses we test would be affected using other simulation schemes, but hope to explore that aspect in future work. 
+This is a good point also raised by other reviewers. We have added an appendix section comparing our model to a reverse-time stepping stone simulation on several relevant summary statistics \llname{appendix1}. We show that for $\theta_\pi$ and several other statistics the stepping stone model approaches the continuous model as the resolution of the landscape increases. We also see some interesting differences that seem to reflect artifacts from discretization. We are also curious how all the other analyses we test would be affected using other simulation schemes, but hope to explore that aspect in future work. 
 }
 
 \begin{point}{}
@@ -298,7 +298,7 @@ This is an excellent point also raised by other reviewers. We have added an appe
 \end{point}
 
 \reply{
-    See above. It is certainly easier and faster, but comes with significant issues either when neighborhood size is lower than the population of a deme, or when demes are small enough that the sample size approaches local $N_e$ (at least in reverse-time simulations). 
+    See above. It is certainly easier and faster, but comes with significant issues either when neighborhood size is lower than the population of a deme, or when demes are small enough that the sample size approaches local $N_e$, at least in reverse-time simulations. 
 }
 
 
@@ -323,7 +323,7 @@ Good suggestion -- we have added a supplemental figure to show the distribution 
 \end{point}
 
 \reply{
-    We have added a figure showing sample site-frequency-spectra generated from a subset of simulations run with SLiM mutations, and then using msprime to apply mutations to the same tree sequences with our generation-time scaling approach. As you can see in \ref{fig:slim_v_msp_sfs}, these approaches yield extremely similar spectra so we believe any error in the approximation is quite small. We also now show variation in simulation times with different mutation and tree sequence recording schemes in Figure \ref{fig:runtimes}, and included a brief discussion of this in \llname{runtimesxn}
+    We have added a figure showing sample site-frequency-spectra generated from a subset of simulations run with SLiM mutations, and then using msprime to apply mutations to the same tree sequences with our generation-time scaling approach \ref{fig:slim_v_msp_sfs}. These approaches yield extremely similar spectra so we believe any error in the approximation is quite small. We also now show variation in simulation times with different mutation and tree sequence recording schemes in Figure \ref{fig:runtimes}, and included a brief discussion of this in \llname{runtimesxn}
 }
 
 \begin{point}{}
@@ -331,7 +331,7 @@ Good suggestion -- we have added a supplemental figure to show the distribution 
 \end{point}
 
 \reply{
-
+    
 }
 
 \begin{point}{}
