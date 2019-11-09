@@ -111,7 +111,10 @@
 %%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
 
-The inescapable reality that biological organisms live, move, and reproduce in continuous geography is usually omitted from population genetic models. However, mates tend to live near to one another and to their offspring, leading to a positive correlation between genetic differentiation and geographic distance. This pattern of ``isolation by distance'' \citep{Wright1943} is one of the most widely replicated empirical findings in population genetics \citep{Chen2017,Jay2012,Sharbel2000}. Despite a long history of analytical work describing the genetics of populations distributed across continuous geography (e.g., \citet{Wright1943,Rousset1997,barton2002neutral,Barton2010,Ringbauer2017,robledoarnuncio2010isolation,Wilkins2002linearcoalescent,Wilkins2004septimescales}), much modern work still describes geographic structure as a set of discrete populations connected by migration \citep[e.g.,][]{Wright1931,epperson2003geographical,rousset2011likelihoodbased,Shirk2014,lundgren2018populations,al2019estimating}\llabel{eemscitation}. For this reason, most population genetics statistics are interpreted with reference to discrete, well-mixed populations, and most empirical papers analyze variation within clusters of genetic variation inferred by programs like \textit{STRUCTURE} \citep{Pritchard2000} with methods that assume these are randomly mating units.
+The inescapable reality that biological organisms live, move, and reproduce in continuous geography is usually omitted from population genetic models. However, mates tend to live near to one another and to their offspring, leading to a positive correlation between genetic differentiation and geographic distance. This pattern of ``isolation by distance'' \citep{Wright1943} is one of the most widely replicated empirical findings in population genetics \citep{Chen2017,Jay2012,Sharbel2000}.
+Despite a long history of analytical work describing the genetics of populations distributed across continuous geography
+(e.g., \citet{Wright1943,Rousset1997,barton2002neutral,Barton2010,Ringbauer2017,robledoarnuncio2010isolation,Wilkins2002linearcoalescent,Wilkins2004septimescales}), \revpoint{AE}{1}
+much modern work still describes geographic structure as a set of discrete populations connected by migration \citep[e.g.,][]{Wright1931,epperson2003geographical,rousset2011likelihoodbased,Shirk2014,lundgren2018populations,al2019estimating}\llabel{eemscitation}. For this reason, most population genetics statistics are interpreted with reference to discrete, well-mixed populations, and most empirical papers analyze variation within clusters of genetic variation inferred by programs like \textit{STRUCTURE} \citep{Pritchard2000} with methods that assume these are randomly mating units.
 
 The assumption that populations are ``well-mixed'' has important implications for downstream inference of selection and demography. Methods based on the coalescent \citep{Kingman1982,wakeley2005coalescent} assume that the sampled individuals are a random draw from a well-mixed population
 that is much larger than the sample \citep{wakeley2003gene}. The key assumption is that the individuals of each generation are \emph{exchangeable}, so that there is no correlation between the fate or fecundity of a parent and that of their offspring \citep{Huillet2011}. If dispersal or mate selection is limited by geographic proximity, this assumption can be violated in many ways. For instance, if mean viability or fecundity is spatially autocorrelated, then limited geographic dispersal will lead to parent--offspring correlations. Furthermore, nearby individuals will be more closely related than an average random pair, so drawing multiple samples from the same area of the landscape will represent a biased sample of the genetic variation present in the whole population \citep{Stadler2009}.% It has long been appreciated that this model misspecification subjects downstream inferences to bias, but the extent and nature of these effects remain largely uninvestigated.
@@ -162,7 +165,8 @@ was shown by \citet{Felsenstein1975} to eventually lead to unrealistic populatio
 if the range is sufficiently large.
 Another method for modeling spatial populations is to assume the existence of a grid of discrete randomly mating populations connected by migration, 
 thus enforcing regular population density by edict.
-Among many other important results drawn from this class of ``lattice'' or ``stepping stone'' models, 
+Among many other results drawn from this class of ``lattice'' or ``stepping stone'' models
+\citep{epperson2003geographical}, 
 \citet{Rousset1997} showed that the slope of the linear regression of genetic differentiation ($F_{ST}$) against the logarithm of spatial distance is an estimate of neighborhood size. 
 Although these grid models may be good approximations of continuous geography in many situations,
 they do not model demographic fluctuations, and limit investigation of spatial structure below the level of the deme,
@@ -170,8 +174,25 @@ assumptions whose impacts are unknown.
 An alternative method for dealing with continuous geography is a new class of coalescent models,
 the Spatial Lambda Fleming-Viot models \citep{Barton2010,Kelleher2014}.
 
-To avoid questionable assumptions, we here used forward-time, individual-based simulations. By scaling the probability of survival in each timestep to local population density we shift reproductive output towards low-density regions, which prevents populations from clustering. 
-Such models have been used extensively in ecological modeling but rarely in population genetics, where to our knowledge previous implementations of continuous space models have focused on a small number of genetic loci, which limits the ability to investigate the impacts of continuous space on genome-wide genetic variation as is now routinely sampled from real organisms.  \revpoint{AE}{2}
+To avoid questionable assumptions, we here used forward-time, individual-based simulations.
+The question of what regulates real populations has a long history and many answers
+\citep{lloyd1967crowding,antonovics1980ecological},
+but it is clear that populations must have some density-dependent feedback on population size,
+or else they would face eventual extinction or explosion.
+In the absence of unrealistic global population regulation,
+this regulation must be local,
+and there are many ways to arrange this \citep{bolker2003spatial}.
+We decrease each individual's probability of survival with increasing local population density,
+which shifts reproductive output towards low-density regions 
+(and prevents the unrealistic population clustering seen by \citet{Felsenstein1975}). 
+Such models have been used extensively in ecological modeling
+\citep{durrett1994importance,bolker1997using,law2003population,fournier2004microscopic,champer2019suppression,}
+but rarely in population genetics, \revpoint{AE}{2}
+where to our knowledge implementations of continuous space models
+before their availability through SLiM \citep{Haller2019}
+have focused on a small number of genetic loci
+\citep{slatkin1989comparison,barton2002neutral,robledoarnuncio2010isolation},
+which limits the ability to investigate the impacts of continuous space on genome-wide genetic variation as is now routinely sampled from real organisms. 
 By simulating chromosome-scale sequence alignments and complete population histories we are able to treat our simulations as real populations and replicate the sampling designs and analyses commonly conducted on real genomic data.
 
 %%%%%%%%%%%%
@@ -719,6 +740,7 @@ CJB and ADK were supported by NIH award R01GM117241.
 \revpoint{AE}{4}
 
 \bibliography{spaceness}
+\bibliography{more_refs}
 
 
 
