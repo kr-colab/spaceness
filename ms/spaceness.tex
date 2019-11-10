@@ -174,24 +174,26 @@ assumptions whose impacts are unknown.
 An alternative method for dealing with continuous geography is a new class of coalescent models,
 the Spatial Lambda Fleming-Viot models \citep{Barton2010,Kelleher2014}.
 
-To avoid questionable assumptions, we here used forward-time, individual-based simulations.
+To avoid hard-to-evaluate approximations, we here used forward-time, individual-based simulations.
 The question of what regulates real populations has a long history and many answers
-\citep{lloyd1967crowding,antonovics1980ecological},
-but it is clear that populations must have some density-dependent feedback on population size,
+\citep[e.g.,][]{lloyd1967crowding,antonovics1980ecological,crawley1990population},
+but it is clear that populations must at some point have density-dependent feedback on population size,
 or else they would face eventual extinction or explosion.
 In the absence of unrealistic global population regulation,
 this regulation must be local,
 and there are many ways to arrange this \citep{bolker2003spatial}.
-We decrease each individual's probability of survival with increasing local population density,
+In our simulations,
+we decrease each individual's probability of survival with increasing local population density,
 which shifts reproductive output towards low-density regions 
-(and prevents the unrealistic population clustering seen by \citet{Felsenstein1975}). 
+(and prevents the unrealistic population clustering seen by \citet{Felsenstein1975},
+see Supplemental \autoref{fig:slim_has_no_pain}).
 Such models have been used extensively in ecological modeling
-\citep{durrett1994importance,bolker1997using,law2003population,fournier2004microscopic,champer2019suppression,}
+\citep{durrett1994importance,bolker1997using,law2003population,fournier2004microscopic,champer2019suppression}
 but rarely in population genetics, \revpoint{AE}{2}
 where to our knowledge implementations of continuous space models
 before their availability through SLiM \citep{Haller2019}
 have focused on a small number of genetic loci
-\citep{slatkin1989comparison,barton2002neutral,robledoarnuncio2010isolation},
+\citep[e.g.,][]{slatkin1989comparison,barton2002neutral,robledoarnuncio2010isolation,rossine2014espao},
 which limits the ability to investigate the impacts of continuous space on genome-wide genetic variation as is now routinely sampled from real organisms. 
 By simulating chromosome-scale sequence alignments and complete population histories we are able to treat our simulations as real populations and replicate the sampling designs and analyses commonly conducted on real genomic data.
 
@@ -219,13 +221,14 @@ where $d_{ij}$ is the distance between individuals $i$ and $j$ and the sum is ov
 Since $g$ is a probability density, $n_i$ is an estimate of the number of nearby individuals per unit area.
 Then, given a per-unit carrying capacity $K$, \llabel{ll:K_defn}
 the probability of survival until the next time step for individual $i$ is
-\begin{equation}
+\begin{equation} \label{eqn:p_survival}
     p_i 
     =
     \min\left( 0.95, \frac{1}{1 + n_i / (K (1+L))} \right) .
 \end{equation}
 We chose this functional form so that the equilibrium population density per unit area is close to $K$, \llabel{ll:K_again}
-and the mean lifetime is around $L$.
+and the mean lifetime is around $L$;
+for more description see Appendix \ref{apx:demographic_model}.
 
 An important step in creating any spatial model is dealing with range edges. 
 Because local population density is used to model competition, edge or corner populations can be assigned artificially high fitness values 
@@ -368,7 +371,7 @@ Adjusting the spatial dispersal and interaction distance, $\sigma$,
 has a surprisingly large effect on demographic quantities that are usually fixed in Wright-Fisher models --
 the generation time, census population size, and variance in offspring number, shown in Figure~\ref{fig:genparams}. Because our simulation is paramaterized on an individual level, these population parameters emerge as a property of the interactions among individuals rather than being directly set \llabel{emergentparams}.
 Variation across runs occurs because,
-even though the parameters $K$ and $L$ that control population density and mean lifetime respectively \llabel{ll:K_more}
+even though the parameters $K$ and $L$ that control population density and mean lifetime respectively \llabel{ll:K_more} \revpoint{1}{11}
 were the same in all simulations,
 the strength of stochastic effects depends strongly on the spatial interaction distance $\sigma$.
 For instance, 
@@ -625,7 +628,8 @@ Our analysis suggests that many empirical analyses of population size history us
 %%%%%%%%%%%
 \subsection{GWAS}
 
-Spatial structure is particularly challenging for genome-wide association studies, because the effects of dispersal on genetic variation are compounded by spatial variation in the environment \citep{Mathieson2012}. Spatially restricted mate choice and dispersal causes variation in allele frequencies across the range of a species. If environmental factors affecting the phenotype of interest also vary over space, then allele frequencies and environmental exposures will covary over space. In this scenario an uncorrected GWAS will infer genetic associations with a purely environmental phenotype at any site in the genome that is differentiated over space, and the relative degree of bias will be a function of the degree of covariation in allele frequencies and the environment (i.e., Figure \ref{fig:gwas}C, bottom panel). This pattern has been demonstrated in a variety of simulation and empirical contexts \citep{Price2006,Yu2006,Young2018,Mathieson2012,Kang2008,Kang2010,Bulik-Sullivan2015,Berg2018,Sohail2018}. 
+Spatial structure is particularly challenging for genome-wide association studies, because the effects of dispersal on genetic variation are compounded by spatial variation in the environment \citep{Mathieson2012}. Spatially restricted mate choice and dispersal causes variation in allele frequencies across the range of a species. If environmental factors affecting the phenotype of interest also vary over space, then allele frequencies and environmental exposures will covary over space. \llabel{ll:1:11:2}
+In this scenario an uncorrected GWAS will infer genetic associations with a purely environmental phenotype at any site in the genome that is differentiated over space, and the relative degree of bias will be a function of the degree of covariation in allele frequencies and the environment (i.e., Figure \ref{fig:gwas}C, bottom panel). This pattern has been demonstrated in a variety of simulation and empirical contexts \citep{Price2006,Yu2006,Young2018,Mathieson2012,Kang2008,Kang2010,Bulik-Sullivan2015,Berg2018,Sohail2018}. 
 
 Incorporating PC positions as covariates in a linear-regression GWAS \citep{Price2006} is designed to address this challenge by regressing out a baseline level of ``average'' differentiation. 
 In essence, a PC-corrected GWAS asks ``what regions of the genome are more associated with this phenotype than the average genome-wide association observed across populations?'' 
@@ -739,8 +743,7 @@ We thank Brandon Cooper, Matt Hahn, Doc Edge, and others for reading and thinkin
 CJB and ADK were supported by NIH award R01GM117241. 
 \revpoint{AE}{4}
 
-\bibliography{spaceness}
-\bibliography{more_refs}
+\bibliography{spaceness,more_refs}
 
 
 
@@ -779,6 +782,50 @@ In general we find many of the qualitative trends are similar among continuous a
 
 These differences relative to our continuous model mainly reflect two shortcomings of the reverse-time stepping stone model. If we simulate a coarse grid with relatively large populations in each deme, we cannot accurately capture the dynamics of small neighborhood sizes because mating within each deme remains random regardless of the migration rate connecting demes. This likely explains the trends in $\pi$, observed heterozygosity, and $F_{is}$. However increasing the number of demes while holding the total number of individuals constant results in small within-deme populations for which even the minimum sample size of 1 approaches the local $N_e$ (Table \ref{table:grid_params}). This results in an excess of short terminal branches in the coalescent tree, which decreases the total branch length and leads to fewer segregating sites, deflated $\theta_W$, and inflated Tajima's $D$. Overall then our continuous model reproduces important features of spatial structure approximated by reverse-time stepping-stone models at moderate neighborhood sizes while avoiding some artifacts caused binning the landscape into discrete demes. 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Demographic model}
+\label{apx:demographic_model}
+
+We chose our demographic model so that every individual has on average $1/L$ offspring
+each time step,
+and if the local population density of an individual is $n$,
+then their probability of survival until the next time step is
+(equation \eqref{eqn:p_survival}):
+\begin{equation}
+    p = \min\left( 0.95, \frac{1}{1 + n / (K (1+L))} \right) .
+\end{equation}
+We capped survival at 0.95 so that we would not have exceptionally long-lived individuals
+in sparsely populated areas --
+otherwise, an isolated individual might live for a very long time.
+Since $1 - p \approx n / (K (1 + L))$,
+mortalitity goes up roughly linearly with the number of neighbors (on a scale given by $K$),
+as would be obtained if, for instance, mortality is due to agonistic interactions.
+Ignoring in/outmigration,
+a region is at demographic equilibrium if the per-capita probability of death
+is equal to the birth rate,
+i.e., if $1 - p = 1/L$.
+(Note that there is no effect of age in the model,
+which would make the analysis more complicated.)
+Solving this for $n$,
+we get that in a well-mixed population, the equilibrium density should be around
+\begin{equation}
+    n &= K \frac{L+1}{L-1}
+\end{equation}
+individuals per unit area.
+At this density, the per-capita death rate is $1/L$, so the mean lifetime is $L$.
+This equilibrium density is \emph{not} $K$, but (since $L=4$) is two-thirds larger.
+However, in practice this model leads to a total population size which is around $K$
+multiplied by total geographic area
+(but which depends on $\sigma$, as discussed above).
+The main reason for this is that
+since offspring tend to be near their parents, individuals tend to be ``clumped'',
+and so experience a higher average density than the ``density'' one would compute
+by dividing census size by geographic area \citep{lloyd1967crowding}.
+To maintain a constant expected total population size
+would require making (say) $K$ depend on $\sigma$;
+however, typical local population densities might then be more dissimilar.
+
+
 \stopappendix
 \clearpage 
 
@@ -790,7 +837,7 @@ These differences relative to our continuous model mainly reflect two shortcomin
 \centering
 \includegraphics[width=\textwidth]{figures/wm_v_dd_maps.pdf}
 \caption{Maps of individual locations in a continuous-space Wright-Malécot model with independent dispersal of all individuals (top) and under our continuous space model incorporating density-dependant fitness (bottom). The clustering seen in the top row is the "Pain in the Torus" described by \citet{Felsenstein1975}.}
-\label{fig:slim_v_msp_sfs} 
+\label{fig:slim_has_no_pain} 
 \end{figure*}
 \FloatBarrier
 
@@ -800,7 +847,7 @@ These differences relative to our continuous model mainly reflect two shortcomin
 \centering
 \includegraphics[]{figures/slim_v_msp_sfs.pdf}
 \caption{Site frequency spectra from a simulation with neighborhood size = 12.5 when mutations are recorded directly in SLiM (blue line) or applied later in msprime (red line).}
-\label{fig:slim_v_msp_sfs} 
+\label{fig:slim_v_msp_sfs2} 
 \end{figure*}
 \FloatBarrier
 
