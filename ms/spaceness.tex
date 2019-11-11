@@ -319,6 +319,7 @@ Last, we used a subset of summary statistics to compare how our continuous model
 
 %%%%%%%%%%%
 \subsection{Demographic Inference}
+\revpoint{1}{4}
 
 To assess the impacts of continuous spatial structure on demographic inference we inferred population size histories for all simulations using two approaches: stairwayplot \citep{Liu2015} and SMC++ \citep{Terhorst2016}. Stairwayplot fits its model to a genome-wide estimate of the SFS, while SMC++ also incorporates linkage information. % in a sequentially Markovian coalescent framework. 
 For both methods we sampled 20 individuals from all spatial simulations using random, midpoint, and point sampling strategies. 
@@ -432,7 +433,7 @@ Run times for our model scale approximately linearly with neighborhood size (Fig
 %%%%%%%%%%%%
 \subsection{Impacts of Continuous Space on Population Genetic Summary Statistics}
 
-Even though certain aspects of population demography depend on the scale of spatial interactions, it still could be that population genetic variation is well-described by a well-mixed population model. Indeed, mathematical results suggest that genetic variation in some spatial models should be well-approximated by a Wright-Fisher population if neighborhood size is large and all samples are geographically widely separated \citep{wilkins2004separation,zahle2005stepping}. However, the behavior of most common population genetic summary statistics other than Tajima's $D$ \citep{Stadler2009} has not yet been described in realistic geographic models. Moreover, as we will show, spatial sampling strategies can affect summaries of genetic variation at least as strongly as the underlying population dynamics \llabel{spatialgenetic}. 
+Even though certain aspects of population demography depend on the scale of spatial interactions, it still could be that population genetic variation is well-described by a well-mixed population model. Indeed, mathematical results suggest that genetic variation in some spatial models should be well-approximated by a Wright-Fisher population if neighborhood size is large and all samples are geographically widely separated \citep{wilkins2004separation,zahle2005stepping}. However, the behavior of most common population genetic summary statistics other than Tajima's $D$ \citep{Stadler2009} has not yet been described in realistic geographic models. Moreover, as we will show, spatial sampling strategies can affect summaries of genetic variation at least as strongly as the underlying population dynamics. \revpoint{1}{9}
 
 
 \begin{figure*}[p]
@@ -809,7 +810,7 @@ which would make the analysis more complicated.)
 Solving this for $n$,
 we get that in a well-mixed population, the equilibrium density should be around
 \begin{equation}
-    n &= K \frac{L+1}{L-1}
+    n = K \frac{L+1}{L-1}
 \end{equation}
 individuals per unit area.
 At this density, the per-capita death rate is $1/L$, so the mean lifetime is $L$.
