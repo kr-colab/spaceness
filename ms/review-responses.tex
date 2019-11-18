@@ -65,9 +65,16 @@ C.~J.~Battey, Peter Ralph, and Andrew Kern
     strongest response.
 \end{quote}
 
-%\plr{I would generally cut down the quoted bits like the above to only what's essential, but haven't done that yet.}
 
-% \plr{IMPORTANT: don't reorder or delete "points" below - it messes up the automatic numbering!}
+This is a good point. There are many ways to go in the quest for demographic realism,
+and the fundamental question -- what regulates population density in real populations --
+is still very much an open question (or rather, a question with a great many answers).
+As highlighted below,
+we have included further discussion of our particular choice
+of local, density-mediated control on mortality,
+along with pointers into the literature, at several places in the manuscript;
+see in particular in the Methods when we introduce the model \revreffull{AE}{2},
+and \llname{demog_disco}.
 
 \begin{point}{Line 35:}
     Also cite Wilkins and Wakeley, Genetics 2002; Wilkins 2004
@@ -84,8 +91,8 @@ Done.
 
 \reply{
     Good idea --
-    we have added some historical discussion and a few more citations to this section.
-    \revref
+    we have added some historical discussion and a few more citations to this section,
+    \revref. Also see the additional discussion in the Discussion \llname{demog_disco}.
 }
 
 \begin{point}{\revref}
@@ -97,7 +104,7 @@ We have added a figure (Figure \ref{fig:runtimes}) and short discussion \llname{
 }
 
 \begin{point}{\revref}
-    I read the acknowledgement to the Hearth and Creative Sky Brewing with a sense of familiarity in feeling of gratitude to my own favorite cafes and breweries, but I it's not a great precedent for Acknowledgements to be filled this way. Please cut.
+    I read the acknowledgement to the Hearth and Falling Sky Brewing with a sense of familiarity in feeling of gratitude to my own favorite cafes and breweries, but I it's not a great precedent for Acknowledgements to be filled this way. Please cut.
 \end{point}
 
 \reply{
@@ -127,14 +134,13 @@ We have added a figure (Figure \ref{fig:runtimes}) and short discussion \llname{
 \end{point}
 
 \reply{
-    Thanks for catching this - we have revised this caption to add details including the simulation parameters.
+    Thanks for catching this - we have revised this caption to add details including the simulation parameters. (Supplemental Figure \ref{fig:hetmap}).
 }
 
 
 
 %%%%%%%%%%%%%%
 \reviewersection{1}
-We thank the reviewer for their very constructive comments. Responses follow below:
 
 \begin{quote}
     This study explores biases arising in population-based inference when 1)
@@ -150,7 +156,7 @@ We thank the reviewer for their very constructive comments. Responses follow bel
     populations that evolved in continuous space, and that can model
     environmental factors to create phenotypes varying over space. As a result,
     this study identified spatial structuring scenarios (small neighbourhood
-    size ~ 10-100) that coupled with imperfect sampling strategies lead to a
+    size $\sim$ 10--100) that coupled with imperfect sampling strategies lead to a
     biased inference of widely used population genetic statistics (altogether
     18 statistics) such as pi (average pairwise sequence differences),
     heterozygosity (and inbreeding coefficient), and IBS tract sharing.
@@ -167,19 +173,22 @@ We thank the reviewer for their very constructive comments. Responses follow bel
 \end{quote}
 
 
+We thank the reviewer for their very constructive comments!
+Responses follow below:
+
 \begin{point}{}
-    When neighbourhood size is small (10-100), the mean number of IBS tracts > 2bp (nIBS as in Table S1) is elevated similar to Wright's inbreeding coefficient, but mean of the distribution of pairwise IBS (mean(IBS)) is decreased. What could be the source of this discrepancy? How exactly mean(IBS) was calculated?
+    When neighbourhood size is small (10-100), the mean number of IBS tracts ${}>2$bp (nIBS as in Table S1) is elevated similar to Wright's inbreeding coefficient, but mean of the distribution of pairwise IBS (mean(IBS)) is decreased. What could be the source of this discrepancy? How exactly mean(IBS) was calculated?
 \end{point}
 
 \reply{
-The mean IBS is simply the mean of the vector of lengths of IBS tracts. 
-The short answer is that if one splits a chromosome up into more pieces (increasing nIBS),
+    The mean IBS is simply the mean of the vector of lengths of IBS tracts.
+    \plr{make sure this is stated in the text somewhere}
+    The short answer is that if one splits a chromosome up into more pieces (increasing nIBS),
     the mean length of those pieces must necessarily be smaller.
     At low neighborhood sizes, spatially distant individuals tend to have longer coalescence times,
     leading to more (and hence smaller) IBS tracts.
     This can be seen in Supplemental Figure \ref{fig:allsumstats}.
     Note that skew(IBS) and number of long ($>$1e6) IBS tracts reflect other aspects of the distribution.
-
 }
 
 \begin{point}{}
@@ -296,12 +305,16 @@ We have moved ``model'' to after ``spatial'' as suggested.
     I don't have any major criticisms. There were a few aspects that I thought might warrant some additional discussion, and a few specific questions below. The general questions I had after reading it were:
 \end{quote}
 
+Thanks very much for the encouraging words!
+
 \begin{point}{}
-    To what extent are any of the results dependent on the exact method of simulation. There are a number of choices about the exact details of the simulations (e.g. the way the overlapping generations are handled, the edge effects and, particularly, the form of Equation 1 - see below). It's not so much that these are non-standard (since I don't think there is a standard) and they all sort of make sense heuristically, and I was left wondering whether these sorts of choices actually make a difference. Do the authors have some thoughts/intuition/results about that? Given that the results in Fig. 3 seem quite consistent with expectations, I suspect that on some level it doesn't make much difference but then there are intermediate results like Fig. 2 which seem a bit counter-intuitive and I wonder if those aspects depend on the simulation scheme.
+    To what extent are any of the results dependent on the exact method of simulation. There are a number of choices about the exact details of the simulations (e.g. the way the overlapping generations are handled, the edge effects and, particularly, the form of Equation 1 - see below). It's not so much that these are non-standard (since I don't think there is a standard) and they all sort of make sense heuristically, and I was left wondering whether these sorts of choices actually make a difference. Do the authors have some thoughts/intuition/results about that? Given that the results in \autoref{fig:sumstats} seem quite consistent with expectations, I suspect that on some level it doesn't make much difference but then there are intermediate results like \autoref{fig:genparams} which seem a bit counter-intuitive and I wonder if those aspects depend on the simulation scheme.
 \end{point}
 
 \reply{
-This is a good point also raised by other reviewers. We have added an appendix section comparing our model to a reverse-time stepping stone simulation on several relevant summary statistics \llname{appendix1}. We show that for $\theta_\pi$ and several other statistics the stepping stone model approaches the continuous model as the resolution of the landscape increases. We also see some interesting differences that seem to reflect artifacts from discretization. We are also curious how all the other analyses we test would be affected using other simulation schemes, but hope to explore that aspect in future work. 
+    This is a good point also raised by other reviewers.
+    We have added some more discussion of the choice of demographic model
+    (\revreffull{AE}{2} and \llname{demog_disco}).
 }
 
 \begin{point}{}
@@ -309,7 +322,15 @@ This is a good point also raised by other reviewers. We have added an appendix s
 \end{point}
 
 \reply{
-    See above. It is certainly easier and faster, but comes with significant issues either when neighborhood size is lower than the population of a deme, or when demes are small enough that the sample size approaches local $N_e$, at least in reverse-time simulations. 
+    We have added an appendix comparing our model to a reverse-time stepping stone simulation on several relevant summary statistics \llname{apx:stepping_stone}.
+    For some of these statistics (e.g., $\theta_\pi$),
+    the behavior of the stepping stone model becomes more similar (although not identical)
+    to the continuous model as the resolution of the landscape increases,
+    but other statistics seems to be more strongly affected by discretization artifacts.
+    We are also curious how all the other analyses we test would be affected using other simulation schemes, but hope to explore that aspect in future work. 
+    Furthermore, discrete-deme coalescent simulations are certainly faster,
+    but come with significant issues either when neighborhood size is lower than the population of a deme,
+    or when demes are small enough that the sample size approaches local $N_e$.
 }
 
 
@@ -318,7 +339,7 @@ This is a good point also raised by other reviewers. We have added an appendix s
 \end{point}
 
 \reply{
-    Additional discussion of the model is now provided in the appendix (see "Demographic model") \llname{dem_model_app}
+    Additional discussion of the model is now provided in the appendix (see "Demographic model") \llname{apx:demographic_model}
 }
 
 \begin{point}{}
@@ -427,7 +448,7 @@ Second, the demographic process used here involves birth and death of individual
 \end{point}
 
 \reply{
-   We have added additional discussion of this point to appendix A (see "Demographic Model") \llname{dem_model_app}
+   We have added additional discussion of this point to appendix A (see "Demographic Model") \llname{apx:demographic_model}
 }
 
 \begin{point}{}
@@ -439,11 +460,11 @@ I apologize -- I had forgotten to set the repo to public. It should work now.
 }
 
 \begin{point}{}
-    All in all, more efforts need to be made here in my opinion to show that the forward-in-time simulations generate sensible outcomes. Sensible in terms of the behavior of the population demography at equilibrium (provided such equilibrium indeed exists) along with that of the spatial distribution of individuals. The authors could provide some guarantee of the good behavior of their model as evidenced from simulations using a broad range of parameter values for generating data. Alternatively, they could elect to use the spatial-Lambda-Fleming-Viot model for their simulations, which, in my opinion would seem the most sensible option given that (1) it is possible to run backward-in-time simulations under this model, thereby saving a lot of computation time and (2) it is a well-studied model with good mathematical and biological properties and (3) it is implemented in a publicly available software program (https://github.com/jeromekelleher/discsim)
+    All in all, more efforts need to be made here in my opinion to show that the forward-in-time simulations generate sensible outcomes. Sensible in terms of the behavior of the population demography at equilibrium (provided such equilibrium indeed exists) along with that of the spatial distribution of individuals. The authors could provide some guarantee of the good behavior of their model as evidenced from simulations using a broad range of parameter values for generating data. Alternatively, they could elect to use the spatial-Lambda-Fleming-Viot model for their simulations, which, in my opinion would seem the most sensible option given that (1) it is possible to run backward-in-time simulations under this model, thereby saving a lot of computation time and (2) it is a well-studied model with good mathematical and biological properties and (3) it is implemented in a publicly available software program (\url{https://github.com/jeromekelleher/discsim}).
 \end{point}
 
 \reply{
-    This is a good point also raised by other reviewers. We have added an Appendix comparing our model to a stepping-stone, rather than the spatial-Labmda-Fleming-Viot, because we think these are the most familiar and widely used class of spatial models. See Appendix 1. We find that many features of our model are well approximated by stepping-stone models, and that for statistics like $\theta_{\pi}$ the stepping stone model results approach our continuous space model as the number of demes used to describe the landscape increases. 
+    This is a good point also raised by other reviewers. We have added an Appendix comparing our model to a stepping-stone \llname{apx:stepping_stone}, rather than the spatial-Labmda-Fleming-Viot, because we think these are the most familiar and widely used class of spatial models. We find that many features of our model are well approximated by stepping-stone models, and that for statistics like $\theta_{\pi}$ the stepping stone model results approach our continuous space model as the number of demes used to describe the landscape increases. 
 }
 
 \begin{point}{}
