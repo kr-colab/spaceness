@@ -75,13 +75,18 @@ C.~J.~Battey, Peter Ralph, and Andrew Kern
 \end{point}
 
 \reply{
+Done.
+\revref
 }
 
 \begin{point}{\revref}
-    "Such models have been used extensively in ecological modeling but rarely in population genetics " Detailing these previous uses via citations and elaboration may help alleviate the major concern about the provenenance of this model and its unique behaviors (see general comments above and R2 and R3 comments).
+    ``Such models have been used extensively in ecological modeling but rarely in population genetics'': Detailing these previous uses via citations and elaboration may help alleviate the major concern about the provenenance of this model and its unique behaviors (see general comments above and R2 and R3 comments).
 \end{point}
 
 \reply{
+    Good idea --
+    we have added some historical discussion and a few more citations to this section.
+    \revref
 }
 
 \begin{point}{\revref}
@@ -89,6 +94,8 @@ C.~J.~Battey, Peter Ralph, and Andrew Kern
 \end{point}
 
 \reply{
+We have added a figure (Figure \ref{fig:runtimes}) and short discussion \llname{runtimesxn} of run times.
+\plr{What's up with those run times?}
 }
 
 \begin{point}{\revref}
@@ -99,18 +106,22 @@ C.~J.~Battey, Peter Ralph, and Andrew Kern
     Good point; we have done this.
 }
 
-\begin{point}{Figure 4:}
+\begin{point}{Figure \ref{fig:ibs}:}
     Show random-mating expectation
 \end{point}
 
 \reply{
+    This is done.
 }
 
-\begin{point}{Figure 3A, S2:}
+\begin{point}{Figure \ref{fig:sumstats}A, \ref{fig:allsfs}:}
     Perhaps more revealing to show on log-log scale?
 \end{point}
 
 \reply{
+    Good suggestion -- the SFS in Fig \ref{fig:sumstats}A is now on a log-log scale,
+    which shows the slight decrease in low frequency SNPs a little better. 
+    We've left Fig \ref{fig:allsfs} as-is.
 }
 
 \begin{point}{Figure S3:}
@@ -118,13 +129,14 @@ C.~J.~Battey, Peter Ralph, and Andrew Kern
 \end{point}
 
 \reply{
+    Thanks for catching this - we have revised this caption to add details including the simulation parameters. \llname{ll:figs3caption}
 }
 
 
 
 %%%%%%%%%%%%%%
 \reviewersection{1}
-
+We thank the reviewer for their very constructive comments. Responses follow below:
 
 \begin{quote}
     This study explores biases arising in population-based inference when 1)
@@ -162,12 +174,15 @@ C.~J.~Battey, Peter Ralph, and Andrew Kern
 \end{point}
 
 \reply{
+The mean of the IBS tract distribution is calculated by building a (very large) vector of lengths of all IBS tracts between all pairs of individuals and taking the mean over this entire vector. This distribution is quite strongly skewed (i.e. see figure 4 and the skew(IBs) panel of fig S1) such that the highest density is in low values. We explain the depressed mean value by noting that at low neighborhood sizes the coalescence time of distant (in space) individuals is inflated, which allows more time for recombination and mutation to break up IBS tracts. The flip side of this is that there are then more IBS tracts in total across a random sample of individuals, explaining the corresponding inflation in the number of tracts. We also see an increase in the number of very long IBS tracts at low neighborhood sizes, which corresponds to an excess of very recent coalescent events for groups of nearby individuals. 
+\cjb{need to think of something to say we did about this in the text}    
+
 }
 
 \begin{point}{}
     The authors use K to denote both carrying capacity \llname{ll:K_defn}
     and population density \llname{ll:K_again}. 
-    It might be better to use a different notation for these quantities since carrying capacity is fixed while density is an emergent quantity in the non-Wright-Fisher model. Use of K to denote carrying capacity and density is a bit confusing. For example, on \llname{ll:K_more} it is said that ' the "population density" (K) and "mean lifetime" (L) parameters were the same in all simulations'. Here K seems to indicate carrying capacity rather than density? The latter is an emergent quantity and varies across simulation runs?
+    It might be better to use a different notation for these quantities since carrying capacity is fixed while density is an emergent quantity in the non-Wright-Fisher model. Use of K to denote carrying capacity and density is a bit confusing. For example, on \llname{ll:K_more} it is said that ' the ``population density'' (K) and ``mean lifetime'' (L) parameters were the same in all simulations'. Here K seems to indicate carrying capacity rather than density? The latter is an emergent quantity and varies across simulation runs?
 \end{point}
 
 \reply{
@@ -182,13 +197,15 @@ C.~J.~Battey, Peter Ralph, and Andrew Kern
 \end{point}
 
 \reply{
+    We have added to the text at the beginning of the results to emphasize that this analysis is necessary because these parameters are emergent rather than fixed \llname{emergentparams}. 
 }
 
-\begin{point}{}
-    Page 9, line 242, Perhaps 'Demographic Inference' might better reflect the content of this section.
+\begin{point}{\revref}
+    Perhaps 'Demographic Inference' might better reflect the content of this section.
 \end{point}
 
 \reply{
+Good suggestion -- we have changed the section heading to ``demographic inference'' \revref.
 }
 
 \begin{point}{\revref}
@@ -196,6 +213,7 @@ C.~J.~Battey, Peter Ralph, and Andrew Kern
 \end{point}
 
 \reply{
+We have revised this sentence to clarify that we aim to produce a variation in mean phenotype of two standard deviations across the landscape \llname{phenotypescalingsd}.
 }
 
 \begin{point}{\revref}
@@ -207,24 +225,30 @@ C.~J.~Battey, Peter Ralph, and Andrew Kern
 }
 
 \begin{point}{}
-    Page 11, Please correct the legend in Figure 2: must be 'spatial model' and 'random mating' model.
+    Please correct the legend in \autoref{fig:genparams}:
+    must be `spatial model' and `random mating' model.
 \end{point}
 
 \reply{
+Thanks for catching our confusing legend title placement!
+We have moved ``model'' to after ``spatial'' as suggested.
 }
 
 \begin{point}{}
-    Optional: a dashed line in Figure 2 that shows the total carrying capacity of 50*50*5=12500 would be helpful.
+    Optional: a dashed line in \autoref{fig:genparams}
+    that shows the total carrying capacity of $50 \times 50 \times 5=12500$ would be helpful.
 \end{point}
 
 \reply{
+    This is a good suggestion, but we decided to not include this as we don't have straightforward expectations for the other parameters shown. 
 }
 
-\begin{point}{}
-    Page 13, line 349, The phrase 'affect summaries of variation' is better to replace with 'summaries of genetic variation'.
+\begin{point}{\revref}
+    The phrase `affect summaries of variation' is better to replace with `summaries of genetic variation'.
 \end{point}
 
 \reply{
+    Done. \revref
 }
 
 \begin{point}{}
@@ -232,14 +256,16 @@ C.~J.~Battey, Peter Ralph, and Andrew Kern
 \end{point}
 
 \reply{
+\cjb{check on final pass}
 }
 
 
 \begin{point}{}
-    There are also several typos and errors in the text. For example, on Page 12, lines 309; Page 27, line 655.
+    There are also several typos and errors in the text. For example, \revref; \llname{ll:1:11:2}.
 \end{point}
 
 \reply{
+    Thank you for noting these -- they have been corrected. 
 }
 
 
@@ -253,7 +279,7 @@ C.~J.~Battey, Peter Ralph, and Andrew Kern
     analyze the effects of spatial structure on (i) the estimation of key
     population genetic parameters, in turn used to (ii) make inferences about
     population history, and on (iii) confounding in genome-wide association
-    studies (GWAS). I Liked the paper a lot. It's interesting, well-written and
+    studies (GWAS). I liked the paper a lot. It's interesting, well-written and
     addresses an important question - the effect of spatial population
     structure on population genetic statistics and inference-and I enjoyed
     reading it. The most positive aspects were:
@@ -272,6 +298,7 @@ C.~J.~Battey, Peter Ralph, and Andrew Kern
 \end{point}
 
 \reply{
+This is a good point also raised by other reviewers. We have added an appendix section comparing our model to a reverse-time stepping stone simulation on several relevant summary statistics \llname{appendix1}. We show that for $\theta_\pi$ and several other statistics the stepping stone model approaches the continuous model as the resolution of the landscape increases. We also see some interesting differences that seem to reflect artifacts from discretization. We are also curious how all the other analyses we test would be affected using other simulation schemes, but hope to explore that aspect in future work. 
 }
 
 \begin{point}{}
@@ -279,21 +306,24 @@ C.~J.~Battey, Peter Ralph, and Andrew Kern
 \end{point}
 
 \reply{
+    See above. It is certainly easier and faster, but comes with significant issues either when neighborhood size is lower than the population of a deme, or when demes are small enough that the sample size approaches local $N_e$, at least in reverse-time simulations. 
 }
 
 
 \begin{point}{}
-    The source of equation (1) is not obvious to me. I sort of see how it makes sense, but a little but more intuition or a brief derivation or an illuminating either in the main text or the supplement, would be helpful.
+    The source of equation \eqref{eqn:p_survival} is not obvious to me. I sort of see how it makes sense, but a little but more intuition or a brief derivation or an illuminating either in the main text or the supplement, would be helpful.
 \end{point}
 
 \reply{
+    \cjb{peter - any suggestions here?}
 }
 
 \begin{point}{}
-    The authors use a scaling factor in equation (2) to counteract the increase in fitness of individuals at the edges. Can they provide a figure showing that this is the case. What does "roughly" mean on line 164. Perhaps a heatmap of the fitness of individuals across the grid with and without the scaling factor?
+    The authors use a scaling factor in equation (2) to counteract the increase in fitness of individuals at the edges. Can they provide a figure showing that this is the case. What does ``roughly'' mean on line 164. Perhaps a heatmap of the fitness of individuals across the grid with and without the scaling factor?
 \end{point}
 
 \reply{
+Good suggestion -- we have added a supplemental figure to show the distribution of individual fitness across the landscape with and without our edge-scaling approach. MAKE THIS FIG AND POINT TO IT HERE.
 }
 
 \begin{point}{}
@@ -301,6 +331,7 @@ C.~J.~Battey, Peter Ralph, and Andrew Kern
 \end{point}
 
 \reply{
+    We have added a figure showing sample site-frequency-spectra generated from a subset of simulations run with SLiM mutations, and then using msprime to apply mutations to the same tree sequences with our generation-time scaling approach \ref{fig:slim_v_msp_sfs}. These approaches yield extremely similar spectra so we believe any error in the approximation is quite small. We also now show variation in simulation times with different mutation and tree sequence recording schemes in Figure \ref{fig:runtimes}, and included a brief discussion of this in \llname{runtimesxn}
 }
 
 \begin{point}{}
@@ -308,6 +339,7 @@ C.~J.~Battey, Peter Ralph, and Andrew Kern
 \end{point}
 
 \reply{
+    
 }
 
 \begin{point}{}
@@ -315,6 +347,7 @@ C.~J.~Battey, Peter Ralph, and Andrew Kern
 \end{point}
 
 \reply{
+    We have checked the code to the best of our abilities and did not find a bug causing the underdispersion. It seems to reflect overcorrection in the regression when using PC coordinates as covariates -- the PCA is capturing some information about the spatial genetic variation which itself covaries only weakly with the phenotype, and as a result we see anomalously low $-log10(p)$ when regressing genotype against phenotype. \cjb{Peter or Andy -- any advice here? } 
 }
 
 \begin{point}{}
@@ -322,6 +355,7 @@ C.~J.~Battey, Peter Ralph, and Andrew Kern
 \end{point}
 
 \reply{
+Done - thank you for pointing us to this study. \llname{haworthcite}
 }
 
 \begin{point}{}
@@ -329,6 +363,7 @@ C.~J.~Battey, Peter Ralph, and Andrew Kern
 \end{point}
 
 \reply{
+    We are also very interested to know how mixed models perform here, but think that adding a second GWAS method would make this section too large for the current paper. We have added a note to \llname{mixedmodelcallout} specifically citing mixed models as alternate methods that may perform better. 
 }
 
 \begin{point}{}
@@ -336,6 +371,7 @@ C.~J.~Battey, Peter Ralph, and Andrew Kern
 \end{point}
 
 \reply{
+Apologies, I had forgotten to make the repo public. The link should work for everyone now. 
 }
 
 
@@ -343,7 +379,7 @@ C.~J.~Battey, Peter Ralph, and Andrew Kern
 \reviewersection{3}
 
 \begin{quote}
-    The present study deals with a "hot topic" in spatial population genetics. Most
+    The present study deals with a ``hot topic'' in spatial population genetics. Most
     inferential and descriptive methods in statistical spatial population
     genetic rely on a discrete approximation of space and it is not clear what
     impact this approximation may have when individuals migrate along a
@@ -358,8 +394,8 @@ C.~J.~Battey, Peter Ralph, and Andrew Kern
     the core of the study, i.e., the forward-in-time simulation of populations in
     continuous space. The field has been struggling with this issue for decades --
     examples of spectacular failures like the Wright-Malecot model (see
-    Felsenstein's "pain in the torus' article, 1975) or, more recently, the
-    ``mugration' or ``discrete trait analysis' model in phylodynamics (see De Maio
+    Felsenstein's ``pain in the torus'' article, 1975) or, more recently, the
+    ``mugration'' or ``discrete trait analysis'' model in phylodynamics (see De Maio
     et al. 2015) have probably mostly harmed our research field -- that one cannot
     make the economy of using a sound probabilistic model for generating
     geo-referenced genetic data. It does not seem to be the case here
@@ -371,6 +407,7 @@ C.~J.~Battey, Peter Ralph, and Andrew Kern
 \end{point}
 
 \reply{
+    This is a good point. We evaluated this while developing the simulation using the built-in visualization tools of the SLiM GUI, and have now added a supplementary figure (Figure \ref{fig:wm_v_dd}) showing the distribution of individuals in our density-dependant spatial model and a continuous-space Wright-Fisher simulation without density dependance. 
 }
 
 Second, the demographic process used here involves birth and death of individuals. Does the population survive asymptotically or, like any birth-death process, eventually dies with probability one? In fact, one needs to know a little about the dynamics of the population size to decide whether the corresponding process is reasonable from a biological standpoint.
@@ -379,6 +416,7 @@ Second, the demographic process used here involves birth and death of individual
 \end{point}
 
 \reply{
+    Similarly here we monitored the population size over time while running SLiM. All simulations maintained asymptotic populations, and none of the runs we started ended because populations crashed. \cjb{is there something else we should show here?}
 }
 
 \begin{point}{}
@@ -386,6 +424,7 @@ Second, the demographic process used here involves birth and death of individual
 \end{point}
 
 \reply{
+    \cjb{Peter -- ideas here?}
 }
 
 \begin{point}{}
@@ -393,6 +432,7 @@ Second, the demographic process used here involves birth and death of individual
 \end{point}
 
 \reply{
+I apologize -- I had forgotten to set the repo to public. It should work now. 
 }
 
 \begin{point}{}
@@ -400,6 +440,7 @@ Second, the demographic process used here involves birth and death of individual
 \end{point}
 
 \reply{
+    This is a good point also raised by other reviewers. We have added an Appendix comparing our model to a stepping-stone, rather than the spatial-Labmda-Fleming-Viot, because we think these are the most familiar and widely used class of spatial models. See Appendix 1. We find that many features of our model are well approximated by stepping-stone models, and that for statistics like $\theta_{\pi}$ the stepping stone model results approach our continuous space model as the number of demes used to describe the landscape increases. 
 }
 
 \begin{point}{}
@@ -407,13 +448,18 @@ Second, the demographic process used here involves birth and death of individual
 \end{point}
 
 \reply{
+    Census population in the random mating model scales with ``neighborhood size'' because of two effects -- the edge scaling and the competition
+    
+    \cjb{need a better answer here...}
 }
 
 \begin{point}{}
-    Line 729-731: "Many more species occur in a middle range of neighborhood sizes between 100 and 1000 - a range in which spatial processes play a minor role in our analyses [...]". Do the authors think that the spatial processes would still play a minor role when neighborhood sizes exceed 100-1000 if the habitat was larger than that taken in the present simulations? It would also probably be useful to mention that neighborhood sizes given in Table 1 should be compared with extreme caution since the size of the corresponding habitats vary across species. More generally, I suspect that the size of the habitat has a substantial impact on the vast majority of statistics examined in this study. Indeed, the mean parent-offspring distance, which is at the core of the definition of Wright's neighborhood size, is only small or large relative to the size of the habitat.
+    Line 729-731: ``Many more species occur in a middle range of neighborhood sizes between 100 and 1000 - a range in which spatial processes play a minor role in our analyses [...]''. Do the authors think that the spatial processes would still play a minor role when neighborhood sizes exceed 100-1000 if the habitat was larger than that taken in the present simulations? It would also probably be useful to mention that neighborhood sizes given in Table 1 should be compared with extreme caution since the size of the corresponding habitats vary across species. More generally, I suspect that the size of the habitat has a substantial impact on the vast majority of statistics examined in this study. Indeed, the mean parent-offspring distance, which is at the core of the definition of Wright's neighborhood size, is only small or large relative to the size of the habitat.
 \end{point}
 
 \reply{
+This is a good point. Wright's work \citep{Wright1943} suggests some aspects of genetic variation such as variance in allele frequencies and inbreeding coefficients can be estimated by looking only at what he would later \citep{Wright1946} call ``neighborhood size'', but certainly other aspects like the number of segregating sits will also depend on total landscape size. We now note on \llname{popsizecaveat} that we have evaluated only one landscape size, and have added a sentence to the discussion noting that exploration of these patterns in varying landscape sizes is an important avenue for further research \llname{landscapesizecaveat}. 
+
 }
 
 \begin{point}{}
@@ -421,6 +467,7 @@ Second, the demographic process used here involves birth and death of individual
 \end{point}
 
 \reply{
+Done. Thank you for pointing us to this study. 
 }
 
 
@@ -445,6 +492,9 @@ Second, the demographic process used here involves birth and death of individual
 \end{point}
 
 \reply{
+    \cjb{working on this}
+    Thank you for this suggestion. We have slightly revised the introduction and hope it is now clearer; however since we want to cover a little history and motivation for our continuous model vs stepping-stone approaches in the intro it does have a different flow from the discussion. 
+
 }
 
 \begin{point}{}
@@ -452,6 +502,7 @@ Second, the demographic process used here involves birth and death of individual
 \end{point}
 
 \reply{
+    \cjb{working on this}
 }
 
 \begin{point}{}
@@ -459,6 +510,7 @@ Second, the demographic process used here involves birth and death of individual
 \end{point}
 
 \reply{
+    Good point on EEMS. We have added the most recent EEMS paper to the citations on \llname{eemscitation}
 }
 
 \begin{point}{}
@@ -466,6 +518,7 @@ Second, the demographic process used here involves birth and death of individual
 \end{point}
 
 \reply{
+    We now discuss haplotype methods in the relevant discussion section \llname{ibdnesxn}. However though these methods should be more accurate for recent events it is not clear that this will improve performance per se. The dips in recent inferred Ne from stairwayplot are not just prediction noise, but actually reflect an underlying genealogy in which terminal branches are shorter than expected from a constant-size random-mating population (see e.g. figure \ref{fig:sumstats}A and \ref{fig:ibs}). The interpretation error is that these short branches are generated by spatial structure rather than changes in population size over time -- a point also made in the \citep{Mazet2015} paper we discuss in the introduction and discussion. 
 }
 
 \begin{point}{}
@@ -473,6 +526,8 @@ Second, the demographic process used here involves birth and death of individual
 \end{point}
 
 \reply{
+\cjb{is this an ok response? two reviewers asked about mixed models but I feel like including them would require expanding the gwas section quite a bit and I'd rather now. But if either of you feel like it's critical I could probably get it done next week}
+    Good question -- we are also interested to know how mixed models perform here, but think that to properly test that we would want to change our design to generate phenotypes from simulated genotypes. This would allow us to evaluate false-negatives in addition to false-positives. This is important because, if mixed models do provide stronger control for stratification they are also likely to remove true signals of causal SNPs if those SNPs covary with spatial structure. We now point to these methods explicitly in the discussion \llname{mixedmodelcallout}, but think that incorporating that study here would make this paper too long. We also think the PC results are still quite relevant as the method is still seen in many studies. 
 }
 
 \begin{point}{}
@@ -480,6 +535,7 @@ Second, the demographic process used here involves birth and death of individual
 \end{point}
 
 \reply{
+Apologies, it was accidentally set to private. The link should work now. 
 }
 
 \begin{point}{}
@@ -487,40 +543,46 @@ Second, the demographic process used here involves birth and death of individual
 \end{point}
 
 \reply{
+    We have included a table describing the summary statistics in Figure \ref{table:sumstats}.
 }
 
 \begin{point}{}
-    Notation: "Offspring disperse a Gaussian-distributed distance away from the parent with mean zero and standard deviation $\sigma$ in both the x and y coordinates. Each offspring is produced with a mate selected randomly from those within distance $3\sigma$, with probability of choosing a neighbor at distance $x$ proportional to $\exp(-x^2/2\sigma^2)$." I think x may be overloaded here, or I'm confused. Clarify?
+    Notation: ``Offspring disperse a Gaussian-distributed distance away from the parent with mean zero and standard deviation $\sigma$ in both the x and y coordinates. Each offspring is produced with a mate selected randomly from those within distance $3\sigma$, with probability of choosing a neighbor at distance $x$ proportional to $\exp(-x^2/2\sigma^2)$.'' I think x may be overloaded here, or I'm confused. Clarify?
+\end{point}
+
+\reply{
+\cjb{Peter and Andy -- ideas here?}
+}
+
+\begin{point}{}
+    When introducing the ``spatial model'' as opposed to this ``random model,'' the more concrete illustration in Figure 1 hasn't yet been referenced, which makes it harder to follow. It would be helpful to introduce this figure with the model. Additionally, when Figure 1 is introduced, the order is from right to left (random, then point, then midpoint). It would be helpful to rearrange the figure to mirror what's in the text.
+\end{point}
+
+\reply{
+We have rearranged the figure as suggested.
+
+}
+
+\begin{point}{}
+    Not sure I follow this example: ``Concretely, an individual at position (x, y) in a 50 × 50 landscape has mean phenotype 100 + 2x/5.''
 \end{point}
 
 \reply{
 }
 
-\begin{point}{}
-    When introducing the "spatial model" as opposed to this "random model," the more concrete illustration in Figure 1 hasn't yet been referenced, which makes it harder to follow. It would be helpful to introduce this figure with the model. Additionally, when Figure 1 is introduced, the order is from right to left (random, then point, then midpoint). It would be helpful to rearrange the figure to mirror what's in the text.
+\begin{point}{\revreffull{1}{11}}
+    Minor typo (through vs though): \emph{This occurs because, even through the ``population density'' (K) and ``mean lifetime'' (L) parameters...}
 \end{point}
 
 \reply{
+Thanks, this sentence has been revised and fixed. 
 }
 
 \begin{point}{}
-    Not sure I follow this example: "Concretely, an individual at position (x, y) in a 50 × 50 landscape has mean phenotype 100 + 2x/5."
+    Define NS abbreviation in Figure \ref{fig:dafdists}.
 \end{point}
 
 \reply{
-}
-
-\begin{point}{}
-    Minor typo (through vs though): "This occurs because, even through the "population density" (K) and "mean lifetime" (L) parameters..."
-\end{point}
-
-\reply{
-}
-
-\begin{point}{}
-    Define NS abbreviation in Figure 5.
-\end{point}
-
-\reply{
+Done. 
 }
 
