@@ -176,7 +176,7 @@ the Spatial Lambda Fleming-Viot models \citep{Barton2010,Kelleher2014}.
 
 To avoid hard-to-evaluate approximations, we here used forward-time, individual-based simulations.
 The question of what regulates real populations has a long history and many answers
-\citep[e.g.,][]{lloyd1967crowding,antonovics1980ecological,crawley1990population},
+\citep[e.g.,][]{lloyd1967crowding,antonovics1980ecological,crawley1990population}, \llabel{ecolcites}
 but it is clear that populations must at some point have density-dependent feedback on population size,
 or else they would face eventual extinction or explosion.
 In the absence of unrealistic global population regulation,
@@ -243,7 +243,7 @@ The final probability of survival for individual $i$ is then
         \min(1,\sqrt{(W - y_{i})/\sigma)}
 \end{equation}
 where $x_i$ and $y_i$ are the spatial coordinates of individual $i$, and $W$ is the width (and height) of the square habitat.
-This buffer roughly counteracts the increase in fitness individuals close to the edge would otherwise have.
+This buffer roughly counteracts the increase in fitness individuals close to the edge would otherwise have, though the effect is relatively subtle \ref{fig:edge_scaling}.
 
 To isolate spatial effects from other components of the model such as overlapping generations, increased variance in reproductive success, and density-dependent fitness, 
 we also implemented simulations identical to those above except that mates are selected uniformly at random from the population,
@@ -397,7 +397,7 @@ Census size largely declines as neighborhood size increases for both the spatial
 However, for spatial models this decline only begins for neighborhood size $\geq 10$. 
 By a neighborhood sizes larger than 100, the spatial and random mating models are indistinguishable from one another, 
 a sign that our simulations are performing as expected. 
-Census sizes range from $\approx 14,000$ at low $\sigma$ in the random mating model to $\approx 10,000$ for both models when neighborhood sizes approach 1,000.
+Census sizes range from $\approx 14,000$ at low $\sigma$ in the random mating model to $\approx 10,000$ for both models when neighborhood sizes approach 1,000. The scaling of census sizes in both random-mating and spatial models appears to be related to two consequences of the spatial competition function: the decline of fitness at range edges, which effectively reduces the habitable area by one $\sigma$ around the edge of the map and so results in a smaller habitable area at high $\sigma$ values; and variation in the equilibrium population density given varying competition radii. For spatial models we see an additional effect in which census size initially rises as neighborhood sizes scale from 2 - 10. This may reflect an Allee effect \citep{Allee1949} in which some individuals are unable to find mates when the mate selection radius is very small.  \llabel{censusscaling}
 
 \begin{figure}[htbp]
 \centering
@@ -423,11 +423,7 @@ Last, we looked at the variance in number of offspring -- a key parameter determ
 Surprisingly, the spatial and random mating models behave quite differently: 
 while the variance in offspring number increases nearly monotonically under the spatial model, the random mating model actually shows a decline in the variance in offspring number until a neighborhood size $\approx 10$ before it increases and eventually equals what we observe in the spatial case. 
 
-Run times for our model scale approximately linearly with neighborhood size (Figure \ref{fig:runtimes}), with the lowest neighborhood sizes reaching 30N generations in around a day and those with neighborhood size approaching 1,000 requiring up to two weeks of computation. At small neighborhood sizes the overhead caused by processing mutations and simplifying tree sequences can add $\approx30\%$ to the total run time, but above neighborhood sizes of $\approx$ 100 the effects of neighborhood size dominate because our simulation requires pairwise calculations for sets of individuals within a $3\sigma$ radius. As currently implemented running simulations at neighborhood sizes $>1000$ to coalescence is likely impractical, though running these models for more limited timescales is possible. \llabel{runtimesxn}
-
-
-
-%The fitness scaling procedure we use to avoid high fitness at range edges shrinks the suitable area by one $\sigma$ on all sides and likely explains part of the variation in census size, but scaling in offspring variance and the U-shaped distribution of census size in spatial models suggests additional processes at work. For spatial models census size initially rises as neighborhood sizes scale from 2 - 10, which seems to reflect an Allee effect \citep{Allee1949} in which some individuals are unable to find mates when the mate selection radius is very small.  
+Run times for our model scale approximately linearly with neighborhood size (Figure \ref{fig:runtimes}), with the lowest neighborhood sizes reaching 30N generations in around a day and those with neighborhood size approaching 1,000 requiring up to three weeks of computation. As currently implemented running simulations at neighborhood sizes $>1000$ to coalescence is likely impractical, though running these models for more limited timescales and then "completing" the simulation by starting a reverse-time simulation from the resulting tree sequence in msprime is possible.  \llabel{runtimesxn}
 
 
 %%%%%%%%%%%%
@@ -786,6 +782,7 @@ These differences relative to our continuous model mainly reflect two shortcomin
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Demographic model}
 \label{apx:demographic_model}
+\llabel{dem_model_app}
 
 We chose our demographic model so that every individual has on average $1/L$ offspring
 each time step,
@@ -842,6 +839,14 @@ however, typical local population densities might then be more dissimilar.
 \end{figure*}
 \FloatBarrier
 
+
+\begin{figure*}[p]
+\centering
+\includegraphics[width=0.6\textwidth]{figures/edge_scaling_comp.pdf}
+\caption{Comparison of individual fitness across the landscape in simulations with (right) and without (left) a decline in fitness approaching range edges. Note the slight excess of high-fitness individuals at edges on the left, which is (partially) counteracted by the scaling procedure.}
+\label{fig:edge_scaling} 
+\end{figure*}
+\FloatBarrier
 
 
 \begin{figure*}[p]

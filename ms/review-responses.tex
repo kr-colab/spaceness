@@ -95,7 +95,6 @@ Done.
 
 \reply{
 We have added a figure (Figure \ref{fig:runtimes}) and short discussion \llname{runtimesxn} of run times.
-\plr{What's up with those run times?}
 }
 
 \begin{point}{\revref}
@@ -175,7 +174,6 @@ We thank the reviewer for their very constructive comments. Responses follow bel
 
 \reply{
 The mean of the IBS tract distribution is calculated by building a (very large) vector of lengths of all IBS tracts between all pairs of individuals and taking the mean over this entire vector. This distribution is quite strongly skewed (i.e. see figure 4 and the skew(IBs) panel of fig S1) such that the highest density is in low values. We explain the depressed mean value by noting that at low neighborhood sizes the coalescence time of distant (in space) individuals is inflated, which allows more time for recombination and mutation to break up IBS tracts. The flip side of this is that there are then more IBS tracts in total across a random sample of individuals, explaining the corresponding inflation in the number of tracts. We also see an increase in the number of very long IBS tracts at low neighborhood sizes, which corresponds to an excess of very recent coalescent events for groups of nearby individuals. 
-\cjb{need to think of something to say we did about this in the text}    
 
 }
 
@@ -315,7 +313,7 @@ This is a good point also raised by other reviewers. We have added an appendix s
 \end{point}
 
 \reply{
-    \cjb{peter - any suggestions here?}
+    Additional discussion of the model is now provided in the appendix (see "Demographic model") \llname{dem_model_app}
 }
 
 \begin{point}{}
@@ -323,7 +321,7 @@ This is a good point also raised by other reviewers. We have added an appendix s
 \end{point}
 
 \reply{
-Good suggestion -- we have added a supplemental figure to show the distribution of individual fitness across the landscape with and without our edge-scaling approach. MAKE THIS FIG AND POINT TO IT HERE.
+Good suggestion -- we have added a supplemental figure to show the distribution of individual fitness across the landscape with and without our edge-scaling approach. (Note though that we found the effect subtle and hard to visualize well). 
 }
 
 \begin{point}{}
@@ -339,7 +337,7 @@ Good suggestion -- we have added a supplemental figure to show the distribution 
 \end{point}
 
 \reply{
-    
+    We have added a brief discussion of the causes of the census size scaling to the relevant results section \llname{censusscaling}.
 }
 
 \begin{point}{}
@@ -347,7 +345,7 @@ Good suggestion -- we have added a supplemental figure to show the distribution 
 \end{point}
 
 \reply{
-    We have checked the code to the best of our abilities and did not find a bug causing the underdispersion. It seems to reflect overcorrection in the regression when using PC coordinates as covariates -- the PCA is capturing some information about the spatial genetic variation which itself covaries only weakly with the phenotype, and as a result we see anomalously low $-log10(p)$ when regressing genotype against phenotype. \cjb{Peter or Andy -- any advice here? } 
+    We have checked the code to the best of our abilities and did not find a bug causing the underdispersion. It seems to reflect overcorrection in the regression when using PC coordinates as covariates -- the PCA is capturing some information about the spatial genetic variation which itself covaries only weakly with the phenotype, and as a result we see anomalously low $-log10(p)$ when regressing genotype against phenotype. 
 }
 
 \begin{point}{}
@@ -416,7 +414,7 @@ Second, the demographic process used here involves birth and death of individual
 \end{point}
 
 \reply{
-    Similarly here we monitored the population size over time while running SLiM. All simulations maintained asymptotic populations, and none of the runs we started ended because populations crashed. \cjb{is there something else we should show here?}
+    Similarly here we monitored the population size over time while running SLiM. All simulations maintained asymptotic populations, and none of the runs we started ended because populations crashed.
 }
 
 \begin{point}{}
@@ -424,7 +422,7 @@ Second, the demographic process used here involves birth and death of individual
 \end{point}
 
 \reply{
-    \cjb{Peter -- ideas here?}
+   We have added additional discussion of this point to appendix A (see "Demographic Model") \llname{dem_model_app}
 }
 
 \begin{point}{}
@@ -448,9 +446,7 @@ I apologize -- I had forgotten to set the repo to public. It should work now.
 \end{point}
 
 \reply{
-    Census population in the random mating model scales with ``neighborhood size'' because of two effects -- the edge scaling and the competition
-    
-    \cjb{need a better answer here...}
+    We have a added a brief discussion of the census size scaling to \llname{censusscaling}
 }
 
 \begin{point}{}
@@ -492,7 +488,6 @@ Done. Thank you for pointing us to this study.
 \end{point}
 
 \reply{
-    \cjb{working on this}
     Thank you for this suggestion. We have slightly revised the introduction and hope it is now clearer; however since we want to cover a little history and motivation for our continuous model vs stepping-stone approaches in the intro it does have a different flow from the discussion. 
 
 }
@@ -502,7 +497,7 @@ Done. Thank you for pointing us to this study.
 \end{point}
 
 \reply{
-    \cjb{working on this}
+   We have expanded our citations of some of the relevant ecology literature \llname{ecolcites}, which we hope helps to contextualize the study better.
 }
 
 \begin{point}{}
@@ -510,7 +505,7 @@ Done. Thank you for pointing us to this study.
 \end{point}
 
 \reply{
-    Good point on EEMS. We have added the most recent EEMS paper to the citations on \llname{eemscitation}
+    Good point on EEMS. We have added the most recent EEMS paper to the citations on \llname{eemscitation}, and have added an Appendix giving a more thorough comparison with stepping-stone models. 
 }
 
 \begin{point}{}
@@ -526,7 +521,6 @@ Done. Thank you for pointing us to this study.
 \end{point}
 
 \reply{
-\cjb{is this an ok response? two reviewers asked about mixed models but I feel like including them would require expanding the gwas section quite a bit and I'd rather now. But if either of you feel like it's critical I could probably get it done next week}
     Good question -- we are also interested to know how mixed models perform here, but think that to properly test that we would want to change our design to generate phenotypes from simulated genotypes. This would allow us to evaluate false-negatives in addition to false-positives. This is important because, if mixed models do provide stronger control for stratification they are also likely to remove true signals of causal SNPs if those SNPs covary with spatial structure. We now point to these methods explicitly in the discussion \llname{mixedmodelcallout}, but think that incorporating that study here would make this paper too long. We also think the PC results are still quite relevant as the method is still seen in many studies. 
 }
 
