@@ -211,7 +211,7 @@ Individuals are hermaphroditic, and each time step, each produces a Poisson numb
 Offspring disperse a Gaussian-distributed distance away from the parent with mean zero and standard deviation $\sigma$
 in both the $x$ and $y$ coordinates.
 Each offspring is produced with a mate selected randomly from those within distance $3 \sigma$,
-with probability of choosing a neighbor at distance $x$ proportional to $\exp(-x^2 / 2 \sigma^2)$.
+with probability of choosing a neighbor at distance $d$ proportional to $\exp(-d^2 / 2 \sigma^2)$.
 
 To maintain a stable population, mortality increases with local population density.
 To do this we say that individuals at distance $d$ have a competitive interaction with strength $g(d)$,
@@ -345,7 +345,7 @@ In the first simulation of \emph{nonspatial} environments, the mean did not chan
 so that all individuals' phenotypes were drawn independently from a Gaussian distribution with mean 110 and standard deviation 10.
 Next, to simulate \emph{clinal} environmental influences on phenotype, 
 we increased the mean phenotype from 100 on the left edge of the range to 120 on the right edge (two phenotypic standard deviations).
-Concretely, an individual at position $(x,y)$ in a $50 \times 50$ landscape has mean phenotype $100 + 2x / 5$.
+Concretely, the phenotype $p$ for an individual at position $(x,y)$ is $p=100 + 2x / 5$.
 Third, we simulated a more concentrated ``\emph{corner}'' environmental effect by setting the mean phenotype 
 for individuals with both $x$ and $y$ coordinates below 20 to 120 (two standard deviations above the rest of the map). 
 Finally, in ``\emph{patchy}'' simulations we selected 10 random points on the map
@@ -869,7 +869,6 @@ however, typical local population densities might then be more dissimilar.
 \FloatBarrier
 
 
-\afterpage{\clearpage}
 \begin{figure*}[p]
 \centering
 \includegraphics[width=\textwidth]{figures/fig_S1_sfs_grid_model_by_sampling.pdf}
@@ -878,7 +877,6 @@ however, typical local population densities might then be more dissimilar.
 \end{figure*}
 \FloatBarrier
 
-\llabel{ll:figs3caption}
 \begin{figure*}[p]
 \centering
 \includegraphics[]{figures/het_z_by_ind.pdf}
