@@ -243,7 +243,7 @@ The final probability of survival for individual $i$ is then
         \min(1,\sqrt{(W - y_{i})/\sigma)}
 \end{equation}
 where $x_i$ and $y_i$ are the spatial coordinates of individual $i$, and $W$ is the width (and height) of the square habitat.
-This buffer roughly counteracts the increase in fitness individuals close to the edge would otherwise have, though the effect is relatively subtle \ref{fig:edge_scaling}.
+This buffer roughly counteracts the increase in fitness individuals close to the edge would otherwise have, though the effect is relatively subtle (Figure \ref{fig:edge_scaling}).
 
 To isolate spatial effects from other components of the model such as overlapping generations, increased variance in reproductive success, and density-dependent fitness, 
 we also implemented simulations identical to those above except that mates are selected uniformly at random from the population,
@@ -443,7 +443,7 @@ Even though certain aspects of population demography depend on the scale of spat
 %%%%%%%%%%%%%%%%
 \subsubsection{Site Frequency Spectra and Summaries of Diversity}
 
-Figure \ref{fig:sumstats} shows the effect of varying neighborhood size and sampling strategy on the site frequency spectrum (Figure~\ref{fig:sumstats}A) and several standard population genetic summary statistics (Figure~\ref{fig:sumstats}B). Consistent with findings in island and stepping stone simulations \citep{Stadler2009}, the SFS shows a significant enrichment of intermediate frequency variants in comparison to the nonspatial expectation. This bias is most pronounced below neighborhood sizes $\leq 100$ and is exacerbated by midpoint and point sampling of individuals (depicted in Figure~\ref{fig:samplemap}). 
+Figure \ref{fig:sumstats} shows the effect of varying neighborhood size and sampling strategy on the site frequency spectrum (Figure~\ref{fig:sumstats}, Figure \ref{fig:allsfs}) and several standard population genetic summary statistics (Figure~\ref{fig:sumstats}B; additional statistics are shown in Figure \ref{fig:allsumstats}). Consistent with findings in island and stepping stone simulations \citep{Stadler2009}, the SFS shows a significant enrichment of intermediate frequency variants in comparison to the nonspatial expectation. This bias is most pronounced below neighborhood sizes $\leq 100$ and is exacerbated by midpoint and point sampling of individuals (depicted in Figure~\ref{fig:samplemap}). 
 Reflecting this, Tajima's $D$ is quite positive in the same situations (Figure~\ref{fig:sumstats}B). Notably, the point at which Tajima's $D$ approaches 0 differs strongly across sampling strategies -- varying from a neighborhood size of roughly 50 for random sampling to at least 1000 for midpoint sampling. 
 
 One of the most commonly used summaries of variation is Tajima's summary of nucleotide divergence, $\theta_{\pi}$, calculated as the mean density of nucleotide differences averaged across pairs of samples. As can be seen in Figure \ref{fig:sumstats}B, $\theta_{\pi}$ in the spatial model is inflated by up to three-fold relative to the random mating model. This pattern is opposite the expectation from census population size (Figure \ref{fig:genparams}), because the spatial model has \emph{lower} census size than the random mating model at neighborhood sizes less than 100. Differences between these models likely occur because $\theta_{\pi}$ is a measure of mean time to most recent common ancestor between two samples, and at small values of $\sigma$, the time for dispersal to mix ancestry across the range exceeds the mean coalescent time under random mating. (For instance, at the smallest value of $\sigma=0.2$, the range is 250 dispersal distances wide, and since the location of a diffusively moving lineage after $k$ generations has variance $k \sigma^2$, it takes around $250^2 = 62500$ generations to mix across the range, which is roughly ten times larger than the random mating effective population size). $\theta_{\pi}$ using each sampling strategy approaches the random mating expectation at its own rate, but by a neighborhood size of around 100 all models are roughly equivalent. Interestingly, the effect of sampling strategy is reversed relative to that observed in Tajima's D -- midpoint sampling reaches random mating expectations around neighborhood size 50, while random sampling is inflated until around neighborhood size 100. 
@@ -853,7 +853,7 @@ however, typical local population densities might then be more dissimilar.
 \centering
 \includegraphics[]{figures/slim_v_msp_sfs.pdf}
 \caption{Site frequency spectra from a simulation with neighborhood size = 12.5 when mutations are recorded directly in SLiM (blue line) or applied later in msprime (red line).}
-\label{fig:slim_v_msp_sfs2} 
+\label{fig:slim_v_msp_sfs} 
 \end{figure*}
 \FloatBarrier
 
