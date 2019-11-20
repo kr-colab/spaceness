@@ -1,30 +1,4 @@
 %\documentclass{article}
-\newcommand{\beginsupplement}{%
-        \setcounter{table}{0}
-        \renewcommand{\thetable}{S\arabic{table}}%
-        \setcounter{figure}{0}
-        \renewcommand{\thefigure}{S\arabic{figure}}%
-     }
-\newcommand{\stopsupplement}{%
-        \setcounter{table}{0}
-        \renewcommand{\thetable}{\arabic{table}}%
-        \setcounter{figure}{0}
-        \renewcommand{\thefigure}{\arabic{figure}}%
-     }
-\newcommand{\beginappendix}{%
-        \setcounter{table}{0}
-        \renewcommand{\thetable}{A\arabic{table}}%
-        \setcounter{figure}{0}
-        \renewcommand{\thefigure}{A\arabic{figure}}%
-     }
-\newcommand{\stopappendix}{%
-        \setcounter{table}{0}
-        \renewcommand{\thetable}{\arabic{table}}%
-        \setcounter{figure}{0}
-        \renewcommand{\thefigure}{\arabic{figure}}%
-     }
-
-
 \documentclass[10pt,twoside,lineno,hidelinks]{preprint}
 \usepackage{amsmath}
 \usepackage[nodisplayskipstretch]{setspace}
@@ -699,7 +673,41 @@ Of course, it is possible that genotypes indirectly affect individual locations 
 \end{table}
 
 \subsection{Where are natural populations on this spectrum?}
-For how much of the tree of life do spatial patterns circumscribe genomic variation? In Table \ref{table:NStable} we gathered estimates of neighborhood size from a range of organisms to get an idea of how likely dispersal is to play an important role in patterns of variation. These values should be compared to our simulation results with some caution, as though we expect neighborhood size to have similar effects across species of varying global $N_e$ \citep{Wright1946}, in our study we evaluated only a relatively small population of $\approx 10,000$ \llabel{popsizecaveat}. In addition, these empirical examples are likely biased towards small-neighborhood species (because few studies have quantified neighborhood size in species with very high dispersal or population density). However, from the available data we find that neighborhood sizes in the range we simulated are fairly common across a range of taxa. At the extreme low end of empirical neighborhood size estimates we see some flowering plants, large mammals, and colonial insects like ants. Species such as this have neighborhood size estimates small enough that spatial processes are likely to strongly influence inference. These include some human populations such as the Gainj- and Kalam-speaking people of Papua New Guinea, in which the estimated neighborhood sizes in \citep{Rousset1997} range from 40 to 410 depending on the method of estimation. Many more species occur in a middle range of neighborhood sizes between 100 and 1000 -- a range in which spatial processes play a minor role in our analyses under random spatial sampling but are important when sampling of individuals in space is clustered. Surprisingly, even some flying insects with huge census population sizes fall in this group, including fruit flies (\textit{D. melanogaster}) and mosquitoes (\textit{A. aegypti}). Last, many species likely have neighborhood sizes much larger than we simulated, including modern humans in northeastern Europe \citep{Ringbauer2017}. For these species demographic inference and summary statistics are likely to reflect minimal bias from spatial effects as long as dispersal is truly continuous across the landscape. While that is so we caution that association studies in which the effects of population structure are confounded with spatial variation in the environment are still sensitive to dispersal even at these large neighborhood sizes.
+For how much of the tree of life do spatial patterns circumscribe genomic variation? In Table \ref{table:NStable} we gathered estimates of neighborhood size from a range of organisms to get an idea of how likely dispersal is to play an important role in patterns of variation. These values should be compared to our simulation results with some caution, as though we expect neighborhood size to have similar effects across species of varying global $N_e$ \citep{Wright1946}, in our study we evaluated only a relatively small population of $\approx 10,000$. \llabel{popsizecaveat}
+In addition, these empirical examples are likely biased towards small-neighborhood species (because few studies have quantified neighborhood size in species with very high dispersal or population density). However, from the available data we find that neighborhood sizes in the range we simulated are fairly common across a range of taxa. At the extreme low end of empirical neighborhood size estimates we see some flowering plants, large mammals, and colonial insects like ants. Species such as this have neighborhood size estimates small enough that spatial processes are likely to strongly influence inference. These include some human populations such as the Gainj- and Kalam-speaking people of Papua New Guinea, in which the estimated neighborhood sizes in \citep{Rousset1997} range from 40 to 410 depending on the method of estimation. Many more species occur in a middle range of neighborhood sizes between 100 and 1000 -- a range in which spatial processes play a minor role in our analyses under random spatial sampling but are important when sampling of individuals in space is clustered. Surprisingly, even some flying insects with huge census population sizes fall in this group, including fruit flies (\textit{D.~melanogaster}) and mosquitoes (\textit{A. aegypti}). Last, many species likely have neighborhood sizes much larger than we simulated, including modern humans in northeastern Europe \citep{Ringbauer2017}. For these species demographic inference and summary statistics are likely to reflect minimal bias from spatial effects as long as dispersal is truly continuous across the landscape. While that is so we caution that association studies in which the effects of population structure are confounded with spatial variation in the environment are still sensitive to dispersal even at these large neighborhood sizes.
+
+
+%%%%%%%%%%%
+\subsection{Other demographic models}
+
+Any simulation of a population of reproducing organisms for a reasonably long amount of time
+requires some kind of control on population sizes,
+or else the population will either die out or grow very large. \llabel{demog_disco}
+The usual choice of population regulation for population genetics --
+a constant size, as in the Wright--Fisher model --
+implies biologically unrealistic interactions between geographically distant parts of the species range.
+Our choice to regulate population size by including a local density-dependent control on mortality
+is only one of many possible ways to do this.
+We could have instead regulated fecundity, or recruitment, or both;
+this general class of models
+is sometimes referred to as the ``Bolker--Pacala model'' \citep{bolker1997using}.
+It is not currently clear how much different choices of vital rates,
+or of functional forms for the regulation,
+might quantitatively affect our results,
+although the general predictions should be robust to similar forms of regulation.
+Since populations are still entirely \emph{intrinsically} regulated,
+our model still has a very strong ``population genetics'' flavor.
+Alternatively, population size could be regulated by interactions with other species
+(e.g., a Lotka-Volterra model),
+or extrinsically specified by local resource availability
+(e.g., by food or nest site availability).
+Indeed, our model could be interpreted as a caricature of such a model:
+as local density increases, good habitat is increasingly occupied,
+pushing individuals into more marginal habitat and increasing their mortality.
+Many such models should be behave similarly to ours,
+but others (especially those with local population cycling), may differ dramatically.
+There is a clear need for greater exploration of 
+the consequences for population genetics of ecologically realistic population models.
 
 
 %%%%%%%%%%%
@@ -745,11 +753,17 @@ CJB and ADK were supported by NIH award R01GM117241.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Supplement %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\beginappendix
-\section{Appendix 1}
-\llabel{appendix1}
+% \beginappendix
+\appendix
+\setcounter{table}{0}
+\renewcommand{\thetable}{A\arabic{table}}%
+\setcounter{figure}{0}
+\renewcommand{\thefigure}{A\arabic{figure}}%
+
 %%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Comparisons with Stepping-Stone Models}
+\section{Comparisons with Stepping-Stone Models}
+\llabel{apx:stepping_stone}
+
 We checked that our model produces reasonable results by comparing it to a reverse-time stepping-stone model implemented in msprime \citep{Kelleher2016}. In this class of models we imagine an $n \times n$ grid of populations exchanging migrants with neighboring populations at rate $m$. If these models are good approximations of the continuous case we expect that results will converge as $n \to \infty$, so we ran simulations while varying $n$ from 5 to 50 (Table \ref{table:grid_params}). To compare with continuous models we first distributed the the same "effective" number of individuals across the landscape as in our continuous-space simulations ($\approx 6100$, estimated from $\theta_{\pi}$ of random-mating continuous-space simulations). We then approximate the mean per-generation dispersal distance $\sigma$ given a total landscape width $W$ as the product of the probability of an individual being a migrant and the distance traveled by migrants: $\sigma \approx 4m(W/n)$. We ran 500 simulations per $n$ while sampling $\sigma$ from $U(0.2,4)$. We then randomly selected 60 diploid individuals from each simulation (approximating diploidy by combining pairs of chromosomes with contiguous indices within demes) and calculated a set of six summary statistics using the scripts described in the summary statistics portion of the main text. 
 
 \begin{table}[h]
@@ -775,14 +789,13 @@ We checked that our model produces reasonable results by comparing it to a rever
 \label{fig:grid_stats}
 \end{figure*}
 
-In general we find many of the qualitative trends are similar among continuous and stepping-stone models and that, in most cases, statistics from stepping-stone models approach the continuous model as the resolution of the grid increases. For example, $\theta_\pi$ is inflated at low neighborhood sizes (i.e. low $m$), and the extent of the inflation increases to approach the continuous case as the resolution of the landscape increases. Similar pattterns are observed for $F_{is}$ and observed heterozygosity. However, $\theta_{W}$ behaves differently, with increased grid resolution leading to lower values. This in turn drives an even more positive Tajima's $D$ in grid simulations at small neighborhood sizes.
+In general we find many of the qualitative trends are similar among continuous and stepping-stone models and that, in most cases, statistics from stepping-stone models approach the continuous model as the resolution of the grid increases. For example, $\theta_\pi$ is inflated at low neighborhood sizes (i.e. low $m$), and the extent of the inflation increases to approach the continuous case as the resolution of the landscape increases. Similar patterns are observed for $F_{is}$ and observed heterozygosity. However, $\theta_{W}$ behaves differently, with increased grid resolution leading to lower values. This in turn drives an even more positive Tajima's $D$ in grid simulations at small neighborhood sizes.
 
 These differences relative to our continuous model mainly reflect two shortcomings of the reverse-time stepping stone model. If we simulate a coarse grid with relatively large populations in each deme, we cannot accurately capture the dynamics of small neighborhood sizes because mating within each deme remains random regardless of the migration rate connecting demes. This likely explains the trends in $\pi$, observed heterozygosity, and $F_{is}$. However increasing the number of demes while holding the total number of individuals constant results in small within-deme populations for which even the minimum sample size of 1 approaches the local $N_e$ (Table \ref{table:grid_params}). This results in an excess of short terminal branches in the coalescent tree, which decreases the total branch length and leads to fewer segregating sites, deflated $\theta_W$, and inflated Tajima's $D$. Overall then our continuous model reproduces important features of spatial structure approximated by reverse-time stepping-stone models at moderate neighborhood sizes while avoiding some artifacts caused binning the landscape into discrete demes. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Demographic model}
-\label{apx:demographic_model}
-\llabel{dem_model_app}
+\llabel{apx:demographic_model}
 
 We chose our demographic model so that every individual has on average $1/L$ offspring
 each time step,
@@ -824,10 +837,14 @@ would require making (say) $K$ depend on $\sigma$;
 however, typical local population densities might then be more dissimilar.
 
 
-\stopappendix
 \clearpage 
 
-\beginsupplement
+% \beginsupplement
+\setcounter{table}{0}
+\renewcommand{\thetable}{S\arabic{table}}%
+\setcounter{figure}{0}
+\renewcommand{\thefigure}{S\arabic{figure}}%
+
 \section{Supplementary Figures and Tables}
 \FloatBarrier
 
@@ -859,7 +876,6 @@ however, typical local population densities might then be more dissimilar.
 
 
 
-\afterpage{\clearpage}
 \begin{figure*}[p]
 \centering
 \includegraphics[width=\textwidth]{figures/sumstats_by_neighbors_allstats.pdf}
@@ -893,7 +909,6 @@ however, typical local population densities might then be more dissimilar.
 \end{figure}
 \FloatBarrier
 
-\afterpage{\clearpage}
 \begin{figure*}[p]
 \centering
 \includegraphics[height=0.9\textheight]{figures/manhattan_plots_combo-01.png}
@@ -914,7 +929,7 @@ $\Theta_{/pi}$ & Mean of the distribution of pairwise genetic differences \\
 $\Theta_{/W}$ & Effective population size based on segregating sites \\
 Segregating Sites & Total number of segregating sites in the sample \\
 Tajima's $D$ & Difference in $\Theta_{/pi}$ and $\Theta_{/W}$ over its standard deviation\\
-Observed Heterzygosity & Proportion of heterozygous individuals in the sample \\
+Observed Heterozygosity & Proportion of heterozygous individuals in the sample \\
 $F_{IS}$ & Wright's inbreeding coefficient $1-H_{e}/H_{o}$ \\
 $var(D_{xy})$ & Variance in the distribution of pairwise genetic distances \\
 $skew(D_{xy})$ & Skew of the distribution of pairwise genetic distances \\
@@ -1014,8 +1029,6 @@ $corr(nIBS,dist)$ & spatial & \textbf{0.000000} & \textbf{0.000000} \\
 %\label{table:demography}
 %\end{table}
 
-
-\stopsupplement
 
 \newpage
 
