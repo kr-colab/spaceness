@@ -172,7 +172,13 @@ We thank the reviewer for their very constructive comments. Responses follow bel
 \end{point}
 
 \reply{
-The mean of the IBS tract distribution is calculated by building a (very large) vector of lengths of all IBS tracts between all pairs of individuals and taking the mean over this entire vector. This distribution is quite strongly skewed (i.e. see figure 4 and the skew(IBs) panel of fig S1) such that the highest density is in low values. We explain the depressed mean value by noting that at low neighborhood sizes the coalescence time of distant (in space) individuals is inflated, which allows more time for recombination and mutation to break up IBS tracts. The flip side of this is that there are then more IBS tracts in total across a random sample of individuals, explaining the corresponding inflation in the number of tracts. We also see an increase in the number of very long IBS tracts at low neighborhood sizes, which corresponds to an excess of very recent coalescent events for groups of nearby individuals. 
+The mean IBS is simply the mean of the vector of lengths of IBS tracts. 
+The short answer is that if one splits a chromosome up into more pieces (increasing nIBS),
+    the mean length of those pieces must necessarily be smaller.
+    At low neighborhood sizes, spatially distant individuals tend to have longer coalescence times,
+    leading to more (and hence smaller) IBS tracts.
+    This can be seen in Supplemental Figure \ref{fig:allsumstats}.
+    Note that skew(IBS) and number of long ($>$1e6) IBS tracts reflect other aspects of the distribution.
 
 }
 
