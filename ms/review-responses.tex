@@ -347,15 +347,22 @@ Thanks very much for the encouraging words!
 \end{point}
 
 \reply{
-Good suggestion -- we have added a supplemental figure to show the distribution of individual fitness across the landscape with and without our edge-scaling approach. (Note though that we found the effect subtle and hard to visualize well). 
+    Good suggestion -- we have added a supplemental figure (Figure \ref{fig:edge_scaling})
+    to show the distribution of individual fitness across the landscape
+    with and without our edge-scaling approach.
 }
 
 \begin{point}{}
-    It would be helpful provide the figure showing that generating mutations during the forward simulations in SLIM is equivalent to applying mutations using msprime on pre-generated trees (line 185)? It sounds like this procedure would underestimate the variance in the number of mutations, since you remove the effect of random generation time. Is this effect small?
+    It would be helpful provide the figure showing that generating mutations during the forward simulations in SLIM is equivalent to applying mutations using msprime on pre-generated trees \revref? It sounds like this procedure would underestimate the variance in the number of mutations, since you remove the effect of random generation time. Is this effect small?
 \end{point}
 
 \reply{
-    We have added a figure showing sample site-frequency-spectra generated from a subset of simulations run with SLiM mutations, and then using msprime to apply mutations to the same tree sequences with our generation-time scaling approach (Figure \ref{fig:slim_v_msp_sfs}). These approaches yield extremely similar spectra so we believe any error in the approximation is quite small. 
+    Theory says that any difference here would be extremely small
+    and would affect only the variance, not the mean.
+    Nonetheless, we have added a figure showing sample site frequency spectra
+    generated from a subset of simulations run with SLiM mutations,
+    and then using msprime to apply mutations to the same tree sequences with our generation-time scaling approach (Figure \ref{fig:slim_v_msp_sfs}).
+    These approaches yield extremely similar spectra.
 }
 
 \begin{point}{}
@@ -363,23 +370,25 @@ Good suggestion -- we have added a supplemental figure to show the distribution 
 \end{point}
 
 \reply{
-    We have added a brief discussion of the causes of the census size scaling to the relevant results section \llname{censusscaling}.
+    We agree that this is hard to intuit: there are a lot of factors at work.
+    We have added some more discussion of these phenomena \llname{censusscaling}.
 }
 
 \begin{point}{}
-    Fig. 7D: I am surprised by the extent to which the observed values of -log10(p) fall below the y=x line. Particularly in the lower right panel for large neighbourhood sizes. I would expect that to be close to panmictic - why are the P-values underdispersed? That seems like a potential bug, or else something weird is going on.
+    \autoref{fig:gwas}D: I am surprised by the extent to which the observed values of $-\log_{10}(p)$ fall below the $y=x$ line. Particularly in the lower right panel for large neighbourhood sizes. I would expect that to be close to panmictic - why are the P-values underdispersed? That seems like a potential bug, or else something weird is going on.
 \end{point}
 
 \reply{
     We have checked the code to the best of our abilities and did not find a bug causing the underdispersion. It seems to reflect overcorrection in the regression when using PC coordinates as covariates -- the PCA is capturing some information about the spatial genetic variation which itself covaries only weakly with the phenotype, and as a result we see anomalously low $-log10(p)$ when regressing genotype against phenotype. 
 }
 
-\begin{point}{}
-    Lines 706-716, It might be worth citing Haworth et al Nature Communications 2019 (https://doi.org/10.1038/s41467-018-08219-1) who do the proposed test (GWAS for birth location) in UK Biobank to illustrate the population structure.
+\begin{point}{\revref}
+    It might be worth citing \citep{haworth2019apparent,},
+    who do the proposed test (GWAS for birth location) in UK Biobank to illustrate the population structure.
 \end{point}
 
 \reply{
-Done - thank you for pointing us to this study. \llname{haworthcite}
+Done - thank you for pointing us to this study. \revref
 }
 
 \begin{point}{}
@@ -395,7 +404,7 @@ Done - thank you for pointing us to this study. \llname{haworthcite}
 \end{point}
 
 \reply{
-Apologies, I had forgotten to make the repo public. The link should work for everyone now. 
+We apologize -- we had forgotten to make the repository public. Now it is.
 }
 
 
@@ -413,6 +422,8 @@ Apologies, I had forgotten to make the repo public. The link should work for eve
     issues in a timely manner.
 \end{quote}
 
+We are glad you agree this is an important topic to explore!
+
 \begin{quote}
     Although I was enthusiastic about the topic, I was quite disappointed with
     the core of the study, i.e., the forward-in-time simulation of populations in
@@ -426,21 +437,42 @@ Apologies, I had forgotten to make the repo public. The link should work for eve
     unfortunately.  
 \end{quote}
 
+We were surprised that the reviewer seems to be saying that local, density-mediated control of mortality
+doesn't constitute a ``sound probabilisitic model'',
+but hope that our additional discussion of the choice,
+and citations to the history of this sort of model,
+help to better motivate our choice.
+
 \begin{point}{}
     First, the simulation starts with individuals distributed uniformly at random in space. Is there any indication that the three-step algorithm used here maintains this distribution during the course of evolution? If it does not, then is there any stationary regime and how many generations does one need to wait before reaching it? I do appreciate that the competitive interaction term was introduced in order to avoid seeing the ``clumping' of individuals that hampers the Wright-Malecot model. Yet, just because there are no such clusters does not mean that the spatial distribution of individuals reaches a stable regime and that the distribution reached, if any, is reasonable from a biological perspective.
 \end{point}
 
 \reply{
-    This is a good point. We evaluated this while developing the simulation using the built-in visualization tools of the SLiM GUI, and have now added a supplementary figure (Figure \ref{fig:wm_v_dd}) showing the distribution of individuals in our density-dependant spatial model and a continuous-space Wright-Fisher simulation without density dependance. 
+    This is a natural question that we asked ourselves while developing the simulation using the built-in visualization tools of the SLiM GUI. We have now added a supplementary figure (Figure \ref{fig:wm_v_dd}) showing the distribution of individuals in our density-dependant spatial model and a continuous-space Wright-Fisher simulation without density dependance. 
+    We encourage the reviewer to run our SLiM recipe using the GUI at different parameter values
+    to see for themselves how quickly equilibrium is attained --
+    we are tempted to include movies of this as supplementary material,
+    but that seems excessive.
+    Also note that we did \emph{not} include competitive interaction to avoid clumping --
+    we included it to make the model biologically realistic
+    (so that, for instance, the population does not grow without bound),
+    and lack of clumping is a \emph{consequence} of this choice.
+    We have clarified this in the text. \revref
 }
 
-Second, the demographic process used here involves birth and death of individuals. Does the population survive asymptotically or, like any birth-death process, eventually dies with probability one? In fact, one needs to know a little about the dynamics of the population size to decide whether the corresponding process is reasonable from a biological standpoint.
 \begin{point}{}
-
+Second, the demographic process used here involves birth and death of individuals. Does the population survive asymptotically or, like any birth-death process, eventually dies with probability one? In fact, one needs to know a little about the dynamics of the population size to decide whether the corresponding process is reasonable from a biological standpoint.
 \end{point}
 
 \reply{
-    Similarly here we monitored the population size over time while running SLiM. All simulations maintained asymptotic populations, and none of the runs we started ended because populations crashed.
+    As in the last point, as part of sanity checking our models
+    we monitored the population size over time while with SLiM.
+    All simulations maintained asymptotic populations, and none of the runs we started ended because populations crashed.
+    Although the population \emph{is} a Markov process with a single accessible absorbing state (death),
+    and (since it is not a branching process, so won't grow without bound)
+    will eventually die out with probability 1,
+    it will take an extremely long time to hit that state.
+    We have added a clarifying note about this. \revref
 }
 
 \begin{point}{}
@@ -448,15 +480,16 @@ Second, the demographic process used here involves birth and death of individual
 \end{point}
 
 \reply{
-   We have added additional discussion of this point to appendix A (see "Demographic Model") \llname{apx:demographic_model}
+   We explained the relationship here,
+   in a new Appendix (`Demographic Model'; \llname{apx:demographic_model}).
 }
 
 \begin{point}{}
-    Also, the web page https://github.com/petrelharp/spaceness does not seem to exist so that I was not able to experiment with the forward-in-time generator used here unfortunately.
+    Also, the web page \url{https://github.com/petrelharp/spaceness} does not seem to exist so that I was not able to experiment with the forward-in-time generator used here unfortunately.
 \end{point}
 
 \reply{
-I apologize -- I had forgotten to set the repo to public. It should work now. 
+We apologize -- we had forgotten to make the repository public. Now it is.
 }
 
 \begin{point}{}
@@ -464,11 +497,34 @@ I apologize -- I had forgotten to set the repo to public. It should work now.
 \end{point}
 
 \reply{
-    This is a good point also raised by other reviewers. We have added an Appendix comparing our model to a stepping-stone \llname{apx:stepping_stone}, rather than the spatial-Labmda-Fleming-Viot, because we think these are the most familiar and widely used class of spatial models. We find that many features of our model are well approximated by stepping-stone models, and that for statistics like $\theta_{\pi}$ the stepping stone model results approach our continuous space model as the number of demes used to describe the landscape increases. 
+    Hopefully, the additional plots 
+    and discussion around demographic modeling (notably, the discussion at \llname{demog_disco})
+    helps to increase the transparency in this model.
+    We agree that demographic realism is a very important consideration,
+    and due to the often hard-to-intuit nature of spatial demography,
+    simulations need to be carefully sanity checked.
+    (Furthermore, what is ``realistic'' for one species will not be for another!)
+    We have added an Appendix comparing our model to a stepping-stone \llname{apx:stepping_stone}, 
+    because we think these are the most familiar and widely used class of spatial models.
+    We find that many features of our model are well approximated by stepping-stone models, and that for statistics like $\theta_{\pi}$ the stepping stone model results approach our continuous space model as the number of demes used to describe the landscape increases. 
 }
 
-\begin{point}{}
-    Figure 2: I do not understand why the neighborhood size varies to the same extent in the random mating model as it does for the spatial model. For the random mating model, I would have expected the neighborhood size to be equal to the census size since all individuals have the same probability of being a parent of any given offspring. From lines 166->171, it is clear that the spatial model would converge to the random mating model when the mean parent-offspring distance tends to infinity only if we were to ignore the impact of range edges. I am thus wondering whether the variation of neighborhood size one observes in Fig 2 for the random mating model is just a consequence of border effects. If that is the case, then the authors should state it clearly and try to justify it from a biological perspective.
+    We definately think that a comparison to the spatial Lambda-Fleming-Viot
+    would be an extremely useful thing to do, for the reasons the reviewer mentions,
+    but this would constitute an entirely different study.
+    The SLFV model is only known to be an approximation of one particular biologically explicit model
+    (of patchy extinction-recolonization)
+    and is only conjectured to be a good approximation
+    for spatial models more generally.
+    To reiterate, the definition of the SLFV was explicitly motivated by a desire to approximate
+    spatial models, especially Bolker-Pacala models like ours.
+    Therefore, our study is an important prerequisite
+    for simulation study of the spatial Lambda-Fleming-Viot,
+    as it works through some of the issues in simulating biologically realistic spatial models,
+    and describes some of the patterns.
+
+\begin{point}{\autoref{fig:genparams}:}
+    I do not understand why the neighborhood size varies to the same extent in the random mating model as it does for the spatial model. For the random mating model, I would have expected the neighborhood size to be equal to the census size since all individuals have the same probability of being a parent of any given offspring. From [the paragraph at \revref], it is clear that the spatial model would converge to the random mating model when the mean parent-offspring distance tends to infinity only if we were to ignore the impact of range edges. I am thus wondering whether the variation of neighborhood size one observes in Fig 2 for the random mating model is just a consequence of border effects. If that is the case, then the authors should state it clearly and try to justify it from a biological perspective.
 \end{point}
 
 \reply{
