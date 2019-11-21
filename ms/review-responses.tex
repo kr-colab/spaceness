@@ -379,7 +379,7 @@ Thanks very much for the encouraging words!
 \end{point}
 
 \reply{
-    We have checked the code to the best of our abilities and did not find a bug causing the underdispersion. It seems to reflect overcorrection in the regression when using PC coordinates as covariates -- the PCA is capturing some information about the spatial genetic variation which itself covaries only weakly with the phenotype, and as a result we see anomalously low $-log10(p)$ when regressing genotype against phenotype. 
+    We have checked the code to the best of our abilities and did not find a bug causing the underdispersion, but we have switched our visualization in Figure 8D to now show a subset of qqplots as lines, rather than the hexagonal binning over all simulations. This lets us see the density in addition to the range of values, and shows that relatively few points fall below the 1:1 lines. Those that do seem to reflect overcorrection in the regression when using PC coordinates as covariates -- the PCA is capturing some information about the spatial genetic variation which itself covaries only weakly with the phenotype, and as a result we see anomalously low $-log10(p)$ when regressing genotype against phenotype. 
 }
 
 \begin{point}{\revref}
@@ -529,7 +529,7 @@ We apologize -- we had forgotten to make the repository public. Now it is.
 
 \reply{
     This is indeed part of what's going on.
-    We have a added some discussion of the census size scaling \llname{censusscaling}.
+    We have added some discussion of the census size scaling \llname{censusscaling}.
 }
 
 \begin{point}{\revref}
