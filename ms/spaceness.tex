@@ -505,6 +505,7 @@ This may be due to a loss of descriptive power of the PCs
 Essentially, PCA seems unable to effectively summarize the weak population structure present in large-neighborhood simulations, but these populations continue to have enough spatial structure to create significant correlations between genotypes and the environment. A similar process can also be seen in the corner phenotype distribution, in which the count of significant SNPs initially declines as neighborhood size increases and then increases at approximately the point at which the proportion of variance explained by PCA approaches its minimum. 
 
 Figure \ref{fig:gwas}D shows quantile-quantile plots for a subset of simulations that show the degree of genome-wide inflation of test statistics in PC-corrected GWAS across all simulations and environmental distributions. 
+An alternate visualization is also included in figure \ref{fig:qqplot_hexbins}.
 For clinal environments, $-\log_{10}(p)$ values are most inflated when neighborhood sizes are large, consistent with the pattern observed in the count of significant associations after PC regression. In contrast corner and patchy environments cause the greatest inflation in $-\log_{10}(p)$ at neighborhood sizes less than 100, which likely reflects the inability of PCA to account for fine-scale structure caused by very limited dispersal. Finally, we observed that PC regression appears to overfit to some degree for all phenotype distributions, visible in Figure \ref{fig:gwas}D as points falling below the 1:1 line.
 
 \begin{figure*}[p]
@@ -921,6 +922,14 @@ however, typical local population densities might then be more dissimilar.
 \includegraphics[height=0.9\textheight]{figures/manhattan_plots_combo-01.png}
 \caption{Manhattan plots for a sample of simulations at varying neighborhood sizes. Labels on the right of each plot describes the spatial distribution of environmental factors (described in the methods section of the main text). Points in red are significantly associated with a nongenetic phenotype using a 5\% FDR threshold (dashed line). For runs with significant associations the dotted line is a Bonferroni-adjusted cutoff for $p=0.05$.}
 \label{fig:manhattan_plots}
+\end{figure*}
+\FloatBarrier
+
+\begin{figure*}[p]
+\centering
+\includegraphics[width=0.8\textwidth]{figures/qqplots_hexbin.pdf}
+\caption{Quantile-quantile plots showing observed and expected $-log10(p)$ for PC-corrected GWAS run on simulations with varying neighborhood sizes and environmental distributions. Hexagonal bins are colored by the average neighborhood size of simulations with points falling in a given region of quantile-quantile space. Qqplots for a subset of these simulations are shown as lines in Figure \ref{fig:gwas}D.} 
+\label{fig:qqplot_hexbins}
 \end{figure*}
 \FloatBarrier
 
