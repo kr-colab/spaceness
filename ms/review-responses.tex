@@ -143,28 +143,29 @@ We have added a figure (Figure \ref{fig:runtimes}) and short discussion \llname{
 \reviewersection{1}
 
 \begin{quote}
-    This study explores biases arising in population-based inference when 1)
-    real population samples are coming from spatial habitat with various degree
-    of structuring while inference is made assuming random mating population;
-    2) imperfect sampling in practice that fails to represent full diversity
-    across entire population habitat; 3) phenotypes that vary across geography
-    and create spurious associations with genotypes. While earlier studies
-    explored the effect of strong structure on population genetic inference and
-    GWAS, this work focuses on less extreme scenarios of structuring that
-    arises in populations evolving in continuous habitat. By using
-    non-Wright-Fisher model, authors simulated chromosome-scale samples from
-    populations that evolved in continuous space, and that can model
-    environmental factors to create phenotypes varying over space. As a result,
-    this study identified spatial structuring scenarios (small neighbourhood
-    size $\sim$ 10--100) that coupled with imperfect sampling strategies lead to a
-    biased inference of widely used population genetic statistics (altogether
-    18 statistics) such as pi (average pairwise sequence differences),
-    heterozygosity (and inbreeding coefficient), and IBS tract sharing.
-    Accordingly, inference of the effective population size history was also
-    strongly affected under these parameter ranges. Finally, the authors use
-    their spatial modelling to demonstrate that typical GWAS with PC-based
-    correction cannot entirely remove spurious signals of genotype-phenotype
-    associations arising from purely environmental factors.  Overall, the
+    % This study explores biases arising in population-based inference when 1)
+    % real population samples are coming from spatial habitat with various degree
+    % of structuring while inference is made assuming random mating population;
+    % 2) imperfect sampling in practice that fails to represent full diversity
+    % across entire population habitat; 3) phenotypes that vary across geography
+    % and create spurious associations with genotypes. While earlier studies
+    % explored the effect of strong structure on population genetic inference and
+    % GWAS, this work focuses on less extreme scenarios of structuring that
+    % arises in populations evolving in continuous habitat. By using
+    % non-Wright-Fisher model, authors simulated chromosome-scale samples from
+    % populations that evolved in continuous space, and that can model
+    % environmental factors to create phenotypes varying over space. As a result,
+    % this study identified spatial structuring scenarios (small neighbourhood
+    % size $\sim$ 10--100) that coupled with imperfect sampling strategies lead to a
+    % biased inference of widely used population genetic statistics (altogether
+    % 18 statistics) such as pi (average pairwise sequence differences),
+    % heterozygosity (and inbreeding coefficient), and IBS tract sharing.
+    % Accordingly, inference of the effective population size history was also
+    % strongly affected under these parameter ranges. Finally, the authors use
+    % their spatial modelling to demonstrate that typical GWAS with PC-based
+    % correction cannot entirely remove spurious signals of genotype-phenotype
+    % associations arising from purely environmental factors.
+    Overall, the
     authors explore an important but often neglected source of bias that can
     affect inference in many population-based studies (in medical genetics,
     evolutionary biology and ecology). This study can be of interest to a
@@ -198,8 +199,8 @@ Responses follow below:
 \end{point}
 
 \reply{
-    We agree that this distinction is worth emphasizing!
-    We've adjusted our language to hopefully remind the reader that
+    We agree and have
+    adjusted our language to underscore the point that
     $K$ is a parameter that controls population density, rather than being equal to it,
     at \llname{ll:K_again} and \revref{} and \llname{ll:K_more}.
 }
@@ -326,8 +327,8 @@ Thanks very much for the encouraging words!
     For some of these statistics (e.g., $\theta_\pi$),
     the behavior of the stepping stone model becomes more similar (although not identical)
     to the continuous model as the resolution of the landscape increases,
-    but other statistics seems to be more strongly affected by discretization artifacts.
-    We are also curious how all the other analyses we test would be affected using other simulation schemes, but hope to explore that aspect in future work. 
+    but other statistics are more strongly affected by discretization.
+    We are also curious how all the other analyses we perform would be affected using other simulation schemes, but hope to explore that aspect in future work. 
     Furthermore, discrete-deme coalescent simulations are certainly faster,
     but come with significant issues either when neighborhood size is lower than the population of a deme,
     or when demes are small enough that the sample size approaches local $N_e$.
@@ -404,7 +405,7 @@ Done - thank you for pointing us to this study. \revref
 \end{point}
 
 \reply{
-We apologize -- we had forgotten to make the repository public. Now it is.
+We apologize -- we had forgotten to make the repository public. This has been corrected.
 }
 
 
@@ -444,7 +445,7 @@ and citations to the history of this sort of model,
 help to better motivate our choice.
 
 \begin{point}{}
-    First, the simulation starts with individuals distributed uniformly at random in space. Is there any indication that the three-step algorithm used here maintains this distribution during the course of evolution? If it does not, then is there any stationary regime and how many generations does one need to wait before reaching it? I do appreciate that the competitive interaction term was introduced in order to avoid seeing the ``clumping' of individuals that hampers the Wright-Malecot model. Yet, just because there are no such clusters does not mean that the spatial distribution of individuals reaches a stable regime and that the distribution reached, if any, is reasonable from a biological perspective.
+    First, the simulation starts with individuals distributed uniformly at random in space. Is there any indication that the three-step algorithm used here maintains this distribution during the course of evolution? If it does not, then is there any stationary regime and how many generations does one need to wait before reaching it? I do appreciate that the competitive interaction term was introduced in order to avoid seeing the ``clumping'' of individuals that hampers the Wright-Malecot model. Yet, just because there are no such clusters does not mean that the spatial distribution of individuals reaches a stable regime and that the distribution reached, if any, is reasonable from a biological perspective.
 \end{point}
 
 \reply{
@@ -511,7 +512,7 @@ We apologize -- we had forgotten to make the repository public. Now it is.
 
     We definately think that a comparison to the spatial Lambda-Fleming-Viot
     would be an extremely useful thing to do, for the reasons the reviewer mentions,
-    but this would constitute an entirely different study.
+    but this is beyond the scope of the current study.
     The SLFV model is only known to be an approximation of one particular biologically explicit model
     (of patchy extinction-recolonization)
     and is only conjectured to be a good approximation
@@ -588,7 +589,7 @@ Done. Thank you for pointing us to this study.  \revref
 \end{point}
 
 \reply{
-    Good point on EEMS. We have added the most recent EEMS paper to the citations on \llname{eemscitation}, and have added an Appendix giving a more thorough comparison with stepping-stone models. 
+    We agree that not noting EEMS was an oversight. We have added the most recent EEMS paper to the citations on \llname{eemscitation}, and have added an Appendix giving a more thorough comparison with stepping-stone models. 
 }
 
 \begin{point}{}
@@ -604,7 +605,7 @@ Done. Thank you for pointing us to this study.  \revref
 \end{point}
 
 \reply{
-    Good question -- we are also interested to know how mixed models perform here, but think that to properly test that we would want to change our design to generate phenotypes from simulated genotypes. This would allow us to evaluate false-negatives in addition to false-positives. This is important because, if mixed models do provide stronger control for stratification they are also likely to remove true signals of causal SNPs if those SNPs covary with spatial structure. We now point to these methods explicitly in the discussion \llname{mixedmodelcallout}, but think that incorporating that study here would make this paper too long. We also think the PC results are still quite relevant as the method is still seen in many studies. 
+    Good question -- we are also interested to know how mixed models perform here, but think that to properly test that we would want to change our design to generate phenotypes from simulated genotypes. This would allow us to evaluate false-negatives in addition to false-positives. This is important because, if mixed models do provide stronger control for stratification they are also likely to remove true signals of causal SNPs if those SNPs covary with spatial structure. We now point to these methods explicitly in the discussion \llname{mixedmodelcallout}, but think that incorporating that study here would make this paper too long and we plan to explore this timely issue in the future. We also think the PC results are still quite relevant as the method is quite population in current studies. 
 }
 
 \begin{point}{}
@@ -628,7 +629,7 @@ Apologies, it was accidentally set to private. The link should work now.
 \end{point}
 
 \reply{
-	We switched the second instance (referring to the distance among individuals) to $d$. 
+	We have clarified the notation for the second instance (referring to the distance among individuals) to $d$. 
 }
 
 \begin{point}{}
