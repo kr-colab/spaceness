@@ -469,10 +469,11 @@ Second, the demographic process used here involves birth and death of individual
     As in the last point, as part of sanity checking our models
     we monitored the population size over time while with SLiM.
     All simulations maintained asymptotic populations, and none of the runs we started ended because populations crashed.
-    Although the population \emph{is} a Markov process with a single accessible absorbing state (death),
-    and (since it is not a branching process, so won't grow without bound)
-    will eventually die out with probability 1,
-    it will take an extremely long time to hit that state.
+    We agree that the population model will die out eventually with probability 1
+    (it is a Markov process with a single accessible absorbing state (death),
+    and since it isn't a branching process, doesn't grow without bound).
+    However, it will take an extremely long time to hit that state,
+    so that extinction is not a practical consideration.
     We have added a clarifying note about this. \revref
 }
 
@@ -519,9 +520,9 @@ We apologize -- we had forgotten to make the repository public. Now it is.
     for spatial models more generally.
     To reiterate, the definition of the SLFV was explicitly motivated by a desire to approximate
     spatial models, especially Bolker-Pacala models like ours.
-    Therefore, our study is an important prerequisite
+    Therefore, our study does important preliminary work
     for simulation study of the spatial Lambda-Fleming-Viot,
-    as it works through some of the issues in simulating biologically realistic spatial models,
+    since it works through some of the issues in simulating biologically realistic spatial models,
     and describes some of the patterns.
 
 \begin{point}{\autoref{fig:genparams}:}
@@ -529,8 +530,17 @@ We apologize -- we had forgotten to make the repository public. Now it is.
 \end{point}
 
 \reply{
+    It's a good point that neighborhood size, as defined to be ``number of possible parents''
+    should indeed be the census size.
+    However, we are using $N_W$ defined in the same way for both spatial and random mating simulations
+    as a way of comparing spatial to ``nonspatial'' models
+    keeping other aspects of demography (almost) the same.
+    We've added a note clarifying this, at \revref and \llname{randomNW}.
     This is indeed part of what's going on.
-    We have added some discussion of the census size scaling \llname{censusscaling}.
+    We have added some discussion of the census size scaling \llname{censusscaling},
+    but haven't added a detailed discussion of whether or not most species experience
+    decreased habitat quality at range edges,
+    since that seems like it is getting too far into the weeds.
 }
 
 \begin{point}{\revref}

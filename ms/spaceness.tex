@@ -256,7 +256,9 @@ actual realized averages of these demographic quantitites to deviate from the sp
 in a way that depends on the neighborhood size.
 Therefore, to properly compare to theoretical expectations,
 we empirically calculated these demographic quantities in simulations. 
-We recorded the census population size in all simulations. 
+We recorded the census population size in all simulations,
+and used mean population density ($\rho$, census size divided by total area)
+to compute neighborhood size as $N_W = 4 \pi \rho \sigma^2$. \revpoint{3}{6}
 To estimate generation times, we stored ages of the parents of every new individual born across 200 timesteps, 
 after a 100 generation burn-in, and took the mean. 
 To estimate variance in offspring number, 
@@ -374,7 +376,12 @@ Census size largely declines as neighborhood size increases for both the spatial
 However, for spatial models this decline only begins for neighborhood size $\geq 10$. 
 Spatial and random mating models are indistinguishable from one another
 for neighborhood sizes larger than 100.
-Census sizes range from $\approx 14,000$ at low $\sigma$ in the random mating model to $\approx 10,000$ for both models when neighborhood sizes approach 1,000. The scaling of census sizes in both random-mating and spatial models appears to be related to two consequences of the spatial competition function: the decline of fitness at range edges, which effectively reduces the habitable area by one $\sigma$ around the edge of the map and so results in a smaller habitable area at high $\sigma$ values; and variation in the equilibrium population density given varying competition radii.
+Census sizes range from around 14,000 at low $\sigma$ in the random mating model to 10,000 for both models when neighborhood sizes approach 1,000.
+The scaling of census sizes in both random-mating and spatial models appears to be related to two consequences of the spatial competition function: the decline of fitness at range edges, which effectively reduces the habitable area by one $\sigma$ around the edge of the map and so results in a smaller habitable area at high $\sigma$ values; and variation in the equilibrium population density given varying competition radii.
+Furthermore, lack of available mates contributes to lower census sizes at small $N_W$
+for the spatial model
+(We calculate $N_W$ for both in the same way,
+even though the number of ``available mates'' is much larger with random mating). \llabel{randomNW}
 Furthermore, census size increases in spatial models as neighborhood size increases from 2 to 10.
 This may reflect an Allee effect \citep{Allee1949} in which some individuals are unable to find mates when the mate selection radius is very small.  \llabel{censusscaling}
 
@@ -511,7 +518,9 @@ For clinal environments, $-\log_{10}(p)$ values are most inflated when neighborh
 \begin{figure*}[p]
 \centering
 \includegraphics[width=\textwidth]{figures/gwas_summary_loglog_qqlines.pdf}
-    \caption{Impacts of spatially varying environments and isolation by distance on linear regression GWAS. Simulated quantitative phenotypes are determined only by an individual's location and the spatial distribution of environmental factors. In \textbf{A} we show the phenotypes and locations of sampled individuals under four environmental distributions, with transparency scaled to phenotype. As neighborhood size increases a PCA explains less of the total variation in the data (\textbf{B}). Spatially correlated environmental factors cause false positives at a large proportion of SNPs, which is partially but not entirely corrected by adding the first 10 PC coordinates as covariates (\textbf{C}). Quantile-quantile plots in (\textbf{D}) show inflation of $-\log_{10}(p)$ after PC correction for simulations with spatially structure environments, with line colors scaled to the neighborhood size of each simulation.
+    \caption{Impacts of spatially varying environments and isolation by distance on linear regression GWAS. Simulated quantitative phenotypes are determined only by an individual's location and the spatial distribution of environmental factors. In \textbf{A} we show the phenotypes and locations of sampled individuals under four environmental distributions, with transparency scaled to phenotype. As neighborhood size increases a PCA explains less of the total variation in the data (\textbf{B}).
+    Spatially correlated environmental factors cause false positives at a large proportion of SNPs, which is partially but not entirely corrected by adding the first 10 PC coordinates as covariates (\textbf{C}).
+    Quantile-quantile plots in (\textbf{D}) show inflation of $-\log_{10}(p)$ after PC correction for simulations with spatially structured environments, with line colors showing the neighborhood size of each simulation.
 }
 \label{fig:gwas}
 \end{figure*}
@@ -679,7 +688,15 @@ Of course, it is possible that genotypes indirectly affect individual locations 
 \end{table}
 
 \subsection{Where are natural populations on this spectrum?}
-For how much of the tree of life do spatial patterns circumscribe genomic variation? In Table \ref{table:NStable} we gathered estimates of neighborhood size from a range of organisms to get an idea of how likely dispersal is to play an important role in patterns of variation. These values should be compared to our simulation results with some caution, as though we expect neighborhood size to have similar effects across species of varying global $N_e$ \citep{Wright1946}, in our study we evaluated only a relatively small population of $\approx 10,000$. \llabel{popsizecaveat}
+For how much of the tree of life do spatial patterns circumscribe genomic variation?
+In Table \ref{table:NStable} we gathered estimates of neighborhood size from a range of organisms
+to get an idea of how strongly local geographic dispersal affects patterns of variation.
+This is an imperfect measure:
+some aspects of genetic variation are most strongly determined by neighborhood size \citep{Wright1946},
+others (e.g., number of segregating sites)
+are more strongly determined by global $N_e$ or by the ratio of the two.
+% These values should be compared to our simulation results with some caution, as though we expect neighborhood size to have similar effects across species of varying global $N_e$ \citep{Wright1946}, in our study we evaluated only a relatively small population of $\approx 10,000$. 
+\llabel{popsizecaveat}
 In addition, these empirical examples are likely biased towards small-neighborhood species (because few studies have quantified neighborhood size in species with very high dispersal or population density). However, from the available data we find that neighborhood sizes in the range we simulated are fairly common across a range of taxa. At the extreme low end of empirical neighborhood size estimates we see some flowering plants, large mammals, and colonial insects like ants. Species such as this have neighborhood size estimates small enough that spatial processes are likely to strongly influence inference.
 These include some human populations such as the Gainj- and Kalam-speaking people of Papua New Guinea, in which the estimated neighborhood sizes in \citep{Rousset1997} range from 40 to 410 depending on the method of estimation. \revpoint{3}{7}
 Many more species occur in a middle range of neighborhood sizes between 100 and 1000 -- a range in which spatial processes play a minor role in our analyses under random spatial sampling but are important when sampling of individuals in space is clustered. Surprisingly, even some flying insects with huge census population sizes fall in this group, including fruit flies (\textit{D.~melanogaster}) and mosquitoes (\textit{A. aegypti}). Last, many species likely have neighborhood sizes much larger than we simulated, including modern humans in northeastern Europe \citep{Ringbauer2017}. For these species demographic inference and summary statistics are likely to reflect minimal bias from spatial effects as long as dispersal is truly continuous across the landscape. While that is so we caution that association studies in which the effects of population structure are confounded with spatial variation in the environment are still sensitive to dispersal even at these large neighborhood sizes.
