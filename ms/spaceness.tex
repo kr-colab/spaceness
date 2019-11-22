@@ -155,7 +155,7 @@ but it is clear that populations must at some point have density-dependent feedb
 or else they would face eventual extinction or explosion.
 In the absence of unrealistic global population regulation,
 this regulation must be local,
-and there are many ways to arrange this \citep{bolker2003spatial}.
+and there are many ways to achieve this \citep{bolker2003spatial}.
 In our simulations,
 we decrease each individual's probability of survival with increasing local population density,
 which shifts reproductive output towards low-density regions,
@@ -805,7 +805,9 @@ These differences relative to our continuous model mainly reflect two shortcomin
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Demographic model}
 \llabel{apx:demographic_model}
-
+Local population regulation is controlled by two parameters, $L$, and $K$.
+Here, we show that these should be close to the average lifespan of an individual
+and the average number of individuals per unit area, respectively.
 We chose our demographic model so that every individual has on average $1/L$ offspring
 each time step,
 and if the local population density of an individual is $n$,
@@ -818,9 +820,9 @@ We capped survival at 0.95 so that we would not have exceptionally long-lived in
 in sparsely populated areas --
 otherwise, an isolated individual might live for a very long time.
 Since $1 - p \approx n / (K (1 + L))$,
-mortalitity goes up roughly linearly with the number of neighbors (on a scale given by $K$),
+mortality goes up roughly linearly with the number of neighbors (on a scale given by $K$),
 as would be obtained if, for instance, mortality is due to agonistic interactions.
-Ignoring in/outmigration,
+Ignoring migration,
 a region is at demographic equilibrium if the per-capita probability of death
 is equal to the birth rate,
 i.e., if $1 - p = 1/L$.
