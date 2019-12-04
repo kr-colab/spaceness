@@ -39,5 +39,5 @@ clean:
 
 spaceness_diff_to_first_submission.tex:
 	latexdiff-git -r 7ea9d412bf87d3625882020ff4a859438483366e spaceness.tex
-	mv spaceness-diff7ea9d412bf87d3625882020ff4a859438483366e.pdf $@
+	mv spaceness-diff7ea9d412bf87d3625882020ff4a859438483366e.tex $@
 

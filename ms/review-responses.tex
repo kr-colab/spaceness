@@ -25,7 +25,17 @@
 
 We are writing to submit a revised version of our manuscript, 
 ``Space is the Place: Effects of Continuous Spatial Structure on Analysis of Population Genetic Data''.
-
+We thank the AE and revewiers for constructive comments,
+which we have addressed in detail, below.
+The main changes we have made have to do with our choice of model.
+We have added some more discussion
+of the biological motivation for the particular model of continuous space we use
+(with references to the ecological literature, where it appears) to the Methods (around \llname{ecolcites}),
+and in the Discussion (at \llname{demog_disco}).
+We have included more explanation of some of the more opaque consequences
+of a more realistic demographic model, around \llname{censusscaling}.
+Finally, we have added a substantial comparison to the discrete stepping-stone model,
+most of which is in the Appendix.
 
 
 \vspace{5em}
@@ -182,8 +192,7 @@ Responses follow below:
 \end{point}
 
 \reply{
-    The mean IBS is simply the mean of the vector of lengths of IBS tracts.
-    \plr{make sure this is stated in the text somewhere}
+    The mean IBS is simply the mean of the vector of lengths of IBS tracts \revref.
     The short answer is that if one splits a chromosome up into more pieces (increasing nIBS),
     the mean length of those pieces must necessarily be smaller.
     At low neighborhood sizes, spatially distant individuals tend to have longer coalescence times,
@@ -340,7 +349,7 @@ Thanks very much for the encouraging words!
 \end{point}
 
 \reply{
-    Additional discussion of the model is now provided in the appendix (see "Demographic model") \llname{apx:demographic_model}
+    Additional discussion of the model is now provided in the appendix (see ``Demographic model'') \llname{apx:demographic_model}
 }
 
 \begin{point}{}
@@ -384,7 +393,7 @@ Thanks very much for the encouraging words!
 }
 
 \begin{point}{\revref}
-    It might be worth citing \citep{haworth2019apparent,},
+    It might be worth citing \citep{haworth2019apparent},
     who do the proposed test (GWAS for birth location) in UK Biobank to illustrate the population structure.
 \end{point}
 
@@ -530,12 +539,12 @@ We apologize -- we had forgotten to make the repository public. Now it is.
 \end{point}
 
 \reply{
-    It's a good point that neighborhood size, as defined to be ``number of possible parents''
+    It's a good point that neighborhood size, as defined to be ``number of possible parents'',
     should indeed be the census size.
     However, we are using $N_W$ defined in the same way for both spatial and random mating simulations
     as a way of comparing spatial to ``nonspatial'' models
     keeping other aspects of demography (almost) the same.
-    We've added a note clarifying this, at \revref and \llname{randomNW}.
+    We've added a note clarifying this, at \revref{} and \llname{randomNW}.
     This is indeed part of what's going on.
     We have added some discussion of the census size scaling \llname{censusscaling},
     but haven't added a detailed discussion of whether or not most species experience
@@ -592,6 +601,8 @@ Done. Thank you for pointing us to this study.  \revref
 
 \reply{
    We have expanded our citations of some of the relevant ecology literature \llname{ecolcites}, which we hope helps to contextualize the study better.
+   We haven't cited dadi, which works with discrete populations
+   (the ``diffusion'' is in frequency space).
 }
 
 \begin{point}{}
@@ -599,7 +610,9 @@ Done. Thank you for pointing us to this study.  \revref
 \end{point}
 
 \reply{
-    We agree that not noting EEMS was an oversight. We have added the most recent EEMS paper to the citations on \llname{eemscitation}, and have added an Appendix giving a more thorough comparison with stepping-stone models. 
+    We agree that not noting EEMS was an oversight.
+    We have added the most recent EEMS paper to the citations at \revref,
+    and have added an Appendix giving a more thorough comparison with stepping-stone models. 
 }
 
 \begin{point}{}
@@ -619,27 +632,28 @@ Done. Thank you for pointing us to this study.  \revref
 }
 
 \begin{point}{}
-    Code availability. This github link doesn't work, but is important to be able to evaluate for review: https://github.com/petrelharp/spaceness
+    Code availability. This github link doesn't work, but is important to be able to evaluate for review: \url{https://github.com/petrelharp/spaceness}.
 \end{point}
 
 \reply{
-Apologies, it was accidentally set to private. The link should work now. 
+Apologies, it was accidentally set to private. The link should work now
+(and has been replaced by the primary link, \url{https://github.com/cjbattey/spaceness}).
 }
 
 \begin{point}{}
-    Definitions and interpretations. There are quite a large number of metrics discussed in Figure 3B, and it's a lot to take in. It might be helpful to have a table with a reminder of what the metric is, its interpretation, and how it is computed.
+    Definitions and interpretations. There are quite a large number of metrics discussed in Figure \ref{fig:sumstats}, and it's a lot to take in. It might be helpful to have a table with a reminder of what the metric is, its interpretation, and how it is computed.
 \end{point}
 
 \reply{
-    We have included a table describing the summary statistics in Figure \ref{table:sumstats}.
+    We have included a table describing the summary statistics in \autoref{table:sumstats}.
 }
 
-\begin{point}{}
+\begin{point}{\revref}
     Notation: ``Offspring disperse a Gaussian-distributed distance away from the parent with mean zero and standard deviation $\sigma$ in both the x and y coordinates. Each offspring is produced with a mate selected randomly from those within distance $3\sigma$, with probability of choosing a neighbor at distance $x$ proportional to $\exp(-x^2/2\sigma^2)$.'' I think x may be overloaded here, or I'm confused. Clarify?
 \end{point}
 
 \reply{
-	We have clarified the notation for the second instance (referring to the distance among individuals) to $d$. 
+	We have clarified the notation for the second instance (referring to the distance among individuals) to $d$. \revref
 }
 
 \begin{point}{}
@@ -651,12 +665,12 @@ We have rearranged the figure as suggested.
 
 }
 
-\begin{point}{}
+\begin{point}{\revref}
     Not sure I follow this example: ``Concretely, an individual at position (x, y) in a 50 × 50 landscape has mean phenotype 100 + 2x/5.''
 \end{point}
 
 \reply{
-	We have clarified by switching to "the phenotype $p$ for an individual at location (x,y) is then $p=100+2x/5$
+	We have clarified by switching to ``the phenotype $p$ for an individual at location (x,y) is then $p=100+2x/5$''. \revref
 }
 
 \begin{point}{\revreffull{1}{11}}
