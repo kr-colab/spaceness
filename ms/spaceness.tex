@@ -61,8 +61,9 @@
     Here we use simulations of populations living in continuous geography 
     to study the impacts of dispersal and sampling strategy on population genetic summary statistics, demographic inference, and genome-wide association studies. 
     We find that most common summary statistics have distributions that differ substantially from that seen in well-mixed populations, 
-    especially when Wright's neighborhood size is less than 100 and sampling is spatially clustered.
-    The combination of low dispersal and clustered sampling causes demographic inference from the site frequency spectrum to infer more turbulent demographic histories, but averaged results across multiple simulations were surprisingly robust to isolation by distance. 
+    especially when Wright's neighborhood size is less than 100 and sampling is spatially clustered. 
+    Stepping-stone models reproduce some of these effects, but discretizing the landscape introduces artifacts which in some cases are exacerbated at higher resolutions.
+        The combination of low dispersal and clustered sampling causes demographic inference from the site frequency spectrum to infer more turbulent demographic histories, but averaged results across multiple simulations were surprisingly robust to isolation by distance. 
     We also show that the combination of spatially autocorrelated environments and limited dispersal
     causes genome-wide association studies to identify spurious signals of genetic association 
     with purely environmentally determined phenotypes,
@@ -252,7 +253,7 @@ the stepping-stone model, which we simulated with \texttt{msprime} \citep{Kelleh
 These results are discussed in detail in the Appendix,
 but in general we find that the demographic structure of a stepping-stone model
 can depend strongly on the chosen discretization,
-and some artifacts of discretization do not seem to dissappear in the limit of a fine grid.
+and some artifacts of discretization seem to become stronger in the limit of a fine grid.
 For many summary statistics, finer discretizations (we used a $50 \times 50$ grid)
 produced similar results to the continuous model,
 but this was not true for others (e.g., $F_{IS}$ and Tajima's $D$),
@@ -862,9 +863,9 @@ We ran 500 simulations for each value of $n$ while sampling $\sigma$ from $U(0.2
 \label{fig:grid_stats}
 \end{figure*}
 
-In general we find many of the qualitative trends are similar among continuous and stepping-stone models and that, in most cases, statistics from stepping-stone models approach the continuous model as the resolution of the grid increases. For example, $\theta_\pi$ is inflated at low neighborhood sizes (i.e. low $m$), and the extent of the inflation increases to approach the continuous case as the resolution of the landscape increases. Similar patterns are observed for $F_{is}$ and observed heterozygosity. However, $\theta_{W}$ behaves differently, with increased grid resolution leading to lower values. This in turn drives an even more positive Tajima's $D$ in grid simulations at small neighborhood sizes.
-
-These differences relative to our continuous model mainly reflect two shortcomings of the reverse-time stepping stone model. If we simulate a coarse grid with relatively large populations in each deme, we cannot accurately capture the dynamics of small neighborhood sizes because mating within each deme remains random regardless of the migration rate connecting demes. This likely explains the trends in $\pi$, observed heterozygosity, and $F_{is}$. However increasing the number of demes while holding the total number of individuals constant results in small within-deme populations for which even the minimum sample size of 1 approaches the local $N_e$ (Table \ref{table:grid_params}). This results in an excess of short terminal branches in the coalescent tree, which decreases the total branch length and leads to fewer segregating sites, deflated $\theta_W$, and inflated Tajima's $D$. Overall then our continuous model reproduces important features of spatial structure approximated by reverse-time stepping-stone models at moderate neighborhood sizes while avoiding some artifacts caused binning the landscape into discrete demes. 
+In general we find many of the qualitative trends are similar among continuous and stepping-stone models and that, at low neighborhood sizes, many  (but not all) statistics from stepping-stone models approach the continuous model as the resolution of the grid increases. For example, $\theta_\pi$ is inflated at low neighborhood sizes (i.e., low $m$), and the extent of the inflation increases to approach the continuous case as the resolution of the landscape increases. Similar patterns are observed for $F_{IS}$ and observed heterozygosity. However, $\theta_{W}$ behaves differently, showing a non-monotonic relationship with grid resolution. This results in an increasingly positive Tajima's $D$ in grid simulations at small neighborhood sizes, to a much greater extent than seen in a continuous model. In contrast to $\theta_\pi$, increasing the resolution of the grid causes Tajima's $D$ to deviate \emph{more} from what is seen in the continuous model. 
+ 
+These differences relative to our continuous model mainly reflect two shortcomings of the reverse-time stepping stone model. If we simulate a coarse grid with relatively large populations in each deme, we cannot accurately capture the dynamics of small neighborhood sizes because mating within each deme remains random regardless of the migration rate connecting demes. This likely explains the trends in $\theta_{\pi}$, observed heterozygosity, and $F_{IS}$. However increasing the number of demes while holding the total number of individuals constant results in small within-deme populations for which even the minimum sample size of 1 approaches the local $N_e$ (Table \ref{table:grid_params}). This results in an excess of short terminal branches in the coalescent tree, which decreases the total branch length and leads to fewer segregating sites, deflated $\theta_W$, and inflated Tajima's $D$. Overall, the stepping-stone model reproduces important features of spatial structure in our continuous space model, such as a decline in $\theta_\pi$ and correlations between spatial and genetic distance with increasing migration, but introduces artifacts caused by binning the landscape into discrete demes. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Demographic model}
