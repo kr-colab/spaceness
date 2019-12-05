@@ -172,7 +172,7 @@ but rarely in population genetics, \revpoint{AE}{2}
 where to our knowledge implementations of continuous space models
 before their availability through SLiM \citep{Haller2019}
 have focused on a small number of genetic loci
-\citep[e.g.,][]{slatkin1989comparison,barton2002neutral,robledoarnuncio2010isolation,rossine2014espao},
+\citep[e.g.,][]{slatkin1989comparison,barton2002neutral,robledoarnuncio2010isolation,rossine2014espao,jackson2014landscape},
 which limits the ability to investigate the impacts of continuous space on genome-wide genetic variation as is now routinely sampled from real organisms. 
 By simulating chromosome-scale sequence alignments and complete population histories we are able to treat our simulations as real populations and replicate the sampling designs and analyses commonly conducted on real genomic data.
 
@@ -761,9 +761,20 @@ or extrinsically specified by local resource availability
 (e.g., by food or nest site availability).
 Indeed, our model could be interpreted as a caricature of such a model:
 as local density increases, good habitat is increasingly occupied,
-pushing individuals into more marginal habitat and increasing their mortality.
+pushing individuals into more marginal habitat and increasing their mortality. 
 Many such models should behave similarly to ours,
 but others (especially those with local population cycling), may differ dramatically.
+
+Population genetic simulations often use grids of discrete demes, which are assumed to approximate continuous space. 
+However, there are theoretical reasons to expect that increasingly fine grids of discrete demes do not approach the continuous model 
+\citep{barton2002neutral}.
+If continuous space can be approximated by a limit of discrete models, this should be true regardless of the precise details of the discrete model. 
+Although we carefully chose parameters to match our continuous models, we found that some aspects of genetic variation
+diverged from the continuous case as the discretization got finer. 
+This suggests that these models do not converge in the limit. 
+However, many populations may indeed be well-modeled as a series of discrete, 
+randomly-mating demes if, for example, suitable habitats are 
+patchily distributed across the landscape. 
 There is a clear need for greater exploration of 
 the consequences for population genetics of ecologically realistic population models.
 
