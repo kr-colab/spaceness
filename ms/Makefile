@@ -37,7 +37,7 @@ clean:
 	# this will embed all fonts
 	inkscape $< --export-pdf=$@
 
-spaceness_diff_to_first_submission.tex:
+spaceness_diff_to_first_submission.tex : spaceness.tex
 	latexdiff-git -r 7ea9d412bf87d3625882020ff4a859438483366e spaceness.tex
 	mv spaceness-diff7ea9d412bf87d3625882020ff4a859438483366e.tex $@
 
