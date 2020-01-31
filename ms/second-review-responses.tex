@@ -1,0 +1,210 @@
+%%%%%%
+%%
+%%  Don't reorder the reviewer points; that'll mess up the automatic referencing!
+%%
+%%%%%
+
+\begin{minipage}[b]{2.5in}
+  Resubmission Cover Letter \\
+    {\it Genetics}
+\end{minipage}
+\hfill
+\begin{minipage}[b]{2.5in}
+    C.~J.~Battey, \\
+    Peter Ralph, \\
+    \emph{and} Andrew Kern \\
+  \today
+\end{minipage}
+ 
+\vskip 2em
+ 
+\noindent
+{\bf To the Editor(s) -- }
+ 
+\vskip 1em
+
+We are writing to submit another revised version of our manuscript, 
+``Space is the Place: Effects of Continuous Spatial Structure on Analysis of Population Genetic Data''.
+
+
+\vspace{5em}
+
+\noindent \hspace{4em}
+\begin{minipage}{3in}
+\noindent
+{\bf Sincerely,}
+
+\vskip 2em
+
+{\bf 
+C.~J.~Battey, Peter Ralph, and Andrew Kern
+}\\
+\end{minipage}
+
+\vskip 4em
+
+\pagebreak
+\setcounter{page}{1}
+
+%%%%%%%%%%%%%%
+\reviewersection{AE}
+
+
+The point of R3 on the bimodality in the realized dispersal distance in your model is interesting. You can make this more explicit in the paper and describe how there are realistic biological scenarios that motivate such a model (many/most plants) and demarcate how well you think you can generalize to others (the new appendix already helps in that regard). It strikes me your model has relevance for patrilocal/matrilocal systems where the paternal/maternal parent-offspring distances differ - though your model is hermaphroditic so it's an imperfect analogy. Perhaps, to explore more typical animal mating patterns, you can quickly check the impact for one or two outcomes of changing the simulation such that offspring are dispersed around the midpoint of the parental origins, as this would remove the bimodality. That said, please be sure we respect the work done is extensive and don't mean to invite/require a complete re-working. The core tension is between ensuring your results are generalizable if that is what you wish to claim; versus specific to a particular model that is biologically motivated. It's particularly key for the material on GWAS, where you are explicitly trying to address human GWAS results: those sections will be read and taken at face value by a large community even if this simulation scheme introduces some discrepancies from what might more realistically emerge. So at a minimum, some caveats directly in the GWAS discussion section would help.
+
+
+
+
+%%%%%%%%%%%%%%
+\reviewersection{1}
+
+
+\begin{quote}
+Only minor changes were needed, and they were made. This study neatly summarises many biases arising from unmodelled continuous space (pertinent for real studies), and I would not extend it by further analyses. When polishing the final version, the authors can make some of their messages stronger. For example, Figure 7 and the accompanying text may give the impression that we are doing pretty well with smc++. It is only when panel B is seen one can appreciate the degree of uncertainty. So, in a way, Figure S7 is more telling as to how much we can trust our results in real analysis. After all, in reality, as authors mention, we only have one sample set, not replicates.
+\end{quote}
+
+Thanks!!!
+
+%%%%%%%%%%%%%%
+\reviewersection{2}
+
+
+\begin{quote}
+The authors have done a commendable job of responding to the reviewers' comments. The extended discussion and additional supplemental figures helps with the clarity of the manuscript. The results for the comparison with the discrete stepping-stone model were useful - though see below. The authors have also provided sufficient detail justifying their choice of model parameters.
+\end{quote}
+
+\begin{quote}
+I don't think I have any critical remaining issues or suggestions, but I did have a couple of thoughts. The authors might just want to think about them.
+\end{quote}
+
+\begin{point}{}
+I appreciate the appendix comparing summary statistics in the continuous and stepping-stone models, although I must confess I am now even more uncertain than I was before about which models are more appropriate. I get that the coalescent models make assumptions that are not directly interpretable in terms of observable parameters (although are "interactions between geographically distant parts of the species range" really biologically unrealistic?). This forward model is more interpretable, in that sense, but does it actually produce more realistic data? I guess that's a question for future work, but that question was one of the main things I came away from this paper with.
+\end{point}
+
+\reply{
+}
+
+\begin{point}{\revref}
+ "PCA is unable to capture". Is this a sample size effect? i.e. the precision of the estimates of the PCs depends on sample size, so it's possible that you just need a larger sample to estimate the PCs when you have weak structure. Or is it something else?
+\end{point}
+
+\reply{
+}
+
+\begin{point}{Line 685.}
+ Is Khera et al (2018) really the right reference for the idea of polygenic scores? They have been around for a lot longer than that.
+\end{point}
+
+\reply{
+}
+
+\begin{point}{Line 686. }
+ I don't know that the results of Berg and Sohail et al. are indicating a fundamental issue with PC correction, rather than a problem with meta-analysis.
+\end{point}
+
+\reply{
+}
+
+\begin{point}{Line 689-92. }
+ Is the result of Martin et al. really due to population stratification? There seem to be a number of factors affecting transferability of PRS (LD differences, effect size heterogeneity, differences in causal variants etc..), but I don't know that anyone thinks residual structure is the major one, particularly for eg. UKB summary stats.
+\end{point}
+
+\reply{
+}
+
+\begin{point}{Line 752 "population genetics flavor"}
+I don't understand what this means?
+\end{point}
+
+\reply{
+}
+
+\begin{point}{Line 800}
+"process-driven descriptions of ancestry and/or more generalized unsupervised methods". Aren't these two things opposite? That's ok, but it sounds a bit like you have no idea what would help...
+\end{point}
+
+\reply{
+}
+
+
+\begin{point}{}
+ Fix citation: Peter L. Ralph and Ashander ??? on pg. 5, line 216
+\end{point}
+
+\reply{
+}
+
+\begin{point}{}
+'there' written twice on pg. 27, line 1033
+\end{point}
+
+\reply{
+}
+
+
+
+
+%%%%%%%%%%%%%%
+\reviewersection{3}
+
+
+\begin{quote}
+I am fairly pleased overall with the revised version of this article. I commend the authors for the substantial amount of work conducted. This contribution now convincingly demonstrates how important it is to properly account for population structure when individuals are distributed along a spatial continuum.
+\end{quote}
+
+\begin{point}{}
+A couple of minor points about the forward model are still puzzling me though. First of all, in one dimension, the variance of $L(o)$, the random variable corresponding to the offspring's spatial position, given $l(p)$, the parent's position, is equal to $E((L(o)-l(p))^2):=\sigma^2$. Hence, $\sigma$ is here the square root of the expected squared Euclidean distance between parents and offspring. In general, assuming isotropic migrations, $\sigma$ is the square root of the expected squared Euclidean distance taken along any dimension. It seems to me that this definition is distinct from the mean parent-offspring distance, as stated by the authors.
+\end{point}
+
+\reply{
+}
+
+\begin{point}{}
+More importantly, I am still a bit confused about the reproduction scheme. My understanding is that, once mating takes place, the two parents involved (noted as P(1) and P(2)) each produce a Poisson number of offspring. The location of each offspring is determined by a Gaussian distribution of covariance matrix $\sigma^2 I$, centered on the location of the parent that ``produced' this offspring. Let $O(1,i)$ and $O(2,j)$ be the i-th and j-th offspring produced by $P(1)$ and $P(2)$ respectively. Now, if I am not mistaken, half of the genetic material of O(2,j) comes from P(1) (the other half coming from P(2)) while O(1,i) receives one chromosome from P(2) (and another one from its ``true' parent, i.e., P(1)). Hence, when it comes to the parent-offspring distance as measured from their genetic material, half of the chromosomes have a ``small' dispersal distance, equal to that of the parent-offspring distance, while the other half have a ``large' distance roughly equal to the parent-offspring distance plus the distance between mates.
+\end{point}
+
+\reply{
+}
+
+
+\begin{point}{}
+It is important that the authors clarify this last point because most results presented in this study rely on Wright's neighborhood size, which derives from a model where dispersal of individuals and chromosomes follow well-defined spatial dynamics. A sensible comparison of neighborhood sizes requires that dispersal (along with effective population density) is quantified in a coherent way across different models.
+\end{point}
+
+\reply{
+}
+
+
+\begin{point}{}
+Additionally, the neighborhood size as defined by the authors (see line 211) is a function of the census density rather than the effective density of individuals. I am therefore not fully convinced that the range of values for this parameter is comparable to that given in Table 1. Furthermore, the neighborhood size estimates obtained for Bebicium vittatum derive from the analysis of a one-dimensional habitat. The product $\sigma^2 \rho$ is thus expressed in this particular case as a number of individuals *per unit of space* (in two dimensions, this product is expressed as a number of individuals). Hence, the unit of space matters a lot here, prohibiting the direct comparison with other figures in the same table or with the simulations conducted in this study.
+\end{point}
+
+\reply{
+}
+
+
+\begin{point}{}
+Finally, Leblois, Estoup and Streiff (2006) Molecular Ecology conducted a large simulation studies with a focus very close to that of the present study. In particular, they investigated the impact of sampling on the inference of summary statistics commonly used in population genetics. It would probably be relevant to compare some of the results presented in Leblois et al. to that put forward here.
+\end{point}
+
+\reply{
+}
+
+
+
+%%%%%%%%%%%%%%
+\reviewersection{4}
+
+
+\begin{quote}
+The authors have thoroughly addressed nearly all of my comments in their timely manuscript, and I am satisfied with their responses.
+\end{quote}
+
+\begin{point}{}
+Regarding Table S1, I would still suggest adding a column about interpretation for those variables and evaluated with respect to the simulated results.
+\end{point}
+
+\reply{
+}
+
+
