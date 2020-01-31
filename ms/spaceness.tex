@@ -540,7 +540,8 @@ Clinal environments cause an interesting pattern in false positives after PC cor
 but at neighborhood sizes above roughly 250 the proportion of significant SNPs increases to up to 0.4\% (Figure~\ref{fig:gwas}). 
 This may be due to a loss of descriptive power of the PCs
 -- as neighborhood size increases, the total proportion of variance explained by the first 10 PC axes declines from roughly 10\% to 4\% (Figure \ref{fig:gwas}B). 
-Essentially, PCA seems unable to effectively summarize the weak population structure present in large-neighborhood simulations, but these populations continue to have enough spatial structure to create significant correlations between genotypes and the environment. A similar process can also be seen in the corner phenotype distribution, in which the count of significant SNPs initially declines as neighborhood size increases and then increases at approximately the point at which the proportion of variance explained by PCA approaches its minimum. 
+Essentially, PCA seems unable to effectively summarize the weak population structure present in large-neighborhood simulations, \revpoint{2}{2}
+but these populations continue to have enough spatial structure to create significant correlations between genotypes and the environment. A similar process can also be seen in the corner phenotype distribution, in which the count of significant SNPs initially declines as neighborhood size increases and then increases at approximately the point at which the proportion of variance explained by PCA approaches its minimum. 
 
 Figure \ref{fig:gwas}D shows quantile-quantile plots for a subset of simulations that show the degree of genome-wide inflation of test statistics in PC-corrected GWAS across all simulations and environmental distributions. 
 An alternate visualization is also included in figure \ref{fig:qqplot_hexbins}.
