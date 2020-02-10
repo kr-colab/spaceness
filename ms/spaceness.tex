@@ -183,7 +183,7 @@ We simulated populations using the program SLiM v3.1 \citep{Haller2019}.
 Each time step consists of three stages: reproduction, dispersal, and mortality. 
 To reduce the parameter space we use the same parameter, denoted $\sigma$, 
 to modulate the spatial scale of interactions at all three stages by adjusting the standard deviation of the corresponding Gaussian functions. 
-As in previous work \citep{Wright1943,Ringbauer2017}, $\sigma$ is equal to the mean parent-offspring distance along each of the x and y axes.  
+As in previous work \citep{Rousset1997}, $\sigma$ is equal to the mean parent-offspring distance along each of the x and y axes.  
 
 At the beginning of the simulation individuals are distributed uniformly at random on a continuous, square landscape. 
 Individuals are hermaphroditic, and each time step, each produces a Poisson number of offspring with mean $1/L$.
@@ -730,10 +730,11 @@ to get an idea of how strongly local geographic dispersal affects patterns of va
 This is an imperfect measure:
 some aspects of genetic variation are most strongly determined by neighborhood size \citep{Wright1946},
 others (e.g., number of segregating sites)
-are more strongly determined by global $N_e$ or by the ratio of the two, and definitions of "population density" in genetic versus ecological studies may lead to varying estimates of neighborhood size for a given species \llabel{rhocaveat}. 
-% These values should be compared to our simulation results with some caution, as though we expect neighborhood size to have similar effects across species of varying global $N_e$ \citep{Wright1946}, in our study we evaluated only a relatively small population of $\approx 10,000$. 
+by global $N_e$, or the ratio of the two. 
 \llabel{popsizecaveat}
-In addition, these empirical examples are likely biased towards small-neighborhood species (because few studies have quantified neighborhood size in species with very high dispersal or population density). However, from the available data we find that neighborhood sizes in the range we simulated are fairly common across a range of taxa. At the extreme low end of empirical neighborhood size estimates we see some flowering plants, large mammals, and colonial insects like ants with neighborhood sizes less than roughly 100. Species such as this have neighborhood size estimates small enough that spatial processes are likely to strongly influence inference.
+In addition, definitions of "population density" in genetic versus ecological studies may lead to varying estimates of neighborhood size for a given species \llabel{rhocaveat}, and these empirical examples may be biased towards small-neighborhood species because few studies have quantified neighborhood size in species with very high dispersal or population density. 
+
+However, from the available data we find that neighborhood sizes in the range we simulated are fairly common across a range of taxa. At the extreme low end of empirical neighborhood size estimates we see some flowering plants, large mammals, and colonial insects like ants with neighborhood sizes less than roughly 100. Species such as this have neighborhood size estimates small enough that spatial processes are likely to strongly influence inference.
 These include some human populations such as the Gainj- and Kalam-speaking people of Papua New Guinea, in which the estimated neighborhood sizes in \citet{Rousset1997} range from 40 to 410 depending on the method of estimation. 
 Many more species occur in a middle range of neighborhood sizes between 100 and 1000 -- a range in which spatial processes play a minor role in our analyses under random spatial sampling but are important when sampling of individuals in space is clustered. Surprisingly, even some flying insects with huge census population sizes fall in this group, including fruit flies (\textit{D.~melanogaster}) and mosquitoes (\textit{A.~aegypti}). Last, many species likely have neighborhood sizes much larger than we simulated, including the recent ancestors of modern humans in northeastern Europe \citep{Ringbauer2017}. For these species demographic inference and summary statistics are likely to reflect minimal bias from spatial effects as long as dispersal is truly continuous across the landscape. While that is so we caution that association studies in which the effects of population structure are confounded with spatial variation in the environment are still sensitive to dispersal even at these large neighborhood sizes.
 
