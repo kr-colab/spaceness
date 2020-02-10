@@ -1,0 +1,1329 @@
+%\documentclass{article}
+%DIF LATEXDIFF DIFFERENCE FILE
+%DIF DEL spaceness-oldtmp-2802.tex   Fri Dec  6 09:35:39 2019
+%DIF ADD spaceness.tex               Fri Dec  6 09:35:37 2019
+%DIF 2-15c2
+%DIF < \newcommand{\beginsupplement}{%
+%DIF <         \setcounter{table}{0}
+%DIF <         \renewcommand{\thetable}{S\arabic{table}}%
+%DIF <         \setcounter{figure}{0}
+%DIF <         \renewcommand{\thefigure}{S\arabic{figure}}%
+%DIF <      }
+%DIF < \newcommand{\stopsupplement}{%
+%DIF <         \setcounter{table}{0}
+%DIF <         \renewcommand{\thetable}{\arabic{table}}%
+%DIF <         \setcounter{figure}{0}
+%DIF <         \renewcommand{\thefigure}{\arabic{figure}}%
+%DIF <      }
+%DIF < 
+%DIF < \documentclass[11pt,twoside,lineno,hidelinks]{preprint}
+%DIF -------
+\documentclass[10pt,twoside,lineno,hidelinks]{preprint} %DIF > 
+%DIF -------
+\usepackage{amsmath}
+\usepackage[nodisplayskipstretch]{setspace}
+\usepackage{makecell} 
+\usepackage{changepage}
+\usepackage{afterpage}
+%DIF 21c8-9
+%DIF < \setstretch{1.5}
+%DIF -------
+\setstretch{1} %DIF > 
+\usepackage{placeins} %DIF > 
+%DIF -------
+\NeedsTeXFormat{LaTeX2e}
+\newcommand*{\articletypename}{PREPRINT}
+% Use the documentclass option 'lineno' to view line numbers
+
+% adding commenting commands
+\newif\ifcomments
+\commentstrue
+%\commentsfalse
+\newcommand{\cjb}[1]{\ifcomments{{\color{orange} \it (#1)}}\else{}\fi}
+\newcommand{\plr}[1]{\ifcomments{{\color{purple} \it (#1)}}\else{}\fi}
+\newcommand{\ak}[1]{\ifcomments{{\color{red} \it (#1)}}\else{}\fi}
+
+%DIF 34a22-29
+%%%%%%%%%%% %DIF > 
+% for responses to reviewers %DIF > 
+% set this to show line numbers and include responses to reviews or not %DIF > 
+\newif\ifreviewresponses %DIF > 
+\reviewresponsestrue  % include them %DIF > 
+% \reviewresponsesfalse  % don't include them %DIF > 
+\input{review-response-commands} %DIF > 
+\newcommand{\responsefile}{review-responses.tex}  % name of the review reponses file %DIF > 
+%DIF -------
+
+%DIF 35a31-32
+ %DIF > 
+ %DIF > 
+%DIF -------
+%Space is the Place: How Dispersal and Competition Shape Genetic Variation in Continuous Space
+%Impacts of Continuous Spatial Structure on Analyses of Population Genetic Data
+%Impacts of Isolation by Distance on Demographic Modeling and Association Studies
+%Space is the Place: How Dispersal and Sampling Shape Inference From Genetic Variation in Continuous Space
+%Evolution on the Final Frontier: How Dispersal and Sampling Shape Inference From Genetic Data in Continuous Space
+\title{Space is the Place: Effects of Continuous Spatial Structure on Analysis of Population Genetic Data}
+
+\author[$\ast$,1]{C.J. Battey}
+\author[$\ast, \dagger$]{Peter L. Ralph}
+\author[$\ast, \dagger$]{Andrew D. Kern}
+
+\affil[$\ast$]{University of Oregon Dept. Biology, Institute for Ecology Evolution}
+\keywords{Space; Population Structure; Demography; Haplotype block sharing; GWAS}
+
+\runningtitle{Effects of Continuous Space} % For use in the footer 
+
+%% For the footnote.
+%% Give the last name of the first author if only one author;
+% \runningauthor{FirstAuthorLastname}
+%% last names of both authors if there are two authors;
+% \runningauthor{FirstAuthorLastname and SecondAuthorLastname}
+%% last name of the first author followed by et al, if more than two authors.
+\runningauthor{Battey \textit{et al.}}
+
+\begin{abstract}
+    Real geography is continuous,
+    but standard models in population genetics are based on discrete, well-mixed populations. 
+    As a result many methods of analyzing genetic data assume that samples are a random draw from a well-mixed population, but are applied to clustered samples from populations that are structured clinally over space.
+    Here we use simulations of populations living in continuous geography 
+    to study the impacts of dispersal and sampling strategy on population genetic summary statistics, demographic inference, and genome-wide association studies. 
+    We find that most common summary statistics have distributions that differ substantially from that seen in well-mixed populations, 
+    especially when Wright's neighborhood size is less than 100 and sampling is spatially clustered. 
+%DIF 67a65
+    Stepping-stone models reproduce some of these effects, but discretizing the landscape introduces artifacts which in some cases are exacerbated at higher resolutions. %DIF > 
+%DIF -------
+        The combination of low dispersal and clustered sampling causes demographic inference from the site frequency spectrum to infer more turbulent demographic histories, but averaged results across multiple simulations were surprisingly robust to isolation by distance. 
+    We also show that the combination of spatially autocorrelated environments and limited dispersal
+    causes genome-wide association studies to identify spurious signals of genetic association 
+    with purely environmentally determined phenotypes,
+    and that this bias is only partially corrected by regressing out principal components of ancestry. 
+    Last, we discuss the relevance of our simulation results for inference from genetic variation in real organisms. 
+\end{abstract}
+%DIF PREAMBLE EXTENSION ADDED BY LATEXDIFF
+%DIF UNDERLINE PREAMBLE %DIF PREAMBLE
+\RequirePackage[normalem]{ulem} %DIF PREAMBLE
+\RequirePackage{color}\definecolor{RED}{rgb}{1,0,0}\definecolor{BLUE}{rgb}{0,0,1} %DIF PREAMBLE
+\providecommand{\DIFadd}[1]{{\protect\color{blue}\uwave{#1}}} %DIF PREAMBLE
+\providecommand{\DIFdel}[1]{{\protect\color{red}\sout{#1}}}                      %DIF PREAMBLE
+%DIF SAFE PREAMBLE %DIF PREAMBLE
+\providecommand{\DIFaddbegin}{} %DIF PREAMBLE
+\providecommand{\DIFaddend}{} %DIF PREAMBLE
+\providecommand{\DIFdelbegin}{} %DIF PREAMBLE
+\providecommand{\DIFdelend}{} %DIF PREAMBLE
+%DIF FLOATSAFE PREAMBLE %DIF PREAMBLE
+\providecommand{\DIFaddFL}[1]{\DIFadd{#1}} %DIF PREAMBLE
+\providecommand{\DIFdelFL}[1]{\DIFdel{#1}} %DIF PREAMBLE
+\providecommand{\DIFaddbeginFL}{} %DIF PREAMBLE
+\providecommand{\DIFaddendFL}{} %DIF PREAMBLE
+\providecommand{\DIFdelbeginFL}{} %DIF PREAMBLE
+\providecommand{\DIFdelendFL}{} %DIF PREAMBLE
+%DIF END PREAMBLE EXTENSION ADDED BY LATEXDIFF
+
+\begin{document}
+
+\maketitle
+\thispagestyle{firststyle}
+%\marginmark
+\firstpagefootnote
+
+
+\correspondingauthoraffiliation{1}{301 Pacific Hall, University of Oregon Dept. Biology, Institute for Ecology and Evolution. cbattey2@uoregon.edu.}
+\correspondingauthoraffiliation{$\dagger$}{these authors co-supervised this project}
+\vspace{-35pt}% Only used for adjusting extra space in the left column of the first page
+
+%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction}
+
+The inescapable reality that biological organisms live, move, and reproduce in continuous geography is usually omitted from population genetic models. However, mates tend to live near to one another and to their offspring, leading to a positive correlation between genetic differentiation and geographic distance. This pattern of ``isolation by distance'' \citep{Wright1943} is one of the most widely replicated empirical findings in population genetics \citep{Chen2017,Jay2012,Sharbel2000}.
+Despite a long history of analytical work describing the genetics of populations distributed across continuous geography
+(e.g., \DIFdelbegin \DIFdel{\mbox{%DIFAUXCMD
+\citet{Wright1943,Rousset1997,barton2002neutral,Barton2010,Ringbauer2017,robledoarnuncio2010isolation}}\hspace{0pt}%DIFAUXCMD
+), }\DIFdelend \DIFaddbegin \DIFadd{\mbox{%DIFAUXCMD
+\citet{Wright1943,Rousset1997,barton2002neutral,Barton2010,Ringbauer2017,robledoarnuncio2010isolation,Wilkins2002linearcoalescent,Wilkins2004separation}}\hspace{0pt}%DIFAUXCMD
+), }\revpoint{AE}{1}
+\DIFaddend much modern work still describes geographic structure as a set of discrete populations connected by migration \DIFdelbegin \DIFdel{\mbox{%DIFAUXCMD
+\citep[e.g.,][]{Wright1931,epperson2003geographical,rousset2011likelihoodbased,Shirk2014,lundgren2018populations}}\hspace{0pt}%DIFAUXCMD
+. }\DIFdelend \DIFaddbegin \DIFadd{\mbox{%DIFAUXCMD
+\citep[e.g.,][]{Wright1931,epperson2003geographical,rousset2011likelihoodbased,Shirk2014,lundgren2019populations} }\hspace{0pt}%DIFAUXCMD
+or as an average over such discrete models \mbox{%DIFAUXCMD
+\citep{Petkova2015,al2019estimating}}\hspace{0pt}%DIFAUXCMD
+. }\revpoint{4}{3}
+\DIFaddend For this reason, most population genetics statistics are interpreted with reference to discrete, well-mixed populations, and most empirical papers analyze variation within clusters of genetic variation inferred by programs like \textit{STRUCTURE} \citep{Pritchard2000} with methods that assume these are randomly mating units.
+
+The assumption that populations are ``well-mixed'' has important implications for downstream inference of selection and demography. Methods based on the coalescent \citep{Kingman1982,wakeley2005coalescent} assume that the sampled individuals are a random draw from a well-mixed population
+that is much larger than the sample \citep{wakeley2003gene}. The key assumption is that the individuals of each generation are \emph{exchangeable}, so that there is no correlation between the fate or fecundity of a parent and that of their offspring \citep{Huillet2011}. If dispersal or mate selection is limited by geographic proximity, this assumption can be violated in many ways. For instance, if mean viability or fecundity is spatially autocorrelated, then limited geographic dispersal will lead to parent--offspring correlations. Furthermore, nearby individuals will be more closely related than an average random pair, so drawing multiple samples from the same area of the landscape will represent a biased sample of the genetic variation present in the whole population \citep{Stadler2009}.% It has long been appreciated that this model misspecification subjects downstream inferences to bias, but the extent and nature of these effects remain largely uninvestigated.
+
+Two areas in which spatial structure may be particularly important are demographic inference and genome-wide association studies (GWAS). Previous work has found that discrete population structure can create false signatures of population bottlenecks when attempting to infer demographic histories from microsatellite variation \citep{Chikhi2010}, statistics summarizing the site frequency spectrum (SFS) \citep{Ptak2002,Stadler2009,Onge2012}, or runs of homozygosity in a single individual \citep{Mazet2015}. The increasing availability of whole-genome data has led to the development of many methods that attempt to infer detailed trajectories of population sizes through time based on a variety of summaries of genetic data \citep{Liu2015,Schiffels2014,Sheehan2013,Terhorst2016}. 
+Because all of these methods assume that the populations being modeled are approximately randomly mating, they are likely affected by spatial biases in the genealogy of sampled individuals \citep{Wakeley1999}, which may lead to incorrect inference of population changes over time \citep{Mazet2015}. However, previous investigations of these effects have focused on discrete rather than continuous space models, and the level of isolation by distance at which inference of population size trajectories become biased by structure is not well known. Here we test how two methods suitable for use with large samples of individuals -- stairwayplot \citep{Liu2015} and SMC++ \citep{Terhorst2016} -- perform when applied to populations evolving in continuous space with varying sampling strategies and levels of dispersal.  
+
+Spatial structure is also a major challenge for interpreting the results of genome-wide association studies (GWAS). This is because many phenotypes of interest have strong geographic differences due to the (nongenetic) influence of environmental or socioeconomic factors,
+which can therefore show spurious correlations with spatially patterned allele frequencies \citep{Bulik-Sullivan2015,Mathieson2012}. Indeed, two recent studies found that previous evidence of polygenic selection on human height in Europe was confounded by subtle population structure \citep{Sohail2018,Berg2018}, suggesting that existing methods to correct for population structure in GWAS are insufficient. However we have little quantitative idea of the population and environmental parameters that can be expected to lead to biases in GWAS. 
+
+Last, some of the most basic tools of population genetics are summary statistics like $F_{IS}$ and Tajima's $D$, which are often interpreted as reflecting the influence of selection or demography on sampled populations \citep{tajima1989statistical}. Statistics like Tajima's $D$ are essentially summaries of the site frequency spectrum, which itself reflects variation in branch lengths and tree structure of the underlying genealogies of sampled individuals. Geographically limited mate choice distorts the distribution of these genealogies \citep{Maruyama1972,Wakeley1999}, which can affect the value of Tajima's $D$ \citep{Stadler2009}. Similarly, the distribution of tract lengths of identity by state among individuals contains information about not only historical demography \citep{Harris2013,ralph2013geography} and selection \citep{Garud2015}, but also dispersal and mate choice \citep{Ringbauer2017,Baharian2016}. 
+We are particularly keen to examine how such summaries will be affected by models that incorporate continuous space, both to evaluate the assumptions underlying existing methods and to identify where the most promising signals of geography lie.
+
+To study this, we have implemented an individual-based model in continuous geography 
+that incorporates overlapping generations, local dispersal of offspring, and density-dependent survival. 
+We simulate chromosome-scale genomic data in tens of thousands of individuals from parameter regimes relevant to common subjects of population genetic investigation such as humans and \textit{Drosophila}, and output the full genealogy and recombination history of all final-generation individuals. 
+We use these simulations to test how sampling strategy interacts with geographic population structure to cause systematic variation in population genetic summary statistics 
+typically analyzed assuming discrete population models. 
+We then examine how the fine-scale spatial structures occurring under limited dispersal impact demographic inference from the site frequency spectrum. 
+Last, we examine the impacts of continuous geography on genome-wide association studies (GWAS) and identify regions of parameter space under which the results from GWAS may be misleading.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Materials and Methods}
+\label{sec:materials:methods}
+
+%%%%%%%%%%%%%
+\subsection{Modeling Evolution in Continuous Space}
+
+% The best-studied approaches to population genetics in continuous space were developed by \citet{Wright1942,Wright1943} and \citet{Malecot1948}, who derived expressions for genetic differentiation in continuous space assuming Poisson distributed numbers of offspring and independent dispersal among individuals. 
+The degree to which genetic relationships are geographically correlated
+depends on the chance that two geographically nearby individuals are close relatives
+-- in modern terms, by the tension between
+migration (the chance that one is descended from a distant location)
+and coalescence (the chance that they share a parent).
+A key early observation by \DIFdelbegin \DIFdel{Wright \mbox{%DIFAUXCMD
+\citep{Wright1946} }\hspace{0pt}%DIFAUXCMD
+}\DIFdelend \DIFaddbegin \DIFadd{\mbox{%DIFAUXCMD
+\citet{Wright1946} }\hspace{0pt}%DIFAUXCMD
+}\DIFaddend is that this balance is often nicely summarized by the ``neighborhood size'',
+defined to be $N_W = 4 \pi \rho \sigma^2$, where $\sigma$ is the mean parent--offspring distance and $\rho$ is population density. 
+This can be thought of as proportional to the average number of potential mates for an individual (those within distance $2 \sigma)$,
+or the number of potential parents of a randomly chosen individual. Empirical estimates of neighborhood size vary hugely across species
+-- even in human populations,
+estimates range from 40 to over 5,000 depending on the population and method of estimation (Table~\ref{table:NStable}).
+%\citet{Maruyama1972} found that the rate of decline in genetic diversity in a two-dimensional continuous population approaches the random mating expectation when $\rho\sigma^2 > 1$, and proposed that this had the important implication that most population genetic expectations for randomly mating populations could be applied to continuously distributed populations with relatively little error. 
+
+The first approach to modeling continuously distributed populations
+was to endow individuals in a Wright-Fisher model with locations in continuous space.
+However, since the total size of the population is constrained, this introduces interactions between arbitrarily distant individuals,
+which (aside from being implausible) 
+was shown by \citet{Felsenstein1975} to eventually lead to unrealistic population clumping
+if the range is sufficiently large.
+Another method for modeling spatial populations is to assume the existence of a grid of discrete randomly mating populations connected by migration, 
+thus enforcing regular population density by edict.
+Among many other \DIFdelbegin \DIFdel{important }\DIFdelend results drawn from this class of ``lattice'' or ``stepping stone'' models
+\DIFaddbegin \DIFadd{\mbox{%DIFAUXCMD
+\citep{epperson2003geographical}}\hspace{0pt}%DIFAUXCMD
+}\DIFaddend , 
+\citet{Rousset1997} showed that the slope of the linear regression of genetic differentiation ($F_{ST}$) against the logarithm of spatial distance is an estimate of neighborhood size. 
+Although these grid models may be good approximations of continuous geography in many situations,
+they do not model demographic fluctuations,
+and limit investigation of spatial structure below the level of the deme,
+assumptions whose impacts are unknown. 
+An alternative method for dealing with continuous geography is a new class of coalescent models,
+the Spatial Lambda Fleming-Viot models \citep{Barton2010,Kelleher2014}.
+
+To avoid \DIFdelbegin \DIFdel{questionable assumptions}\DIFdelend \DIFaddbegin \DIFadd{hard-to-evaluate approximations}\DIFaddend , we here used forward-time, individual-based simulations
+\DIFdelbegin \DIFdel{. By scaling the }\DIFdelend \DIFaddbegin \DIFadd{across continuous geographical space.
+The question of what regulates real populations has a long history and many answers
+\mbox{%DIFAUXCMD
+\citep[e.g.,][]{lloyd1967crowding,antonovics1980ecological,crawley1990population}}\hspace{0pt}%DIFAUXCMD
+, }\llabel{ecolcites}
+\DIFadd{but it is clear that populations must at some point have density-dependent feedback on population size,
+or else they would face eventual extinction or explosion.
+In the absence of unrealistic global population regulation,
+this regulation must be local,
+and there are many ways to achieve this \mbox{%DIFAUXCMD
+\citep{bolker2003spatial}}\hspace{0pt}%DIFAUXCMD
+.
+In our simulations,
+each individual's }\DIFaddend probability of survival \DIFdelbegin \DIFdel{in each timestep to }\DIFdelend \DIFaddbegin \DIFadd{is a decreasing function of }\DIFaddend local population density\DIFdelbegin \DIFdel{we shift }\DIFdelend \DIFaddbegin \DIFadd{,
+which shifts }\DIFaddend reproductive output towards low-density regions,
+\DIFdelbegin \DIFdel{which prevents populations from clustering. }\DIFdelend \DIFaddbegin \DIFadd{and produces total census sizes that fluctuate around an equilibrium. }\revpoint{3}{2}
+\DIFadd{This also prevents the population clumping seen by \mbox{%DIFAUXCMD
+\citet{Felsenstein1975}
+}\hspace{0pt}%DIFAUXCMD
+(Supplemental }\autoref{fig:wm_v_dd}\DIFadd{)). }\revpoint{3}{1}
+\DIFaddend Such models have been used extensively in ecological modeling
+\DIFaddbegin \DIFadd{\mbox{%DIFAUXCMD
+\citep{durrett1994importance,bolker1997using,law2003population,fournier2004microscopic,champer2019suppression}
+}\hspace{0pt}%DIFAUXCMD
+}\DIFaddend but rarely in population genetics, \DIFaddbegin \revpoint{AE}{2}
+\DIFaddend where to our knowledge \DIFdelbegin \DIFdel{previous }\DIFdelend implementations of continuous space models
+\DIFaddbegin \DIFadd{before their availability through SLiM \mbox{%DIFAUXCMD
+\citep{Haller2019}
+}\hspace{0pt}%DIFAUXCMD
+}\DIFaddend have focused on a small number of genetic loci
+\DIFaddbegin \DIFadd{\mbox{%DIFAUXCMD
+\citep[e.g.,][]{slatkin1989comparison,barton2002neutral,robledoarnuncio2010isolation,rossine2014espao,jackson2014landscape}}\hspace{0pt}%DIFAUXCMD
+}\DIFaddend ,
+which limits the ability to investigate the impacts of continuous space on genome-wide genetic variation as is now routinely sampled from real organisms. 
+By simulating chromosome-scale sequence alignments and complete population histories we are able to treat our simulations as real populations and replicate the sampling designs and analyses commonly conducted on real genomic data.
+
+%%%%%%%%%%%%
+\subsection{A Forward-Time Model of Evolution in Continuous Space}
+
+We simulated populations using the \DIFdelbegin \DIFdel{non-Wright-Fisher module in the }\DIFdelend program SLiM v3.1 \citep{Haller2019}. 
+Each time step consists of three stages: reproduction, dispersal, and mortality. 
+To reduce the parameter space we use the same parameter, denoted $\sigma$, 
+to modulate the spatial scale of interactions at all three stages by adjusting the standard deviation of the corresponding Gaussian functions. 
+As in previous work \citep{Wright1943,Ringbauer2017}, $\sigma$ is equal to the mean parent-offspring distance.  
+
+At the beginning of the simulation individuals are distributed uniformly at random on a continuous, square landscape. 
+Individuals are hermaphroditic, and each time step, each produces a Poisson number of offspring with mean $1/L$\DIFdelbegin \DIFdel{where $L$ is the expected lifespan}\DIFdelend .
+Offspring disperse a Gaussian-distributed distance away from the parent with mean zero and standard deviation $\sigma$
+in both the $x$ and $y$ coordinates. \DIFaddbegin \revpoint{4}{8}
+\DIFaddend Each offspring is produced with a mate selected randomly from those within distance $3 \sigma$,
+with probability of choosing a neighbor at distance \DIFdelbegin \DIFdel{$x$ proportional to $\exp(-x^2 / 2 \sigma^2)$}\DIFdelend \DIFaddbegin \DIFadd{$d$ proportional to $\exp(-d^2 / 2 \sigma^2)$}\DIFaddend .
+
+To maintain a stable population, mortality increases with local population density.
+To do this we say that individuals at distance $d$ have a competitive interaction with strength $g(d)$,
+where $g$ is the Gaussian density with mean zero and standard deviation $\sigma$.
+Then, the sum of all competitive interactions with individual $i$ is $n_i = \sum_j g(d_{ij})$,
+where $d_{ij}$ is the distance between individuals $i$ and $j$ and the sum is over all neighbors within distance $3 \sigma$.
+Since $g$ is a probability density, $n_i$ is an estimate of the number of nearby individuals per unit area.
+Then, given a per-unit carrying capacity $K$, \DIFaddbegin \llabel{ll:K_defn}
+\DIFaddend the probability of survival until the next time step for individual $i$ is
+\begin{equation} \DIFaddbegin \label{eqn:p_survival}
+    \DIFaddend p_i 
+    =
+    \min\left( 0.95, \frac{1}{1 + n_i / (K (1+L))} \right) .
+\end{equation}
+We chose this functional form so that the equilibrium population density per unit area is \DIFdelbegin \DIFdel{around }\DIFdelend \DIFaddbegin \DIFadd{close to }\DIFaddend $K$, \DIFaddbegin \llabel{ll:K_again}
+\DIFaddend and the mean lifetime is around $L$\DIFdelbegin \DIFdel{.
+}\DIFdelend \DIFaddbegin \DIFadd{;
+for more description see the Appendix. %DIF >  \ref{apx:demographic_model}.
+}\DIFaddend 
+
+An important step in creating any spatial model is dealing with range edges. 
+Because local population density is used to model competition, edge or corner populations can be assigned artificially high fitness values 
+because they lack neighbors within their interaction radius but outside the bounds of the simulation.
+We approximate a decline in habitat suitability near edges by decreasing the probability of survival proportional to the square root of distance to edges in units of $\sigma$. 
+The final probability of survival for individual $i$ is then
+\begin{equation}
+    s_{i} = p_{i} 
+        \min(1,\sqrt{x_{i}/\sigma})
+        \min(1,\sqrt{y_{i}/\sigma})\\
+        \min(1,\sqrt{(W - x_{i})/\sigma})
+        \min(1,\sqrt{(W - y_{i})/\sigma)}
+\end{equation}
+where $x_i$ and $y_i$ are the spatial coordinates of individual $i$, and $W$ is the width (and height) of the square habitat.
+This buffer roughly counteracts the increase in fitness individuals close to the edge would otherwise have\DIFaddbegin \DIFadd{, though the effect is relatively subtle (Figure \ref{fig:edge_scaling})}\DIFaddend .
+
+To isolate spatial effects from other components of the model such as overlapping generations, increased variance in reproductive success, and density-dependent fitness,  \DIFaddbegin \revpoint{3}{6}
+\DIFaddend we also implemented simulations identical to those above except that mates are selected uniformly at random from the population,
+and offspring disperse to a uniform random location on the landscape. 
+We refer to this model as the ``random mating'' model, in contrast to the first, ``spatial'' model. 
+
+We stored the full genealogy and recombination history of final-generation individuals as tree sequences \citep{Kelleher2018},
+as implemented in SLiM \citep{haller2019treesequence}. 
+Scripts for figures and analyses are available at \DIFdelbegin %DIFDELCMD < \url{https://github.com/petrelharp/spaceness}%%%
+\DIFdelend \DIFaddbegin \url{https://github.com/kern-lab/spaceness}\DIFaddend .  
+
+We ran 400 simulations for the spatial and random-mating models on a square landscape of width $W=50$  \DIFaddbegin \revpoint{AE}{3}
+\DIFaddend with per-unit carrying capacity $K=5$ (census $N \approx 10,000$), 
+average lifetime $L=4$, 
+genome size \DIFdelbegin \DIFdel{= }\DIFdelend $10^{8}$\DIFaddbegin \DIFadd{bp}\DIFaddend , 
+recombination rate \DIFdelbegin \DIFdel{= }\DIFdelend $10^{-9}$ \DIFaddbegin \DIFadd{per bp per generation}\DIFaddend , 
+and drawing $\sigma$ values from a uniform distribution between 0.2 and 4. 
+To speed up the simulations and limit memory overhead we used a mutation rate of 0 in SLiM 
+and later applied mutations to the tree sequence with msprime's \texttt{mutate} function \citep{Kelleher2016}. 
+Because msprime applies mutations proportionally to elapsed time,
+we divided the mutation rate of $10^{-8}$ mutations per site per generation
+by the average generation time estimated for each value of $\sigma$ (see `Demographic Parameters' below) to convert the rate to units of mutations per site per unit time. \DIFdelbegin \DIFdel{(We verified }\DIFdelend \DIFaddbegin \revpoint{2}{5}
+\DIFadd{We verify }\DIFaddend that this procedure \DIFdelbegin \DIFdel{produced the correct number of mutations by comparing to a subset of simulations with SLiM-generated mutations,
+which are applied only at meiosis.
+)
+}\DIFdelend \DIFaddbegin \DIFadd{produces the same site frequency spectrum as applying mutations directly in SLiM in Figure \ref{fig:slim_v_msp_sfs},
+in agreement with theory \mbox{%DIFAUXCMD
+\citep{ralph2019efficiently}}\hspace{0pt}%DIFAUXCMD
+.
+}\DIFaddend Simulations were run for 1.6 million timesteps (approximately $30N$ generations). 
+
+\DIFaddbegin \DIFadd{We also compared our model's output to a commonly-used approximation of continuous space,
+the stepping-stone model, which we simulated with }\texttt{\DIFadd{msprime}} \DIFadd{\mbox{%DIFAUXCMD
+\citep{Kelleher2016}}\hspace{0pt}%DIFAUXCMD
+.
+These results are discussed in detail in the Appendix,
+but in general we find that the demographic structure of a stepping-stone model
+can depend strongly on the chosen discretization,
+and some artifacts of discretization seem to become stronger in the limit of a fine grid.
+For many summary statistics, finer discretizations (we used a $50 \times 50$ grid)
+produced similar results to the continuous model,
+but this was not true for others (e.g., $F_{IS}$ and Tajima's $D$),
+which differed from the continuous model }\emph{\DIFadd{more}} \DIFadd{at finer discretizations.
+}
+
+\DIFaddend %%%%%%%%%%%%%
+\subsection{Demographic Parameters}
+
+Our demographic model includes parameters \DIFdelbegin \DIFdel{for }\DIFdelend \DIFaddbegin \DIFadd{that control }\DIFaddend population density ($K$), \DIFaddbegin \revpoint{1}{2}
+\DIFaddend mean life span ($L$), and dispersal distance ($\sigma$).
+However, nonlinearity of local demographic stochasticity causes
+actual realized averages of these demographic quantitites to deviate from the specified values
+in a way that depends on the neighborhood size.
+Therefore, to properly compare to theoretical expectations,
+we empirically calculated these demographic quantities in simulations. 
+We recorded the census population size in all simulations\DIFdelbegin \DIFdel{. 
+}\DIFdelend \DIFaddbegin \DIFadd{,
+and used mean population density ($\rho$, census size divided by total area)
+to compute neighborhood size as $N_W = 4 \pi \rho \sigma^2$. }\revpoint{3}{6}
+\DIFaddend To estimate generation times, we stored ages of the parents of every new individual born across 200 timesteps, 
+after a 100 generation burn-in, and took the mean. 
+To estimate variance in offspring number, 
+we tracked the \DIFaddbegin \DIFadd{lifetime total }\DIFaddend number of offspring for all individuals for 100 timesteps following a 100-timestep burn-in period,
+\DIFdelbegin \DIFdel{subset the resulting table to include only the last timestep recorded for each individual, }\DIFdelend %DIF >  subset the resulting table to include only the last timestep recorded for each individual,
+and calculated the variance in number of offspring across all individuals in timesteps 50-100.
+All calculations were performed with information recorded in the tree sequence,
+using pyslim \DIFdelbegin \DIFdel{\mbox{%DIFAUXCMD
+\citetext{\url{https://github.com/tskit-dev/pyslim}}}\hspace{0pt}%DIFAUXCMD
+}\DIFdelend \DIFaddbegin \DIFadd{\mbox{%DIFAUXCMD
+\citep{pyslim}}\hspace{0pt}%DIFAUXCMD
+}\DIFaddend .
+
+%%%%%%%%%%%%%
+\subsection{Sampling}
+Our model records the genealogy and sequence variation of the complete population, but in real data, genotypes are only observed from a relatively small number of sampled individuals. We modeled three sampling strategies similar to common data collection methods in empirical genetic studies (Figure \ref{fig:samplemap}). ``Random'' sampling selects individuals at random from across the full landscape, ``point'' sampling selects individuals proportional to their distance from four equally spaced points on the landscape, and ``midpoint'' sampling selects individuals in proportion to their distance from the middle of the landscape. Downstream analyses were repeated across all sampling strategies. 
+
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{figures/sampling_maps.pdf}
+\caption{Example sampling maps for 60 individuals on a 50$\times$50 landscape for midpoint, point, and random sampling strategies, respectively.}
+\label{fig:samplemap}
+\end{figure}
+
+%%%%%%%%%%%%%
+\subsection{Summary Statistics}
+We calculated the site frequency spectrum and a set of 18 summary statistics (Table \ref{table:sumstats}) from 60 diploid individuals sampled from the final generation of each simulation using the python package scikit-allel \citep{Miles2017}. 
+Statistics included common single-population summaries including mean pairwise divergence ($\pi$), inbreeding coefficient ($F_{IS}$), and Tajima's $D$, 
+as well as \DIFdelbegin \DIFdel{an isolation-by-distance regression of genetic distance ($D_{xy}$) against the logarithm of geographic distance analogous to \mbox{%DIFAUXCMD
+\cite{Rousset1997}}\hspace{0pt}%DIFAUXCMD
+'s approach, 
+which we summarized as }\DIFdelend \DIFaddbegin \DIFadd{(motivated by \mbox{%DIFAUXCMD
+\citet{Rousset1997}}\hspace{0pt}%DIFAUXCMD
+'s results)
+}\DIFaddend the correlation coefficient between the logarithm of the spatial distance and the proportion of identical base pairs across pairs of individuals. 
+%DIF >  as an isolation-by-distance regression of genetic distance ($D_{xy}$) against the logarithm of geographic distance analogous to \citet{Rousset1997}'s approach, which we summarized as 
+
+Following recent studies that showed strong signals for dispersal and demography in the distribution of shared haplotype block lengths \DIFdelbegin \DIFdel{\mbox{%DIFAUXCMD
+\citep{Ringbauer2017,Baharian2016}}\hspace{0pt}%DIFAUXCMD
+}\DIFdelend \DIFaddbegin \DIFadd{\mbox{%DIFAUXCMD
+\citep[e.g.,][]{Ringbauer2017,Baharian2016}}\hspace{0pt}%DIFAUXCMD
+}\DIFaddend , we also calculated various summaries of the distribution of pairwise identical-by-state (IBS) block lengths among sampled chromosomes\DIFdelbegin \DIFdel{. }\DIFdelend \DIFaddbegin \DIFadd{,
+defined to be the set of distances between adjacent sites that differ between the two chromosomes. }\revpoint{1}{1}
+\DIFaddend The full distribution of lengths of IBS tracts for each pair of chromosomes was first calculated with a custom python function. 
+%DIF < \url{https://github.com/petrelharp/spaceness/blob/master/scripts/slimtools.py}. 
+%DIF > \url{https://github.com/cjbattey/spaceness/blob/master/scripts/slimtools.py}. 
+We then calculated the first three moments of this distribution (mean, variance, and skew) and the number of blocks over $10^6$ base pairs both for each pair of individuals and for the full distribution across all pairwise comparisons. 
+\DIFdelbegin %DIFDELCMD < 
+
+%DIFDELCMD < %%%
+\DIFdel{We then estimated }\DIFdelend \DIFaddbegin \DIFadd{We then calculated }\DIFaddend correlation coefficients between spatial distance and each moment of the pairwise IBS tract distribution. Because more closely related individuals on average share longer haplotype blocks we expect that spatial distance will be negatively correlated with mean haplotype block length, and that this correlation will be strongest (i.e., most negative) when dispersal is low. The variance, skew, and count of long haplotype block statistics are meant to reflect the relative length of the right (upper) tail of the distribution, which represents the frequency of long haplotype blocks, and so should reflect recent demographic events \citep{chapman2002effect}. For a subset of simulations, we also calculated cumulative distributions for IBS tract lengths across pairs of distant (\DIFdelbegin \DIFdel{${}>48$ }\DIFdelend \DIFaddbegin \DIFadd{more than 40 }\DIFaddend map units) and nearby (\DIFdelbegin \DIFdel{${}<2$ }\DIFdelend \DIFaddbegin \DIFadd{less than 10 }\DIFaddend map units) individuals. Last, we examined the relationship between allele frequency and the spatial dispersion of an allele by calculating the average distance \DIFdelbegin \DIFdel{among }\DIFdelend \DIFaddbegin \DIFadd{between }\DIFaddend individuals carrying each derived allele\DIFdelbegin \DIFdel{in a set of simulations representing a range of neighborhood sizes}\DIFdelend .
+
+The effects of sampling on summary statistic estimates were summarized by testing for differences in mean (ANOVA, \citep{Rcore2018}) and variance (Levene's test, \citep{Fox2011}) across sampling strategies for each summary statistic. 
+
+
+%%%%%%%%%%%
+\subsection{Demographic \DIFdelbegin \DIFdel{Modeling}\DIFdelend \DIFaddbegin \DIFadd{Inference}\DIFaddend }
+\DIFaddbegin \revpoint{1}{4}
+\DIFaddend 
+
+To assess the impacts of continuous spatial structure on demographic inference we inferred population size histories for all simulations using two approaches: stairwayplot \citep{Liu2015} and SMC++ \citep{Terhorst2016}. Stairwayplot fits its model to a genome-wide estimate of the SFS, while SMC++ also incorporates linkage information. % in a sequentially Markovian coalescent framework. 
+For both methods we sampled 20 individuals from all spatial simulations using random, midpoint, and point sampling strategies. 
+
+As recommended by its documentation, we used stairwayplot to fit models with multiple bootstrap replicates drawn from empirical genomic data, and took the median inferred $N_{e}$ per unit time as the best estimate. We calculated site frequency spectra with scikit-allel \citep{Miles2017}, generated 100 bootstrap replicates per simulation by resampling over sites, and fit models for all bootstrap samples using default settings.
+
+For SMC++, we first output genotypes as VCF with msprime and then used SMC++'s standard pipeline for preparing input files assuming no polarization error in the SFS. We used the first individual in the VCF as the ``designated individual'' when fitting models, and allowed the program to estimate the recombination rate during optimization. We fit models using the `estimate' command rather than the now recommended cross-validation approach because our simulations had only a single contig. 
+
+To evaluate the performance of these methods we binned simulations by neighborhood size, took a rolling median of inferred $N_{e}$ trajectories across all model fits in a bin for each method and sampling strategy.  We also examined how varying levels of isolation by distance impacted the variance of $N_{e}$ estimates by calculating the standard deviation of $N_{e}$ from each best-fit model\DIFdelbegin \DIFdel{and plotting these against neighborhood size. }\DIFdelend \DIFaddbegin \DIFadd{. %DIF >  and plotting these against neighborhood size. 
+}\DIFaddend 
+
+%In preliminary runs we found that inferred population histories were highly variable even when simulating under a coalescent model, suggesting that some of the differences in demographic estimates for spatial models are caused by the behavior of the optimization algorithm rather than bias in the SFS caused by spatial mate choice and dispersal. To separate these effects we ran 100 coalescent simulations with constant population size $6.1\times 10^{-3}$ (the mean $N_{e}$ of random-mating SLiM models estimated from $\Theta_{\pi}$) and fit stairwayplot models using the same script as for our spatial models. All coalescent simulations were performed using msprime \citep{Kelleher2016}. We then calculated the standard deviation of inferred $N_{e}$ in each stairwayplot model to summarize the degree of fluctuation around the simulated population size, and asked if standard deviations were higher in spatial relative to coalescent models with a one-tailed t-test.
+
+%%%%%%%%%%%
+\subsection{Association Studies}
+
+To assess the degree to which spatial structure confounds GWAS we simulated four types of nongenetic phenotype variation for 1000 randomly sampled individuals in each spatial SLiM simulation and conducted a linear regression GWAS with principal components as covariates in PLINK \citep{PURCELL2007}. SNPs with a minor allele frequency less than 0.5\% were excluded from this analysis. Phenotype values were set to vary by two standard deviations across the landscape in a rough approximation of the variation seen in height across Europe \citep{Turchin2012,garcia2006,garcia2007}. Conceptually our approach is similar to that taken by \citet{Mathieson2012}, though here we model fully continuous spatial variation and compare GWAS output across a range of dispersal distances. 
+
+In all simulations, the phenotype of each individual
+is determined by \DIFdelbegin \DIFdel{adding independent Gaussian noise with mean zero and }\DIFdelend \DIFaddbegin \DIFadd{drawing from a Gaussian distribution with }\DIFaddend standard deviation 10 \DIFdelbegin \DIFdel{to }\DIFdelend \DIFaddbegin \revpoint{1}{5}
+\DIFadd{and }\DIFaddend a mean that may depend on spatial position.
+\DIFdelbegin \DIFdel{We }\DIFdelend \DIFaddbegin \DIFadd{In spatially varying models, the mean phenotype differs by two standard deviations across the landscape.
+We then }\DIFaddend adjust the geographic pattern of mean phenotype to create \DIFaddbegin \DIFadd{four types of }\DIFaddend spatially autocorrelated environmental influences on phenotype.
+In the first simulation of \emph{nonspatial} environments, the mean did not change,
+so that all individuals' phenotypes were drawn independently from a Gaussian distribution with mean 110 and standard deviation 10.
+Next, to simulate \emph{clinal} environmental influences on phenotype, 
+we increased the mean phenotype from 100 on the left edge of the range to 120 on the right edge (two phenotypic standard deviations).
+Concretely, \DIFaddbegin \DIFadd{the mean phenotype $p$ for }\DIFaddend an individual at position $(x,y)$ \DIFdelbegin \DIFdel{in a $50 \times 50$ landscape has mean phenotype $100 + 2x / 5$. }\DIFdelend \DIFaddbegin \DIFadd{is $p=100 + 2x / 5$. }\revpoint{4}{10}
+\DIFaddend Third, we simulated a more concentrated ``\emph{corner}'' environmental effect by setting the mean phenotype \DIFaddbegin \DIFadd{to 120
+}\DIFaddend for individuals with both $x$ and $y$ coordinates below 20 \DIFdelbegin \DIFdel{to 120 }\DIFdelend (two standard deviations above the rest of the map). 
+Finally, in ``\emph{patchy}'' simulations we selected 10 random points on the map
+and set the mean phenotype of all individuals within three map units of each of these points
+to 120.
+
+We performed principal components analysis (PCA) using scikit-allel \citep{Miles2017} on the matrix of derived allele counts by individual for each simulation. 
+SNPs were first filtered to remove strongly linked sites by calculating LD between all pairs of SNPs in a 200-SNP moving window and dropping one of each pair of sites with an $R^2$ over 0.1. The LD-pruned allele count matrix was then centered and all sites scaled to unit variance when conducting the PCA, following recommendations in \citet{Patterson2006}.   
+
+We ran linear-model GWAS both with and without the first 10 principal components as covariates in PLINK and summarized results across simulations by counting the number of SNPs 
+with $p$-value below $0.05$ after adjusting for an expected false positive rate of less than 5\% \citep{benjamini2001control}. 
+We also examined $p$ values for \DIFdelbegin \DIFdel{systemic inflation by estimating the expected values }\DIFdelend \DIFaddbegin \DIFadd{systematic inflation }\revpoint{1}{6}
+\DIFadd{by comparing to the values expected }\DIFaddend from a uniform distribution
+(because no SNPs were used when generating phenotypes\DIFdelbegin \DIFdel{), plotting observed against expected values for all simulations, and summarizing across simulations by finding the mean $\sigma$ value in each region of quantile-quantile space.
+}\DIFdelend \DIFaddbegin \DIFadd{, well-calibrated $p$-values should be uniform).
+}
+
+\DIFaddend Results from all analyses were summarized and plotted with the ``ggplot2'' \citep{Wickham2016} and ``cowplot'' \citep{Wilke2019} packages in R \citep{Rcore2018}. 
+
+
+%%%%%%%%%%%%%%%%%%
+\section{Results}
+
+%%%%%%%%%%%
+\subsection{Demographic Parameters \DIFaddbegin \DIFadd{and Run Times}\DIFaddend }
+
+Adjusting the spatial dispersal and interaction distance, $\sigma$,
+has a surprisingly large effect on demographic quantities that are usually fixed in Wright-Fisher models --
+the generation time, census population size, and variance in offspring number\DIFdelbegin \DIFdel{.
+These are }\DIFdelend \DIFaddbegin \DIFadd{, }\DIFaddend shown in Figure~\ref{fig:genparams}. \DIFdelbegin \DIFdel{This }\DIFdelend \DIFaddbegin \DIFadd{Because our simulation is paramaterized on an individual level, these population parameters emerge as a property of the interactions among individuals rather than being directly set. }\llabel{emergentparams}
+\DIFadd{Variation across runs }\DIFaddend occurs because,
+even \DIFdelbegin \DIFdel{through the ``population density '' (}\DIFdelend \DIFaddbegin \DIFadd{though the parameters }\DIFaddend $K$ \DIFdelbegin \DIFdel{) and ``mean lifetime '' (}\DIFdelend \DIFaddbegin \DIFadd{and }\DIFaddend $L$ \DIFdelbegin \DIFdel{) parameters
+}\DIFdelend \DIFaddbegin \DIFadd{that control population density and mean lifetime respectively }\llabel{ll:K_more} \revpoint{1}{11}
+\DIFaddend were the same in all simulations,
+the strength of stochastic effects depends strongly on \DIFaddbegin \DIFadd{the spatial interaction distance }\DIFaddend $\sigma$.
+For instance, 
+the population density near to individual $i$ (denoted $n_i$ above)
+is computed by averaging over roughly $N_W = 4 \pi K \sigma^2$ individuals,
+and so has standard deviation proportional to $1/\sqrt{N_W}$ --
+it is more variable at lower densities.
+(Recall that $N_W$ is Wright's neighborhood size.)
+Since the probability of survival is a nonlinear function of $n_i$,
+actual equilibrium densities and lifetimes differ from $K$ and $L$.
+This is the reason that we included \emph{random mating} simulations --
+where mate choice and offspring dispersal are both nonspatial --
+since this should preserve the random fluctuations in local population density
+while destroying any spatial genetic structure.
+We verified that random mating models retained no geographic signal
+by showing that summary statistics did not differ significantly between sampling regimes
+(Table~\ref{table:sampling}), unlike in spatial models (discussed below).
+
+There are a few additional things to note about Figure~\ref{fig:genparams}. 
+First, all three quantities are non-monotone with neighborhood size. 
+Census size largely declines as neighborhood size increases for both the spatial and random mating models. 
+However, for spatial models this decline only begins for neighborhood size $\geq 10$. 
+\DIFdelbegin \DIFdel{By a neighborhood sizes larger than 100, the spatial }\DIFdelend \DIFaddbegin \DIFadd{Spatial }\DIFaddend and random mating models are indistinguishable from one another
+\DIFdelbegin \DIFdel{, 
+a sign that our simulations are performing as expected. 
+}\DIFdelend \DIFaddbegin \DIFadd{for neighborhood sizes larger than 100.
+}\DIFaddend Census sizes range from \DIFdelbegin \DIFdel{$\approx 14,000$ }\DIFdelend \DIFaddbegin \DIFadd{around 14,000 }\DIFaddend at low $\sigma$ in the random mating model to \DIFdelbegin \DIFdel{$\approx 10,000$ }\DIFdelend \DIFaddbegin \DIFadd{10,000 }\DIFaddend for both models when neighborhood sizes approach 1,000.
+\DIFaddbegin \DIFadd{The scaling of census sizes in both random-mating and spatial models appears to be related to two consequences of the spatial competition function: the decline of fitness at range edges, which effectively reduces the habitable area by one $\sigma$ around the edge of the map and so results in a smaller habitable area at high $\sigma$ values; and variation in the equilibrium population density given varying competition radii.
+Furthermore, census size increases in spatial models as neighborhood size increases from 2 to 10.
+This may reflect an Allee effect \mbox{%DIFAUXCMD
+\citep{Allee1949} }\hspace{0pt}%DIFAUXCMD
+in which some individuals are unable to find mates when the mate selection radius is very small.  }\llabel{censusscaling}
+\DIFaddend 
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{figures/pop_params.pdf}
+\caption{Genealogical parameters from spatial and random mating SLiM simulations, by neighborhood size.}
+\label{fig:genparams}
+\end{figure}
+
+\DIFaddbegin \begin{figure}[htbp]
+\centering
+\includegraphics{figures/runtimes.pdf}
+\caption{\DIFaddFL{Run times of continuous space simulations with landscape width 50 and expected density 5 under varying neighborhood size. Times are shown for simulations run with mutations applied directly in SLiM (dashed lines) or later applied to tree sequences with msprime (solid lines). Times for simulations run with tree sequence recording disabled are shown in grey.}}
+\label{fig:runtimes}
+\end{figure}
+
+\DIFaddend Generation time similarly shows complex behavior with respect to neighborhood sizes, and varies between 5.2 and 4.9 timesteps per generation across the parameter range explored. 
+% This occurs because individuals may reproduce more than once over their lifespan, and the lifespan of an individual is determined by density-dependent competition the model. 
+Under both the spatial and random mating models, 
+generation time reaches a minimum at a neighborhood size of around 50. 
+Interestingly, under the range of neighborhood sizes that we examined, generation times between the random mating and spatial models are never quite equivalent -- presumably this would cease to be the case at neighborhood sizes higher than we simulated here.
+
+Last, we looked at the variance in number of offspring -- a key parameter determining the effective population size. 
+Surprisingly, the spatial and random mating models behave quite differently: 
+while the variance in offspring number increases nearly monotonically under the spatial model, the random mating model actually shows a decline in the variance in offspring number until a neighborhood size \DIFdelbegin \DIFdel{$\approx 10$ }\DIFdelend \DIFaddbegin \DIFadd{of around 10 }\DIFaddend before it increases and eventually equals what we observe in the spatial case. 
+
+%DIF < The fitness scaling procedure we use to avoid high fitness at range edges shrinks the suitable area by one $\sigma$ on all sides and likely explains part of the variation in census size, but scaling in offspring variance and the U-shaped distribution of census size in spatial models suggests additional processes at work. For spatial models census size initially rises as neighborhood sizes scale from 2 - 10, which seems to reflect an Allee effect \citep{Allee1949} in which some individuals are unable to find mates when the mate selection radius is very small.  
+\DIFaddbegin \DIFadd{Run times for our model scale approximately linearly with neighborhood size (Figure \ref{fig:runtimes}), with the lowest neighborhood sizes reaching 30N generations in around a day and those with neighborhood size approaching 1,000 requiring up to three weeks of computation. As currently implemented running simulations at neighborhood sizes more than 1,000 to coalescence is likely impractical, though running these models for more limited timescales and then ``recapitating'' the simulation using reverse-time simulation from the resulting tree sequence in msprime is possible \mbox{%DIFAUXCMD
+\citep{haller2019treesequence}}\hspace{0pt}%DIFAUXCMD
+.  }\llabel{runtimesxn}
+\DIFaddend 
+
+
+%%%%%%%%%%%%
+\subsection{Impacts of Continuous Space on Population Genetic Summary Statistics}
+
+Even though certain aspects of population demography depend on the scale of spatial interactions, it still could be that population genetic variation is well-described by a well-mixed population model. Indeed, mathematical results suggest that genetic variation in some spatial models should be well-approximated by a Wright-Fisher population if neighborhood size is large and all samples are geographically widely separated \citep{wilkins2004separation,zahle2005stepping}. However, the behavior of most common population genetic summary statistics other than Tajima's $D$ \citep{Stadler2009} has not yet been described in realistic geographic models. Moreover, as we will show, spatial sampling strategies can affect summaries of \DIFaddbegin \DIFadd{genetic }\DIFaddend variation at least as strongly as the underlying population dynamics. \DIFaddbegin \revpoint{1}{9}
+\DIFaddend 
+
+
+\begin{figure*}[p]
+\centering
+\DIFdelbeginFL %DIFDELCMD < \includegraphics[width=\textwidth]{figures/sfs_w_sumstats.pdf}
+%DIFDELCMD < %%%
+\DIFdelendFL \DIFaddbeginFL \includegraphics[width=\textwidth]{figures/sfs_w_sumstats_loglog.pdf}
+\DIFaddendFL \caption{Site frequency spectrum (A\DIFaddbeginFL \DIFaddFL{; note axes are log-scaled}\DIFaddendFL ) and summary statistic distributions (B) by sampling strategy and neighborhood size.}
+\label{fig:sumstats}
+\end{figure*}
+
+
+%%%%%%%%%%%%%%%%
+\subsubsection{Site Frequency Spectra and Summaries of Diversity}
+
+Figure \ref{fig:sumstats} shows the effect of varying neighborhood size and sampling strategy on the site frequency spectrum (Figure~\ref{fig:sumstats}\DIFdelbegin \DIFdel{A}\DIFdelend \DIFaddbegin \DIFadd{, Figure \ref{fig:allsfs}}\DIFaddend ) and several standard population genetic summary statistics (Figure~\ref{fig:sumstats}B\DIFaddbegin \DIFadd{; additional statistics are shown in Figure \ref{fig:allsumstats}}\DIFaddend ). Consistent with findings in island and stepping stone simulations \citep{Stadler2009}, the SFS shows a significant enrichment of intermediate frequency variants in comparison to the nonspatial expectation. This bias is most pronounced below \DIFdelbegin \DIFdel{neighborhood sizes $\leq 100$ }\DIFdelend \DIFaddbegin \DIFadd{a neighborhood size of 100 }\DIFaddend and is exacerbated by midpoint and point sampling of individuals (depicted in Figure~\ref{fig:samplemap}). 
+Reflecting this, Tajima's $D$ is quite positive in the same situations (Figure~\ref{fig:sumstats}B). Notably, the point at which Tajima's $D$ approaches 0 differs strongly across sampling strategies -- varying from a neighborhood size of roughly 50 for random sampling to at least 1000 for midpoint sampling. 
+
+One of the most commonly used summaries of variation is Tajima's summary of nucleotide \DIFdelbegin \DIFdel{divergence}\DIFdelend \DIFaddbegin \DIFadd{diversity}\DIFaddend , $\theta_{\pi}$, calculated as the mean density of nucleotide differences averaged across pairs of samples. As can be seen in Figure \ref{fig:sumstats}B, $\theta_{\pi}$ in the spatial model is inflated by up to three-fold relative to the random mating model. This pattern is opposite the expectation from census population size (Figure \ref{fig:genparams}), because the spatial model has \emph{lower} census size than the random mating model at neighborhood sizes less than 100. Differences between these models likely occur because $\theta_{\pi}$ is a measure of mean time to most recent common ancestor between two samples, and at small values of $\sigma$, the time for dispersal to mix ancestry across the range exceeds the mean coalescent time under random mating. (For instance, at the smallest value of $\sigma=0.2$, the range is 250 dispersal distances wide, and since the location of a diffusively moving lineage after $k$ generations has variance $k \sigma^2$, it takes around $250^2 = 62500$ generations to mix across the range, which is roughly ten times larger than the random mating effective population size). $\theta_{\pi}$ using each sampling strategy approaches the random mating expectation at its own rate, but by a neighborhood size of around 100 all models are roughly equivalent. Interestingly, the effect of sampling strategy is reversed relative to that observed in Tajima's D -- midpoint sampling reaches random mating expectations around neighborhood size 50, while random sampling is inflated until around neighborhood size 100. 
+
+Values of observed heterozygosity and its derivative $F_{IS}$ also depend heavily on neighborhood size under spatial models as well as the sampling scheme. $F_{IS}$ is inflated above the expectation across most of the parameter space examined and across all sampling strategies. This effect is caused by a deficit of heterozygous individuals in low-dispersal simulations -- a continuous-space version of the Wahlund effect \citep{Wahlund1928}. Indeed, for random sampling under the spatial model, $F_{IS}$ does not approach the random mating equivalent until neighborhood sizes of nearly 1000. On the other hand, the dependency of raw observed heterozygosity on neighborhood size is not monotone. Under midpoint sampling observed heterozygosity is inflated even over the random mating expectation, as a result of the a higher proportion of heterozygotes occurring in the middle of the landscape (Figure~\ref{fig:hetmap}). This echoes a report from \citet{Shirk2014} who observed a similar excess of heterozygosity in the middle of the landscape when simulating under a lattice model.
+
+\begin{figure*}[p]
+\centering
+\DIFdelbeginFL %DIFDELCMD < \includegraphics[width=.5\textwidth]{figures/ibs_dists2.pdf}
+%DIFDELCMD < %%%
+\DIFdelendFL \DIFaddbeginFL \includegraphics[width=.5\textwidth]{figures/ibs_cumdists_w_rm.pdf}
+\DIFaddendFL \caption{
+    Cumulative distributions for IBS tract lengths per pair of individuals at different geographic distances, across three neighborhood sizes (\DIFdelbeginFL \DIFdelFL{$N_{W}$}\DIFdelendFL \DIFaddbeginFL \DIFaddFL{NS}\DIFaddendFL ).
+    \DIFaddbeginFL \DIFaddFL{Nearby pairs (red curves) share many more long IBS tracts than do distant pairs (blue curves),
+    except in the random mating model.
+    The distribution of long IBS tracts between nearby individuals are very similar across neighborhood sizes,
+    but distant individuals are much more likely to share long IBS tracts at high neighborhood size
+    than at low neighborhood size.
+}\DIFaddendFL }
+\label{fig:ibs}
+\end{figure*}
+
+
+%%%%%%%%%%%%%%%
+\subsubsection{IBS tracts and correlations with geographic distance}
+
+We next turn our attention to the effect of geographic distance on haplotype block length sharing, summarized for sets of nearby and distant individuals in Figure \ref{fig:ibs}. There are two main patterns to note. First, nearby individuals share more long IBS tracts than distant individuals (as expected because they are on average more closely related). Second, the difference in the number of long IBS tracts between nearby and distant individuals decreases as neighborhood size increases. This reflects the faster spatial mixing of populations with higher dispersal, which breaks down the correlation between the IBS tract length distribution and geographic distance. This can also be seen in the bottom row of Figure \ref{fig:sumstats}B, where the correlation coefficients between the summaries of the IBS tract length distribution (the mean, skew, and count of tracts over $10^6$bp) and geographic distance approaches 0 as neighborhood size increases. 
+
+%Last, in figure \ref{fig:ibs} we can see that most of the difference both between nearby and distant individuals and across different neighborhood sizes is found in the upper tail of the IBS tract length distribution. This is consistent with the methods for inferring dispersal distances described in \citet{Ringbauer2017} and \citet{Baharian2016}, which focus on long IBS blocks rather than the full distribution.  
+
+The patterns observed for correlations of IBS tract lengths with geographic distance are similar to those observed in the more familiar \DIFdelbegin \DIFdel{regression }\DIFdelend \DIFaddbegin \DIFadd{correlation }\DIFaddend of allele frequency measures such as $D_{xy}$ (i.e., ``genetic distance'') or $F_{ST}$ against geographic distance \citep{Rousset1997}. $D_{xy}$ is positively correlated with the geographic distance between the individuals, and the strength of this correlation declines as dispersal increases (Figure \ref{fig:sumstats}B), as expected \citep{Wright1943,Rousset1997}. This relationship is very similar across random and point sampling strategies, but is weaker for midpoint sampling, perhaps due to a dearth of long-distance comparisons. In much of empirical population genetics a regression of genetic differentiation against spatial distance is a de-facto metric of the significance of isolation by distance. The similar behavior of moments of the pairwise distribution of IBS tract lengths shows why haplotype block sharing has recently emerged as a promising source of information on spatial demography through methods described in \citet{Ringbauer2017} and \citet{Baharian2016}. 
+
+%%%%%%%%%%%
+\begin{figure*}[p]
+\centering
+\includegraphics[width=\textwidth]{figures/distance_by_DAF.pdf}
+\caption{\DIFdelbeginFL \DIFdelFL{Trends in }\DIFdelendFL 
+    \DIFaddbeginFL \DIFaddFL{Spatial spread of rare alleles by neighborhood size (NS):
+    Each plot shows }\DIFaddendFL the \DIFaddbeginFL \DIFaddFL{distribution (across derived alleles and simulations)
+    of average pairwise }\DIFaddendFL distance \DIFdelbeginFL \DIFdelFL{among allele copies at varying }\DIFdelendFL \DIFaddbeginFL \DIFaddFL{between individuals carrying a focal }\DIFaddendFL derived allele
+    \DIFdelbeginFL \DIFdelFL{frequencies }\DIFdelendFL and \DIFdelbeginFL \DIFdelFL{neighborhood sizes}\DIFdelendFL \DIFaddbeginFL \DIFaddFL{derived allele frequency}\DIFaddendFL .
+}
+\label{fig:dafdists}
+\end{figure*}
+
+%%%%%%%%%%%%%%%%%%%
+\subsubsection{Spatial distribution of allele copies}
+
+Mutations occur in individuals and spread geographically over time. Because low frequency alleles generally represent recent mutations \citep{sawyer1977past, griffiths1999ages}, the geographic \DIFdelbegin \DIFdel{dispersion }\DIFdelend \DIFaddbegin \DIFadd{spread }\DIFaddend of an allele may covary along with its frequency in the population. To visualize this relationship we calculated the average distance among individuals carrying a focal derived allele across simulations with varying neighborhood sizes, shown in Figure \ref{fig:dafdists}. On average we find that low frequency alleles are the most geographically restricted, and that the extent to which geography and allele frequency are related depends on the amount of dispersal in the population. For populations with large neighborhood sizes we found that even very low frequency alleles can be found across the full landscape, whereas in populations with low neighborhood sizes the relationship between distance among allele copies and their frequency is quite strong. This is the basic process underlying \citeauthor{Novembre2009}'s \citeyearpar{Novembre2009} method for estimating dispersal distances based on the distribution of low frequency alleles, and also generates the greater degree of bias in GWAS effect sizes for low frequency alleles identified in \citet{Mathieson2012}.
+
+
+%%%%%%%%%%%%%%%%%
+\subsection{Effects of Space on Demographic Inference}
+
+One of the most important uses for population genetic data is inferring demographic history of populations. As demonstrated above, the site frequency spectrum and the distribution of IBS tracts varies across neighborhood sizes and sampling strategies. Does this variation lead to different inferences of past population sizes? To ask this we inferred population size histories from samples drawn from our simulated populations with two approaches: stairwayplot \citep{Liu2015}, which uses a genome-wide estimate of the SFS, and SMC++ \citep{Terhorst2016}, which incorporates information on both the SFS and linkage disequilibrium across the genome.
+
+Figure \ref{fig:demography}A shows \DIFdelbegin \DIFdel{the median }\DIFdelend \DIFaddbegin \DIFadd{rolling medians of }\DIFaddend inferred population size histories from each method across all simulations, grouped by neighborhood size and sampling strategy.
+In general these methods tend to slightly overestimate ancient population sizes and infer recent population declines when neighborhood sizes are below 20 and sampling is spatially clustered\DIFdelbegin \DIFdel{(Figure \ref{fig:demography}A, Figure \ref{fig:demography_supplement})}\DIFdelend .
+The overestimation of ancient population sizes however is relatively minor, averaging around a two-fold inflation at 10,000 generations before present in the worst-affected bins. For stairwayplot we found that many runs infer dramatic population bottlenecks in the last 1,000 generations when sampling is spatially concentrated, resulting in ten-fold or greater underestimates of recent population sizes. However SMC++ appeared more robust to this error, with runs on point- and midpoint-sampled simulations at the lowest neighborhood sizes underestimating recent population sizes by roughly half and those on randomly sampled simulations showing little error. Above neighborhood sizes of around 100, both methods performed relatively well when averaging across results from multiple simulations. 
+
+However, individual \DIFdelbegin \DIFdel{model fits from both methods frequently reflected }\DIFdelend \DIFaddbegin \DIFadd{simulations were often inferred to have }\DIFaddend turbulent demographic histories\DIFdelbegin \DIFdel{(}\DIFdelend \DIFaddbegin \DIFadd{,
+as shown by the individually inferred histories (shown in }\DIFaddend Figure \ref{fig:demography_supplement})\DIFdelbegin \DIFdel{, with }\DIFdelend \DIFaddbegin \DIFadd{.
+Indeed, }\DIFaddend the standard deviation of inferred $N_{e}$ across time points \DIFdelbegin \DIFdel{often exceeding }\DIFdelend \DIFaddbegin \DIFadd{(shown in Figure \ref{fig:demography}B) often exceeds }\DIFaddend the expected $N_{e}$ for both methods\DIFdelbegin \DIFdel{(Figure \ref{fig:demography}B)}\DIFdelend .
+That is, despite the \DIFaddbegin \DIFadd{nearly }\DIFaddend constant population sizes in our simulations, both methods tended to infer large fluctuations in population size over time, which could potentially result in incorrect biological interpretations. On average the variance of inferred population sizes was elevated at the lowest neighborhood sizes and declines as dispersal increases, with the strongest effects seen in stairwayplot \DIFdelbegin \DIFdel{model fits with for }\DIFdelend \DIFaddbegin \DIFadd{results with }\DIFaddend clustered sampling and neighborhood sizes less than 20 (Figure \ref{fig:demography}B). 
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=\textwidth]{figures/demography_rollmedian_w_variance.pdf}
+\caption{A: Rolling median inferred $N_{e}$ trajectories for stairwayplot and smc++ across sampling strategies and neighborhood size bins. The dotted line shows the mean $N_{e}$ of random-mating simulations. B: Standard deviation of individual inferred $N_{e}$ trajectories, by neighborhood size and sampling strategy. Black lines are loess curves. Plots including individual model fits are shown in Figure \ref{fig:demography_supplement}.}
+\label{fig:demography}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%
+\subsection{GWAS}
+
+To ask what confounding effects spatial genetic variation might have on genome-wide association studies we performed GWAS on our simulations using phenotypes that were determined solely by the environment
+-- so, any SNP showing statistically significant correlation with phenotype is a false positive. 
+As expected, spatial autocorrelation in the environment causes spurious associations 
+across much of the genome if no correction for genetic relatedness among samples is performed (Figures \ref{fig:gwas} and \ref{fig:manhattan_plots}). 
+This effect is particularly strong for clinal and corner environments, 
+for which the lowest dispersal levels cause over 60\% of SNPs in the sample to return significant associations. 
+Patchy environmental distributions, which are less strongly spatially correlated (Figure \ref{fig:gwas}A), 
+cause fewer false positives overall but still produce spurious associations at roughly 10\% of sites at the lowest neighborhood sizes. 
+Interestingly we also observed a small number of false positives in roughly 3\% of analyses on simulations with nonspatial environments, both with and without PC covariates included in the regression.
+
+The confounding effects of geographic structure are well known, 
+and it is common practice to control for this by including principal components (PCs) as covariates to control for these effects.
+This mostly works in our simulations -- after incorporating the first ten PC axes as covariates, the vast majority of SNPs no longer surpass a significance threshold chosen to have a 5\% false discovery rate (FDR).
+However, a substantial number of SNPs -- up to 1.5\% at the lowest dispersal distances -- still surpass this threshold (and thus would be false positives in a GWAS),
+especially under ``corner'' and ``patchy'' environmental distributions (Figure~\ref{fig:gwas}C). 
+At neighborhood sizes larger than 500, up to 0.31\% of SNPs were significant for corner and clinal environments. 
+Given an average of 132,000 SNPs across simulations after MAF filtering, this translates to up to 382 false-positive associations; for human-sized genomes, this number would be much larger.
+In most cases the $p$ values for these associations were significant after FDR correction but would not pass the threshold for significance under the more conservative Bonferroni correction (see example Manhattan plots in figure \ref{fig:manhattan_plots}).
+
+Clinal environments cause an interesting pattern in false positives after PC correction: at low neighborhood sizes the correction removes nearly all significant associations, 
+but at neighborhood sizes above roughly 250 the proportion of significant SNPs increases to up to 0.4\% (Figure~\ref{fig:gwas}). 
+This may be due to a loss of descriptive power of the PCs
+-- as neighborhood size increases, the total proportion of variance explained by the first 10 PC axes declines from roughly 10\% to 4\% (Figure \ref{fig:gwas}B). 
+Essentially, PCA seems unable to effectively summarize the weak population structure present in large-neighborhood simulations, but these populations continue to have enough spatial structure to create significant correlations between genotypes and the environment. A similar process can also be seen in the corner phenotype distribution, in which the count of significant SNPs initially declines as neighborhood size increases and then increases at approximately the point at which the proportion of variance explained by PCA approaches its minimum. 
+
+Figure \ref{fig:gwas}D shows quantile-quantile plots \DIFaddbegin \DIFadd{for a subset of simulations }\DIFaddend that show the degree of genome-wide inflation of test statistics in PC-corrected GWAS across all simulations and environmental distributions. 
+\DIFaddbegin \DIFadd{An alternate visualization is also included in figure \ref{fig:qqplot_hexbins}.
+}\DIFaddend For clinal environments, $-\log_{10}(p)$ values are most inflated when neighborhood sizes are large, consistent with the pattern observed in the count of significant associations after PC regression. In contrast corner and patchy environments cause the greatest inflation in $-\log_{10}(p)$ at neighborhood sizes less than 100, which likely reflects the inability of PCA to account for fine-scale structure caused by very limited dispersal. Finally, we observed that PC regression appears to overfit to some degree for all phenotype distributions, visible in Figure \ref{fig:gwas}D as points falling below the 1:1 line.
+
+\begin{figure*}[p]
+\centering
+\DIFdelbeginFL %DIFDELCMD < \includegraphics[width=\textwidth]{figures/gwas_summary_loglog.pdf}
+%DIFDELCMD <     %%%
+\DIFdelendFL \DIFaddbeginFL \includegraphics[width=\textwidth]{figures/gwas_summary_loglog_qqlines.pdf}
+    \DIFaddendFL \caption{Impacts of spatially varying environments and isolation by distance on linear regression GWAS. Simulated quantitative phenotypes are determined only by an individual's location and the spatial distribution of environmental factors. In \textbf{A} we show the phenotypes and locations of sampled individuals under four environmental distributions, with transparency scaled to phenotype. As neighborhood size increases a PCA explains less of the total variation in the data (\textbf{B}).
+    Spatially correlated environmental factors cause false positives at a large proportion of SNPs, which is partially but not entirely corrected by adding the first 10 PC coordinates as covariates (\textbf{C}).
+    Quantile-quantile plots in \DIFaddbeginFL \DIFaddFL{(}\DIFaddendFL \textbf{D}\DIFaddbeginFL \DIFaddFL{) }\DIFaddendFL show inflation of $-\log_{10}(p)$ after PC correction \DIFdelbeginFL \DIFdelFL{across all }\DIFdelendFL \DIFaddbeginFL \DIFaddFL{for }\DIFaddendFL simulations \DIFdelbeginFL \DIFdelFL{and environmental distributions}\DIFdelendFL \DIFaddbeginFL \DIFaddFL{with spatially structured environments}\DIFaddendFL , with \DIFaddbeginFL \DIFaddFL{line }\DIFaddendFL colors \DIFdelbeginFL \DIFdelFL{scaled by }\DIFdelendFL \DIFaddbeginFL \DIFaddFL{showing }\DIFaddendFL the \DIFdelbeginFL \DIFdelFL{median }\DIFdelendFL neighborhood size \DIFdelbeginFL \DIFdelFL{in each region }\DIFdelendFL of \DIFdelbeginFL \DIFdelFL{q-q space}\DIFdelendFL \DIFaddbeginFL \DIFaddFL{each simulation}\DIFaddendFL .
+}
+\label{fig:gwas}
+\end{figure*}
+
+%%%%%%%%%%%%%%%%%%%%
+\section{Discussion}
+
+In this study,
+we have used efficient forward time population genetic simulations 
+to describe the myriad influence of continuous geography on genetic variation. 
+In particular, we examine how three main types of downstream empirical inference are affected by unmodeled spatial population structure --
+\DIFdelbegin \DIFdel{1) }\DIFdelend population genetic summary statistics, \DIFdelbegin \DIFdel{2) }\DIFdelend inference of population size history, and \DIFdelbegin \DIFdel{3) }\DIFdelend genome-wide association studies (GWAS). 
+As discussed above, 
+space often matters (and sometimes dramatically),
+both because of how samples are arranged in space, and because of the inherent patterns of relatedness established by geography.
+
+
+%%%%%%%%%%
+\subsection{Effects of Dispersal}
+
+Limited dispersal inflates effective population size, creates correlations between genetic and spatial distances, 
+and introduces strong distortions in the site frequency spectrum that are reflected in a positive Tajima's $D$ (Figure \ref{fig:sumstats}). 
+At the lowest dispersal distances, this can increase genetic diversity threefold relative to random-mating expectations. 
+These effects are strongest when neighborhood sizes are below 100, but in combination with the effects of nonrandom sampling they can persist up to neighborhood sizes of at least 1000 (e.g., inflation in Tajima's $D$ and observed heterozygosity under midpoint sampling). 
+If samples are chosen uniformly from across space, 
+the general pattern is similar to expectations of the original analytic model of \citet{Wright1943}, which predicts that populations with neighborhood sizes under 100 will differ substantially from random mating, 
+while those above 10,000 will be nearly indistinguishable from panmixia. 
+
+The patterns observed in sequence data reflect the effects of space on the underlying genealogy. Nearby individuals coalesce rapidly under limited dispersal and so are connected by short branch lengths, while distant individuals take much longer to coalesce than they would under random mating. 
+Mutation and recombination events in our simulation both occur at a constant rate along branches of the genealogy, 
+so the genetic distance and number of recombination events separating sampled individuals simply gives a noisy picture of the genealogies connecting them. 
+Tip branches (i.e., branches subtending only one individual) are then relatively short, and branches in the middle of the genealogy connecting local groups of individuals relatively long, leading to the biases in the site frequency spectrum shown in Figure \ref{fig:sumstats}. 
+
+The genealogical patterns introduced by limited dispersal are particularly apparent in the distribution of haplotype block lengths (Figure \ref{fig:sumstats}). This is because identical-by-state tract lengths reflect the impacts of two processes acting along the branches of the underlying genealogy -- both mutation and recombination -- rather than just mutation as is the case when looking at the site frequency spectrum or related summaries. This means that the pairwise distribution of haplotype block lengths carries with it important information about genealogical variation in the population, and correlation coefficients between moments of the this distribution and geographic location contain signal similar to the correlations between $F_{ST}$ or $D_{xy}$ and geographic distance \citep{Rousset1997}. Indeed this basic logic underlies two recent studies explicitly estimating dispersal from the distribution of shared haplotype block lengths \citep{Ringbauer2017,Baharian2016}. Conversely, because haplotype-based measures of demography are particularly sensitive to variation in the underlying genealogy, inference approaches that assume random mating when analyzing the distribution of shared haplotype block lengths are likely to be strongly affected by spatial processes. 
+
+\subsection{Effects of Sampling}
+
+One of the most important differences between random mating and spatial models is the effect of sampling: 
+in a randomly mating population the spatial distribution of sampling effort has no effect on estimates of genetic variation (Table \ref{table:sumstats}) , 
+but when dispersal is limited sampling strategy can compound spatial patterns in the underlying genealogy and create pervasive impacts on all downstream genetic analyses (see also \citet{Stadler2009}). 
+In most species,
+the difficulty of traveling through all parts of a species range and the inefficiency of collecting single individuals at each sampling site 
+means that most studies follow something closest to the ``point'' sampling strategy we simulated, 
+in which multiple individuals are sampled from nearby points on the landscape. 
+For example, in ornithology a sample of 10 individuals per species per locality is a common target when collecting for natural history museums. 
+In classical studies of \textit{Drosophila} variation the situation is considerably worse, in which a single orchard might be extensively sampled.
+
+When sampling is clustered at points on a landscape and dispersal is limited, the sampled individuals will be more closely related than a random set of individuals. Average coalescence times of individuals collected at a locality will then be more recent and branch lengths shorter than expected by analyses assuming random mating. This leads to fewer mutations and recombination events occurring since their last common ancestor, causing a random set of individuals to share longer average IBS tracts and have fewer nucleotide differences. For some data summaries, such as Tajima's $D$, Watterson's \DIFdelbegin \DIFdel{$\Theta$}\DIFdelend \DIFaddbegin \DIFadd{$\theta$}\DIFaddend , or the correlation coefficient between spatial distance and the count of long haplotype blocks, this can result in large differences in estimates between random and point sampling (Figure \ref{fig:sumstats}). 
+Inferring underlying demographic parameters from these summary statistics 
+-- unless the \DIFdelbegin \DIFdel{nature of the sampling is }\DIFdelend \DIFaddbegin \DIFadd{spatial locations of the sampled individuals are }\DIFaddend somehow taken into account 
+-- will \DIFaddbegin \DIFadd{likely }\DIFaddend be subject to bias\DIFdelbegin \DIFdel{if sampling is not random across the landscape}\DIFdelend .
+
+\DIFdelbegin \DIFdel{However, we }\DIFdelend \DIFaddbegin \DIFadd{We }\DIFaddend observed the largest sampling effects using ``midpoint'' sampling.
+This model is meant to reflect a bias in sampling effort towards the middle of a species' range. 
+In empirical studies this sampling strategy could arise if, for example, 
+researchers choose to sample the center of the range and avoid range edges to maximize probability of locating individuals during a short field season. 
+Because midpoint sampling provides limited spatial resolution it dramatically reduces the magnitude of observed correlations between spatial and genetic distances. 
+More surprisingly, midpoint sampling also leads to strongly positive Tajima's $D$ and an inflation in the proportion of heterozygous individuals in the sample -- similar to the effect of sampling a single deme in an island model as reported in \DIFdelbegin \DIFdel{\mbox{%DIFAUXCMD
+\citep{Stadler2009}}\hspace{0pt}%DIFAUXCMD
+}\DIFdelend \DIFaddbegin \DIFadd{\mbox{%DIFAUXCMD
+\citet{Stadler2009}}\hspace{0pt}%DIFAUXCMD
+}\DIFaddend . 
+This increase in observed heterozygosity appears to reflect the effects of range edges, which are a fundamental facet of spatial genetic variation. 
+If individuals move randomly in a finite two-dimensional landscape then regions in the middle of the landscape receive migrants from all directions while those on the edge receive no migrants from at least one direction. The average number of new mutations moving into the middle of the landscape is then higher than the number moving into regions near the range edge, leading to higher heterozygosity and lower inbreeding coefficients ($F_{IS}$) away from range edges. Though here we used only a single parameterization of fitness decline at range edges we believe this is a general property of non-infinite landscapes as it has also been observed in previous studies simulating under lattice models \citep{Neel2013,Shirk2014}. 
+
+In summary, 
+we recommend that empirical researchers collect individuals from across as much of the species' range as practical,
+choosing samples separated by a range of spatial scales.
+Many summary statistics are designed for well-mixed populations,
+and so provide different insights into genetic variation
+when applied to different subsets of the population.
+Applied to a cluster of samples, summary statistics based on segregating sites 
+(e.g., Watterson's \DIFdelbegin \DIFdel{$\Theta$ }\DIFdelend \DIFaddbegin \DIFadd{$\theta$ }\DIFaddend and Tajima's $D$), 
+heterozygosity, or the distribution of long haplotype blocks, 
+can be expected to depart significantly from what would be obtained from a wider distribution of samples.
+Comparing the results of analyses conducted on all individuals versus those limited to single individuals per locality 
+can provide an informative contrast. Finally we wish to point out that the bias towards intermediate allele frequencies that we observe may mean that the importance of linked selection, at least as is gleaned from the site frequency spectrum, may be systematically underestimated currently.
+
+%%%%%%%%%%%
+\subsection{Demography}
+
+Previous studies have found that population structure and nonrandom sampling can create spurious signals of population bottlenecks when attempting to infer demographic history with microsatellite variation, summary statistics, or runs of homozygosity \citep{Chikhi2010,Stadler2009,Ptak2002,Mazet2015}. Here we found that methods that infer detailed population trajectories through time based on the SFS and patterns of LD across the genome are also subject to this bias, with some combinations of dispersal and sampling strategy systematically inferring deep recent population bottlenecks and overestimating ancient $N_{e}$ by \DIFdelbegin \DIFdel{a }\DIFdelend around a factor of 2. We were surprised to see that both stairwayplot and SMC++ can tolerate relatively strong isolation by distance -- i.e., neighborhood sizes of 20 -- and still perform well when averaging results across multiple simulations. Inference in populations with neighborhood sizes over 20 was relatively unbiased unless samples were concentrated in the middle of the range (Figure \ref{fig:demography}). 
+Although median demography estimates across many independent simulations were fairly accurate,
+empirical work has only a single estimate to work with,
+and individual model fits (Figure \ref{fig:demography_supplement})
+suggest that spuriously inferred population size changes and bottlenecks are common, especially at small neighborhood sizes.
+As we will discuss below, most empirical estimates of neighborhood size, including all estimates for human populations, are large enough that population size trajectories inferred by these approaches should not be strongly affected by spatial biases created by dispersal in continuous landscapes. In contrast, \citet{Mazet2015} found that varying migration rates through time could create strong biases in inferred population trajectories from an $n$-island model with parameters relevant for human history, suggesting that changes in migration rates through time are more likely to drive variation in inferred $N_{e}$ than isolation by distance. 
+
+We found that SMC++ was more robust to the effects of space than stairwayplot, underestimating recent populations by roughly half in the worst time periods rather than nearly 10-fold as with stairwayplot. Though this degree of variation in population size is certainly meaningful in an ecological context, it is relatively minor in population genetic terms. \DIFaddbegin \llabel{ibdnesxn}
+\DIFadd{Methods directly assessing haplotype structure in phased data example, \mbox{%DIFAUXCMD
+\citep[e.g.,][]{browning2015accurate} }\hspace{0pt}%DIFAUXCMD
+are thought to provide increased resolution for recent demographic events,
+but in this case the error we observed was essentially an accurate reflection of underlying genealogies in which terminal branches are anomalously short. Combined with our analysis of IBS tract length variation (Figure \ref{fig:ibs}) this suggests that haplotype-based methods are likely to be affected by similar biases. 
+}
+
+\DIFaddend A more worrying pattern was the high level of variance in inferred $N_{e}$ trajectories for individual model fits using these methods, which was highest in simulations with the smallest neighborhood size (Figure \ref{fig:demography}, Figure \ref{fig:demography_supplement}). This suggests that, at a minimum, researchers working with empirical data should replicate analyses multiple times and take a rolling average if model fits are inconsistent across runs. Splitting samples and running replicates on separate subsets -- the closest an empirical study can come to our design of averaging the results from multiple simulations -- may also alleviate this issue.  
+
+Our analysis suggests that many empirical analyses of population size history using methods like SMC++ are robust to error caused by spatial structure within continuous landscapes. Inferences drawn from static SFS-based methods like stairwayplot should be treated with caution when there are signs of isolation by distance in the underlying data (for example, if a regression of $F_{ST}$ against the logarithm of geographic distance has a significantly positive slope), and in particular an inference of population bottlenecks in the last 1000 years should be discounted if sampling is clustered, but estimates of deeper time patterns are likely to be fairly accurate. The biases in the SFS and haplotype structure identified above \citep[see also][]{Wakeley1999,Chikhi2010,Stadler2009} are apparently small enough that they fall within the range of variability regularly inferred by these approaches, at least on datasets of the size we simulated.  
+
+%%%%%%%%%%%
+\subsection{GWAS}
+
+Spatial structure is particularly challenging for genome-wide association studies, because the effects of dispersal on genetic variation are compounded by spatial variation in the environment \citep{Mathieson2012}. Spatially restricted mate choice and dispersal causes variation in allele frequencies across the range of a species. If environmental factors affecting the phenotype of interest also vary over space, then \DIFdelbegin \DIFdel{groups of individuals in different regions will }\DIFdelend allele frequencies and environmental exposures will covary over space. \DIFaddbegin \llabel{ll:1:11:2}
+\DIFaddend In this scenario an uncorrected GWAS will infer genetic associations with a purely environmental phenotype at any site in the genome that is differentiated over space, and the relative degree of bias will be a function of the degree of covariation in allele frequencies and the environment (i.e., Figure \ref{fig:gwas}C, bottom panel). This pattern has been demonstrated in a variety of simulation and empirical contexts \citep{Price2006,Yu2006,Young2018,Mathieson2012,Kang2008,Kang2010,Bulik-Sullivan2015,Berg2018,Sohail2018}. 
+
+Incorporating PC positions as covariates in a linear-regression GWAS \citep{Price2006} is designed to address this challenge by regressing out a baseline level of ``average'' differentiation. 
+In essence, a PC-corrected GWAS asks ``what regions of the genome are more associated with this phenotype than the average genome-wide association observed across populations?'' 
+In our simulations, we observed that this procedure can fail under a variety of circumstances. 
+If dispersal is limited and environmental variation is clustered in space (i.e., corner or patchy distributions in our simulations), \DIFdelbegin \DIFdel{PCA }\DIFdelend \DIFaddbegin \DIFadd{PC }\DIFaddend positions fail to capture the fine-scale spatial structure required to remove all signals of association. Conversely, as dispersal increases, PCA loses power to describe population structure before spatial mixing breaks down the relationship between genotype and the environment. These effects were observed with all spatially correlated environmental patterns, but were particularly pronounced if environmental effects are concentrated in one region, as was also found by \citet{Mathieson2012}. Though increasing the number of PC axes used in the analysis may reduce the false-positive rate, this may also decrease the power of the test to detect truly causal alleles \citep{Lawson2019}. 
+
+In this work we simulated a single chromosome with size roughly comparable to one human chromosome. If we scale the number of false-positive associations identified in our analyses to a GWAS conducted on whole-genome data from humans, we would expect to see several thousand weak false-positive associations after PC corrections in a population with neighborhood sizes up to at least 1000 (which should include values appropriate for many human populations). Notably, very few of the spurious associations we identified would be significant at a conservative Bonferroni-adjusted $p$-value cutoff (see Figure \ref{fig:manhattan_plots}). This suggests that GWAS focused on finding strongly associated alleles for traits controlled by a limited number of variants in the genome are likely robust to the impacts of continuous spatial structure. However, methods that analyze the combined effects of thousands or millions of weakly associated variants such as polygenic risk scores \citep{Khera2018} are likely to be affected by subtle population structure. Indeed as recently identified in studies of genotype associations for human height in Europe \citep{Berg2018,Sohail2018}, PC regression GWAS in modern human populations do include residual signal of population structure in large-scale analyses of polygenic traits. When attempting to make predictions across populations with different environmental exposures, polygenic risk scores affected by population structure can be expected to offer low predictive power, as was shown in a recent study finding lower performance outside European populations \citep{Martin2019}. 
+
+In summary, spatial covariation in population structure and the environment confounds the interpretation of GWAS $p$-values, and correction using principal components is insufficient to fully separate these signals for polygenic traits under a variety of environmental and population parameter regimes. 
+Other GWAS methods \DIFaddbegin \DIFadd{such as mixed models \mbox{%DIFAUXCMD
+\citep{Kang2008} }\hspace{0pt}%DIFAUXCMD
+}\llabel{mixedmodelcallout} \DIFaddend may be less sensitive to this confounding, but there is no obvious reason that this should be so. 
+One approach to estimating the degree of bias in GWAS caused by population structure is LD score regression \citep{Bulik-Sullivan2015}. 
+Though this approach appears to work well in practice, its interpretation is not always straightforward and it is likely biased by the presence of linked selection \citep{Berg2018}. In addition, we observed that in many cases the false-positive SNPs we identified appeared to be concentrated in LD peaks similar to those expected from truly causal sites (Figure \ref{fig:manhattan_plots}), which may confound LD score regression.
+
+We suggest a straightforward alternative for species in which the primary axes of population differentiation is space 
+(note this is likely not the case for some modern human populations): 
+run a GWAS with spatial coordinates as phenotypes and check for $p$-value inflation or significant associations.
+If significant associations with sample locality are observed after correcting for population structure, 
+the method is sensitive to false positives induced by spatial structure. This is essentially the approach taken in our ``clinal'' model (though we add normally distributed noise to our phenotypes). \DIFaddbegin \DIFadd{This approach has recently been taken with polygenic scores for UK Biobank samples in \mbox{%DIFAUXCMD
+\citet{haworth2019apparent}}\hspace{0pt}%DIFAUXCMD
+, finding that scores are correlated with birth location even in this relatively homogenous sample. }\revpoint{2}{8}
+\DIFaddend Of course, it is possible that genotypes indirectly affect individual locations by adjusting organismal fitness and thus habitat selection across spatially varying environments, but we believe that this hypothesis should be tested against a null of stratification bias inflation rather than accepted as true based on GWAS results.  
+
+%%%%%% old text from gwas section
+%In a classic quantitative genetics framework phenotypes are the sum of genetic and environmental effects, $P=G+E$, with variance $var(P)=var(G)+var(E)+cov(G,E)$. Much of the bias identified in previous studies \citep{Price2006,Yu2006,Young2018,Mathieson2012,Kang2008,Kang2010,Bulik-Sullivan2015}, in which GWAS test statistics reflect population structure rather than phenotype association, arises because of a positive covariance between genotypic and environmental variation (the third term above). Because the environment is typically not measured in GWAS of natural populations, this covariation confounds genetic and environmental effects on the phenotype of interest and leads to overestimated effect sizes and deflated $p$ values. 
+
+%Over the last twenty years, genome-wide association studies (GWAS) have identified tens of thousands of correlations between genetic variation and phentoypes, both in humans and other species. Though originally intended to locate causal alleles for phenotypes controlled by a limited number of sites in the genome, GWAS is now routinely used as the first step in a phenotype-prediction pipeline that sums effect sizes across thousands or millions of variants to generate a ``polygenic risk score'' (PRS; \citep{Khera2018}). The most common method for estimating these effect sizes, which we followed in our analyses of simulated data here, is to regress the count of derived alleles at a site against individual phenotypes, taking the slope of this regression as an estimate of the effect of the allele on the phenotype. As recently reviewed by \citet{Visscher2019}, this is exactly the approach outlined by \citet{Fisher1918} at the dawn of quantitative genetics. 
+
+%Stepping back from the mechanics of GWAS specifically, Fisher's approach was to decompose the variance in phenotypes into environmental and genetic effects, e.g. 
+%\begin{equation}
+%P=G+E
+%\end{equation}
+%\begin{equation}
+%var(P)=var(G)+var(E)+cov(G,E)
+%\end{equation}
+%For GWAS in structured populations, much of the bias identified in previous studies \citep{Price2006,Yu2006,Young2018,Mathieson2012,Kang2008,Kang2010,Bulik-Sullivan2015}, in which test statistics reflect population structure rather than phenotype association, arises because of the presence of a positive covariance between genotypic and environmental variation. When the environment and genotype covary across space their effects are confounded. Note this does not require interaction between genotype and environment (so-called GxE effects), which will introduce an additional source of bias. Here we refer simply to the fact that the allele frequency at a site will often covary with the environment when both breeding structure and the environment vary over space. To some degree the success of quantitative genetics in fields like agriculture may be due to the absence of this covariation -- crop and animal breeding operations can be conducted so that the environment is either controlled or measured across populations \citep{Wray2019}. However in natural populations this situation is extremely unlikely. Most populations are structured by a combination of limited dispersal and geographic barriers, and nearly all environments vary over space. GWAS in natural populations is then forced to confront the confounding effects of population structure and the environment directly. 
+
+%A second point that has received less attention in the literature (but see \citet{Lawson2019}) is the issue of overfitting in GWAS. If a truly causal allele segregates at different frequencies in different populations, then correcting for population structure in a regression analysis will result in an underestimate of its effect size. Though our simulations had no causal alleles, we observed some evidence of this effect in the distribution of $p$-values across the genome (Figure \ref{fig:gwas}D): after PC regression many analyses resulted in $p$-values falling below their expected values from a uniform distribution, suggesting that the PC regression procedure was leading to overfitting in the model. This is consistent with a recent empirical study of heritability in human height and body mass index, which found that increasing the number of PC axes used as covariates caused the total proportion of variance explained by SNPs to decline from $\approx0.8$ to $\approx0.75$ \citep{Wainschtein2019}. 
+
+
+% latex table generated in R 3.5.1 by xtable 1.8-3 package
+% Thu Apr 11 13:11:59 2019
+\begin{table}[hbpt]
+\small
+\begin{adjustwidth}{-.9cm}{}
+\centering
+\caption{\bf Neighborhood size estimates from empirical studies.}
+\begin{tabular}{rllrrll}
+  \hline
+ Species & Description & \makecell[l]{Neighborhood\\Size} & Method & Citation \\ 
+  \hline
+  \makecell[l]{\textit{Ipomopsis}\\\textit{aggregata}} & flowering plant & 12.60 - 37.80 & Genetic & \citep{Campbell1992}\\
+  %\makecell[l]{\textit{Linanthus}\\\textit{parryae}} & flowering plant & 14 - 27 & Genetic & \citep{Wright1943}\\ %this one got debunked by a series of studies in the 90's that found that spatial differentiation in flower color is driven by environmental variability across years. See https://doi.org/10.1111/j.1558-5646.2007.00219.x
+  \makecell[l]{\textit{Borrichia}\\\textit{frutescens}} & salt marsh plant & 20 - 30 & Genetic+Survey & \citep{Antlfinger1982} \\ 
+  \makecell[l]{\textit{Oreamnos}\\\textit{americanus}} & mountain goat & 36 - 100 & Genetic & \citep{Shirk2014} \\ 
+  \makecell[l]{\textit{Homo sapiens}} & \makecell[l]{Gainj- and Kalam- \\speaking people,\\Papua New Guinea} & 40 - 213 & Genetic & \citep{Rousset1997}\\ 
+  \makecell[l]{\textit{Formica sp.}} & colonial ants & 50 - 100 & Genetic & \citep{Pamilo1983} \\ 
+  \makecell[l]{\textit{Astrocaryum}\\\textit{mexicanum}} & palm tree & 102 - 895 & Genetic+survey & \citep{Eguiarte1993} \\ 
+  \makecell[l]{\textit{Spermophilus}\\\textit{mollis}} & ground squirrel & 204 - 480 & Genetic+Survey & \citep{Antolin2001}\\
+  \makecell[l]{\textit{Sceloperus}\\\textit{olivaceus}} & lizard & 225 - 270 & Survey & \citep{Kerster1964} \\ 
+  \makecell[l]{\textit{Dieffenbachia}\\\textit{longispatha}} & \makecell[l]{beetle-pollinated\\colonial herb} & 227 - 611 & Survey & \citep{Young1988} \\ 
+  \makecell[l]{\textit{Aedes aegypti}} & \makecell[l]{Yellow-fever mosquito} & 268 & Genetic & \citep{Jasper2019} \\ 
+  \makecell[l]{\textit{Homo sapiens}} & \makecell[l]{Gainj- and Kalam- \\speaking people,\\Papua New Guinea} & 410 & Survey & \citep{Rousset1997} \\ 
+  \makecell[l]{\textit{Quercus}\\\textit{laevis}} & Oak tree & $>440$ & Genetic & \citep{Berg1995} \\ 
+  \makecell[l]{\textit{Drosophila}\\\textit{pseudoobscura}} & fruit fly & 500 - 1,000 & Survey+Crosses & \citep{Wright1946} \\ 
+  \makecell[l]{\textit{Homo sapiens}} & \makecell[l]{POPRES data\\NE Europe} & 1,342 - 5,425 & Genetic & \citep{Ringbauer2017} \\ 
+  \makecell[l]{\textit{Bebicium}\\\textit{vittatum}} & intertidal snail & 240,000 & Survey & \citep{Rousset1997}\\ 
+  \makecell[l]{\textit{Bebicium}\\\textit{vittatum}} & intertidal snail & 360,000 & Genetic & \citep{Rousset1997}\\ 
+   \hline
+\end{tabular}
+\label{table:NStable}
+\end{adjustwidth}
+\end{table}
+
+\subsection{Where are natural populations on this spectrum?}
+For how much of the tree of life do spatial patterns circumscribe genomic variation?
+In Table \ref{table:NStable} we gathered estimates of neighborhood size from a range of organisms
+to get an idea of how \DIFdelbegin \DIFdel{likely dispersal is to play an important role in }\DIFdelend \DIFaddbegin \DIFadd{strongly local geographic dispersal affects }\DIFaddend patterns of variation.
+\DIFdelbegin \DIFdel{Though this sample is almost certainly }\DIFdelend \DIFaddbegin \DIFadd{This is an imperfect measure:
+some aspects of genetic variation are most strongly determined by neighborhood size \mbox{%DIFAUXCMD
+\citep{Wright1946}}\hspace{0pt}%DIFAUXCMD
+,
+others (e.g., number of segregating sites)
+are more strongly determined by global $N_e$ or by the ratio of the two.
+%DIF >  These values should be compared to our simulation results with some caution, as though we expect neighborhood size to have similar effects across species of varying global $N_e$ \citep{Wright1946}, in our study we evaluated only a relatively small population of $\approx 10,000$. 
+}\llabel{popsizecaveat}
+\DIFadd{In addition, these empirical examples are likely }\DIFaddend biased towards small-neighborhood species (because few studies have quantified neighborhood size in species with very high dispersal or population density)\DIFdelbegin \DIFdel{, }\DIFdelend \DIFaddbegin \DIFadd{. However, from the available data }\DIFaddend we find that neighborhood sizes in the range we simulated are fairly common across a range of taxa. At the extreme low end of empirical neighborhood size estimates we see some flowering plants, large mammals, and colonial insects like ants. Species such as this have neighborhood size estimates small enough that spatial processes are likely to strongly influence inference.
+These include some human populations such as the Gainj- and Kalam-speaking people of Papua New Guinea, in which the estimated neighborhood sizes in \DIFdelbegin \DIFdel{\mbox{%DIFAUXCMD
+\citep{Rousset1997} }\hspace{0pt}%DIFAUXCMD
+}\DIFdelend \DIFaddbegin \DIFadd{\mbox{%DIFAUXCMD
+\citet{Rousset1997} }\hspace{0pt}%DIFAUXCMD
+}\DIFaddend range from 40 to 410 depending on the method of estimation. \DIFaddbegin \revpoint{3}{7}
+\DIFaddend Many more species occur in a middle range of neighborhood sizes between 100 and 1000 -- a range in which spatial processes play a minor role in our analyses under random spatial sampling but are important when sampling of individuals in space is clustered. Surprisingly, even some flying insects with huge census population sizes fall in this group, including fruit flies (\textit{D.\DIFaddbegin \DIFadd{~}\DIFaddend melanogaster}) and mosquitoes (\textit{A.\DIFaddbegin \DIFadd{~}\DIFaddend aegypti}). Last, many species likely have neighborhood sizes much larger than we simulated, including \DIFaddbegin \DIFadd{the recent ancestors of }\DIFaddend modern humans in northeastern Europe \citep{Ringbauer2017}. For these species demographic inference and summary statistics are likely to reflect minimal bias from spatial effects as long as dispersal is truly continuous across the landscape. While that is so we caution that association studies in which the effects of population structure are confounded with spatial variation in the environment are still sensitive to dispersal even at these large neighborhood sizes.
+
+
+%%%%%%%%%%%
+\DIFaddbegin \subsection{\DIFadd{Other demographic models}}
+
+\DIFadd{Any simulation of a population of reproducing organisms
+requires some kind of control on population sizes,
+or else the population will either die out or grow very large after a sufficiently long period of time. }\llabel{demog_disco}
+\DIFadd{The usual choice of population regulation for population genetics --
+a constant size, as in the Wright--Fisher model --
+implies biologically unrealistic interactions between geographically distant parts of the species range.
+Our choice to regulate population size by including a local density-dependent control on mortality
+is only one of many possible ways to do this.
+We could have instead regulated fecundity, or recruitment, or both;
+this general class of models
+is sometimes referred to as the ``Bolker--Pacala model'' \mbox{%DIFAUXCMD
+\citep{bolker1997using}}\hspace{0pt}%DIFAUXCMD
+.
+It is not currently clear how much different choices of demographic parameters,
+or of functional forms for the regulation,
+might quantitatively affect our results,
+although the general predictions should be robust to similar forms of regulation.
+Since populations are still entirely }\emph{\DIFadd{intrinsically}} \DIFadd{regulated,
+our model still has a very strong ``population genetics'' flavor.
+Alternatively, population size could be regulated by interactions with other species
+(e.g., a Lotka-Volterra model),
+or extrinsically specified by local resource availability
+(e.g., by food or nest site availability).
+Indeed, our model could be interpreted as a caricature of such a model:
+as local density increases, good habitat is increasingly occupied,
+pushing individuals into more marginal habitat and increasing their mortality. 
+Many such models should behave similarly to ours,
+but others (especially those with local population cycling), may differ dramatically.
+}
+
+\DIFadd{Population genetic simulations often use grids of discrete demes, which are assumed to approximate continuous space. 
+However, there are theoretical reasons to expect that increasingly fine grids of discrete demes do not approach the continuous model 
+\mbox{%DIFAUXCMD
+\citep{barton2002neutral}}\hspace{0pt}%DIFAUXCMD
+.
+If continuous space can be approximated by a limit of discrete models, this should be true regardless of the precise details of the discrete model. 
+Although we carefully chose parameters to match our continuous models, we found that some aspects of genetic variation
+diverged from the continuous case as the discretization got finer. 
+This suggests that these models do not converge in the limit. 
+However, many populations may indeed be well-modeled as a series of discrete, 
+randomly-mating demes if, for example, suitable habitats are 
+patchily distributed across the landscape. 
+There is a clear need for greater exploration of 
+the consequences for population genetics of ecologically realistic population models.
+}
+
+
+%DIF > %%%%%%%%%%
+\DIFaddend \subsection{Future Directions and Limitations}
+
+As we have shown, a large number of population genetic summary statistics contain information about spatial population processes. We imagine that combinations of such summaries might be sufficient for the construction of supervised machine learning regressors \citep[e.g.,][]{Schrider2018} for the accurate estimation of dispersal from genetic data. Indeed, \citet{Ashander2018} found that inverse interpolation on a vector of summary statistics provided a powerful method of estimating dispersal distances. Expanding this approach to include the haplotype-based summary statistics studied here and applying machine learning regressors built for general inference of nonlinear relationships from high-dimensional data may allow precise estimation of spatial parameters under a range of complex models. 
+
+%One complication in the inference of any spatial demographic parameter is the balance between local and global process. Many species are structured locally by limited dispersal, but also contain deeply divergent lineages in different regions that reflect signals of ancient episodes of geographic isolation or strong barriers to dispersal. Gene flow upon secondary contact of two previously isolated lineages should create clinal patterns similar to isolation by distance, and it will be difficult to determine when inferred dispersal parameters are reflecting recent demographic process versus the historic patterns of geographic isolation. In addition, spatially varying selection will create allele frequency variation over space that may mimic isolation by distance. Indeed, a series of field studies described in \citet{Schemske2007} found that in Wright's original empirical example of isolation by distance, the flowering plant \textit{Linanthus parryae}, patterns of flower color differentiation over space primarily reflect temporal and spatial variation in selection rather than limited dispersal. Studies simulating selection and dispersal interacting in space (e.g., \citet{Ralph2010}) and testing for identifiability of inferred dispersal or selective parameters may offer new insight into the extent of our ability to accurately infer evolutionary processes in real systems. 
+
+One facet of spatial variation that we did not address in this study is the confounding of dispersal and population density implicit in the definition of Wright's neighborhood size. Our simulations were run under constant densities, but \DIFdelbegin \DIFdel{\mbox{%DIFAUXCMD
+\citet{Ringbauer2017}}\hspace{0pt}%DIFAUXCMD
+'s approach to demographic inference in space suggests that density and dispersal can in some cases be estimated separately from genetic data. }\DIFdelend \DIFaddbegin \DIFadd{\mbox{%DIFAUXCMD
+\citet{guindon2016demographic} }\hspace{0pt}%DIFAUXCMD
+and \mbox{%DIFAUXCMD
+\citet{Ringbauer2017} }\hspace{0pt}%DIFAUXCMD
+}\revpoint{3}{8}
+\DIFadd{have shown that these parameters are identifiable under some continuous models. Similarly, though the scaling effects of dispersal we show in Figure \ref{fig:sumstats} should occur in populations of any total size, other aspects such as the number of segregating sites are also likely affected by the total landscape size (and so total census size). }\llabel{landscapesizecaveat}
+\DIFaddend Much additional work remains to be done to better understand how these parameters interact to shape genetic variation in continuous space, which we leave to future studies. 
+
+Though our simulation allows incorporation of realistic demographic and spatial processes, 
+it is inevitably limited by the computational burden of tracking tens or hundreds of thousands of individuals in every generation. 
+In particular, computations required for mate selection and spatial competition scale approximately with the product of the total census size and the neighborhood size and so increase rapidly for large populations and dispersal distances. 
+The reverse-time \DIFdelbegin \DIFdel{model of continuous space evolution }\DIFdelend \DIFaddbegin \DIFadd{spatial Lambda--Fleming--Viot model }\DIFaddend described by \citet{Barton2010} and implemented by \citet{Kelleher2014} 
+allows exploration of \DIFdelbegin \DIFdel{parameter regimes with }\DIFdelend \DIFaddbegin \DIFadd{larger }\DIFaddend population and landscape sizes\DIFdelbegin \DIFdel{more directly comparable to empirical cases like humans}\DIFdelend \DIFaddbegin \DIFadd{,
+but the precise connection of these models to forward-time demography is not yet clear}\DIFaddend .
+Alternatively, implementation of parallelized calculations may allow progress with forward-time simulations.
+
+
+%A mixed approach can combine forward- and reverse-time models, as recently done for a continuous-space Wright-Fisher model by \citet{Lotterhos2019} and a simulation with linked selection by \citet{Buffalo2019}. This allows us to generate short runs of large, realistic simulations in forward time in SLiM \citep{Haller2019} and then ``finish'' the simulations as a coalescent simulation in msprime \citep{Kelleher2016}, combining the two using an operation called ``recapitation'' \citep{haller2019treesequence}. As we have seen in this work, a nontrivial step in this approach is scaling the variance in reproductive output and generation time across forward- and reverse-time methods. Further development of our understanding of how to merge forward- and reverse-time models is a promising avenue for future research that will be necessary for scaling continuous-space simulations to millions or billions of individuals.  
+
+Finally, we believe that the difficulties in correcting for population structure in continuous populations 
+using principal components analysis or similar decompositions is a difficult issue, well worth considering on its own.
+How can we best avoid spurious correlations while correlating genetic and phenotypic variation 
+without underpowering the methods?
+Perhaps optimistically,
+we posit that process-driven descriptions of ancestry 
+and/or more generalized unsupervised methods may be able to better account for carry out this task.
+
+
+\section{Data Availability}
+Scripts used for all analyses and figures are available at \DIFdelbegin %DIFDELCMD < \url{https://github.com/petrelharp/spaceness}%%%
+\DIFdelend \DIFaddbegin \url{https://github.com/kern-lab/spaceness}\DIFaddend . 
+
+\section{Acknowledgements}
+We thank Brandon Cooper, Matt Hahn, Doc Edge, and others for reading and thinking about this manuscript. 
+\DIFdelbegin \DIFdel{We thank the Hearth for having such good, nearby coffee, and
+Falling Sky Brewing for creative support during manuscript drafting.
+CJB and ADK were supported by NIH award R01GM117241.
+}\DIFdelend %DIF >  We thank the Hearth for having such good, nearby coffee, and
+%DIF >  Falling Sky Brewing for creative support during manuscript drafting.
+\DIFaddbegin \DIFadd{CJB and ADK were supported by NIH award R01GM117241. 
+}\revpoint{AE}{4}
+\DIFaddend 
+
+\DIFdelbegin %DIFDELCMD < \bibliography{spaceness}
+%DIFDELCMD < %%%
+\DIFdelend \DIFaddbegin \bibliography{spaceness,more_refs}
+\DIFaddend 
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Supplement %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%DIF >  \beginappendix
+\DIFaddbegin \appendix
+\setcounter{table}{0}
+\renewcommand{\thetable}{A\arabic{table}}%DIF > 
+\setcounter{figure}{0}
+\renewcommand{\thefigure}{A\arabic{figure}}%DIF > 
+
+%DIF > %%%%%%%%%%%%%%%%%%%%%%
+\section{\DIFadd{Comparisons with Stepping-Stone Models}}
+\llabel{apx:stepping_stone}
+
+\DIFadd{We also compared our model results to a regular grid of discrete populations,
+which is commonly used as an approximation of continuous geography.
+An important reason that this approximation is often made
+is that it allows more efficient, coalescent simulations;
+we implemented these using }\texttt{\DIFadd{msprime}} \DIFadd{\mbox{%DIFAUXCMD
+\citep{Kelleher2016}}\hspace{0pt}%DIFAUXCMD
+.
+In this class of models we imagine an $n \times n$ grid of populations exchanging migrants with neighboring populations at rate $m$.
+If these models are good approximations of the continuous case we expect that results
+will converge as $n \to \infty$
+(while scaling $m$ appropriately and keeping total population size fixed),
+so we ran simulations while varying $n$ from 5 to 50 (Table \ref{table:grid_params}).
+To compare with continuous models we first distributed the the same ``effective'' number of individuals across the landscape as in our continuous-space simulations ($\approx 6100$, estimated from $\theta_{\pi}$ of random-mating continuous-space simulations).
+We then approximate the mean per-generation dispersal distance $\sigma$ given a total landscape width $W$ as the product of the probability of an individual being a migrant and the distance traveled by migrants: $\sigma = 4m(W/n)$.
+This means that $m$ in different simulations with the same $\sigma$ scales with $\sqrt{n}$.
+We ran 500 simulations for each value of $n$ while sampling $\sigma$ from $U(0.2,4)$. We then randomly selected 60 diploid individuals from each simulation (approximating diploidy by combining pairs of chromosomes with contiguous indices within demes) and calculated a set of six summary statistics using the scripts described in the summary statistics portion of the main text. 
+}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{ccc}
+     \DIFaddFL{demes per side ($n$)}&\DIFaddFL{$N_e$ per deme  }& \DIFaddFL{samples per deme  }\\
+     \hline
+     \DIFaddFL{5 }& \DIFaddFL{244 }& \DIFaddFL{20 }\\
+     \DIFaddFL{10 }& \DIFaddFL{61 }& \DIFaddFL{10 }\\
+     \DIFaddFL{20 }& \DIFaddFL{15.25 }& \DIFaddFL{2 }\\
+     \DIFaddFL{50 }& \DIFaddFL{2.44 }& \DIFaddFL{1 }\\
+\end{tabular}
+\captionsetup{justification=centering}
+\caption{\DIFaddFL{stepping-stone simulation parameters}}
+\label{table:grid_params}
+\end{table}
+
+
+\begin{figure*}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/grid_ss_curves_edit.pdf}
+\caption{\DIFaddFL{Summary statistics for 2-dimensional coalescent stepping-stone models with fixed total $N_{e}$ and varying numbers of demes per side. The black ``infinite'' points are from our forward-time continuous space model. Inter-deme migration rates are related to $\sigma$ as described above.}}
+\label{fig:grid_stats}
+\end{figure*}
+
+\DIFadd{In general we find many of the qualitative trends are similar among continuous and stepping-stone models and that, at low neighborhood sizes, many  (but not all) statistics from stepping-stone models approach the continuous model as the resolution of the grid increases. For example, $\theta_\pi$ is inflated at low neighborhood sizes (i.e., low $m$), and the extent of the inflation increases to approach the continuous case as the resolution of the landscape increases. Similar patterns are observed for $F_{IS}$ and observed heterozygosity. However, $\theta_{W}$ behaves differently, showing a non-monotonic relationship with grid resolution. This results in an increasingly positive Tajima's $D$ in grid simulations at small neighborhood sizes, to a much greater extent than seen in a continuous model. In contrast to $\theta_\pi$, increasing the resolution of the grid causes Tajima's $D$ to deviate }\emph{\DIFadd{more}} \DIFadd{from what is seen in the continuous model. 
+ }
+
+\DIFadd{These differences relative to our continuous model mainly reflect two shortcomings of the reverse-time stepping stone model. If we simulate a coarse grid with relatively large populations in each deme, we cannot accurately capture the dynamics of small neighborhood sizes because mating within each deme remains random regardless of the migration rate connecting demes. This likely explains the trends in $\theta_{\pi}$, observed heterozygosity, and $F_{IS}$. However increasing the number of demes while holding the total number of individuals constant results in small within-deme populations for which even the minimum sample size of 1 approaches the local $N_e$ (Table \ref{table:grid_params}). This results in an excess of short terminal branches in the coalescent tree, which decreases the total branch length and leads to fewer segregating sites, deflated $\theta_W$, and inflated Tajima's $D$. Overall, the stepping-stone model reproduces important features of spatial structure in our continuous space model, such as a decline in $\theta_\pi$ and correlations between spatial and genetic distance with increasing migration, but introduces artifacts caused by binning the landscape into discrete demes. 
+}
+
+%DIF > %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\DIFadd{Demographic model}}
+\llabel{apx:demographic_model}
+\DIFadd{Local population regulation is controlled by two parameters, $L$, and $K$.
+Here, we show that these should be close to the average lifespan of an individual
+and the average number of individuals per unit area, respectively.
+We chose our demographic model so that every individual has on average $1/L$ offspring
+each time step,
+and if the local population density of an individual is $n$,
+then their probability of survival until the next time step is
+(equation }\eqref{eqn:p_survival}\DIFadd{):
+}\begin{equation}
+    \DIFadd{p = \min\left( 0.95, \frac{1}{1 + n / (K (1+L))} \right) .
+}\end{equation}
+\DIFadd{We capped survival at 0.95 so that we would not have exceptionally long-lived individuals
+in sparsely populated areas --
+otherwise, an isolated individual might live for a very long time.
+Since $1 - p \approx n / (K (1 + L))$,
+mortality goes up roughly linearly with the number of neighbors (on a scale given by $K$),
+as would be obtained if, for instance, mortality is due to agonistic interactions.
+Ignoring migration,
+a region is at demographic equilibrium if the per-capita probability of death
+is equal to the birth rate,
+i.e., if $1 - p = 1/L$.
+(Note that there is no effect of age in the model,
+which would make the analysis more complicated.)
+Solving this for $n$,
+we get that in a well-mixed population, the equilibrium density should be around
+}\begin{equation}
+    \DIFadd{n = K \frac{L+1}{L-1}
+}\end{equation}
+\DIFadd{individuals per unit area.
+At this density, the per-capita death rate is $1/L$, so the mean lifetime is $L$.
+This equilibrium density is }\emph{\DIFadd{not}} \DIFadd{$K$, but (since $L=4$) is two-thirds larger.
+However, in practice this model leads to a total population size which is around $K$
+multiplied by total geographic area
+(but which depends on $\sigma$, as discussed above).
+The main reason for this is that
+since offspring tend to be near their parents, individuals tend to be ``clumped'',
+and so experience a higher average density than the ``density'' one would compute
+by dividing census size by geographic area \mbox{%DIFAUXCMD
+\citep{lloyd1967crowding}}\hspace{0pt}%DIFAUXCMD
+.
+To maintain a constant expected total population size
+would require making (say) $K$ depend on $\sigma$;
+however, typical local population densities might then be more dissimilar.
+}
+
+
+\clearpage 
+
+%DIF >  \beginsupplement
+\setcounter{table}{0}
+\renewcommand{\thetable}{S\arabic{table}}%DIF > 
+\setcounter{figure}{0}
+\renewcommand{\thefigure}{S\arabic{figure}}%DIF > 
+
+\DIFaddend \section{Supplementary Figures and Tables}
+\DIFdelbegin %DIFDELCMD < \beginsupplement
+%DIFDELCMD < %%%
+\DIFdelend 
+
+\DIFdelbegin %DIFDELCMD < \afterpage{\clearpage}
+%DIFDELCMD < %%%
+\DIFdelend \begin{figure*}[p]
+\centering
+\DIFaddbeginFL \includegraphics[width=\textwidth]{figures/wm_v_dd_maps.pdf}
+\caption{\DIFaddFL{Maps of individual locations in a continuous-space Wright-Malécot model with independent dispersal of all individuals (top) and under our continuous space model incorporating density-dependant fitness (bottom). The clustering seen in the top row is the ``Pain in the Torus'' described by \mbox{%DIFAUXCMD
+\citet{Felsenstein1975}}\hspace{0pt}%DIFAUXCMD
+.}}
+\label{fig:wm_v_dd} 
+\end{figure*}
+\FloatBarrier
+
+
+\begin{figure*}[p]
+\centering
+\includegraphics[width=0.6\textwidth]{figures/edge_scaling_comp.pdf}
+\caption{\DIFaddFL{Comparison of individual fitness across the landscape in simulations with (right) and without (left) a decline in fitness approaching range edges. Note the slight excess of high-fitness individuals at edges on the left, which is (partially) counteracted by the scaling procedure.}}
+\label{fig:edge_scaling} 
+\end{figure*}
+\FloatBarrier
+
+
+\begin{figure*}[p]
+\centering
+\includegraphics[]{figures/slim_v_msp_sfs.pdf}
+\caption{\DIFaddFL{Site frequency spectra from a simulation with neighborhood size = 12.5 when mutations are recorded directly in SLiM (blue line) or applied later in msprime (red line).}}
+\label{fig:slim_v_msp_sfs} 
+\end{figure*}
+\FloatBarrier
+
+
+
+\begin{figure*}[p]
+\centering
+\DIFaddendFL \includegraphics[width=\textwidth]{figures/sumstats_by_neighbors_allstats.pdf}
+\caption{Change in summary statistics by neighborhood size and sampling scheme calculated from simulated sequence data of 60 individuals.}
+\label{fig:allsumstats} 
+\end{figure*}
+\DIFaddbegin \FloatBarrier
+\DIFaddend 
+
+
+\DIFdelbegin %DIFDELCMD < \afterpage{\clearpage}
+%DIFDELCMD < %%%
+\DIFdelend \begin{figure*}[p]
+\centering
+\includegraphics[width=\textwidth]{figures/fig_S1_sfs_grid_model_by_sampling.pdf}
+\caption{Site frequency spectra for random mating and spatial SLiM models under all sampling schemes.}
+\label{fig:allsfs}
+\end{figure*}
+\DIFaddbegin \FloatBarrier
+\DIFaddend 
+
+\DIFdelbegin %DIFDELCMD < \afterpage{\clearpage}
+%DIFDELCMD < %%%
+\DIFdelend \begin{figure*}[p]
+\centering
+\includegraphics[]{figures/het_z_by_ind.pdf}
+\caption{\DIFdelbeginFL \DIFdelFL{Normalized mean }\DIFdelendFL \DIFaddbeginFL \DIFaddFL{Variation in }\DIFaddendFL observed heterozygosity \DIFdelbeginFL \DIFdelFL{by location }\DIFdelendFL \DIFaddbeginFL \DIFaddFL{(i.e. proportion of heterozygous individuals) in hexagonal bins }\DIFaddendFL across \DIFaddbeginFL \DIFaddFL{the landscape, estimated from a random sample of }\DIFaddendFL 200 \DIFdelbeginFL \DIFdelFL{randomly sampled }\DIFdelendFL individuals \DIFaddbeginFL \DIFaddFL{from the final generation of a simulation with neighborhood size $\approx$25. Values were Z-normalized for plotting.}\DIFaddendFL }
+\label{fig:hetmap}
+\end{figure*}
+\DIFaddbegin \FloatBarrier
+\DIFaddend 
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=\textwidth]{figures/demography_combined.pdf}
+\caption{Inferred demographic histories for spatial SLiM simulations, by sampling scheme and neighborhood size (NS) range. Thick lines are rolling medians across all simulations in a bin and thin lines are best fit models for each simulation. Dashed horizontal lines are the average $N_{e}$ across random-mating SLiM models estimated from $\theta_{\pi}$.}
+\label{fig:demography_supplement}
+\end{figure}
+\DIFaddbegin \FloatBarrier
+\DIFaddend 
+
+\DIFdelbegin %DIFDELCMD < \afterpage{\clearpage}
+%DIFDELCMD < %%%
+\DIFdelend \begin{figure*}[p]
+\centering
+\includegraphics[height=0.9\textheight]{figures/manhattan_plots_combo-01.png}
+\caption{Manhattan plots for a sample of simulations at varying neighborhood sizes. Labels on the right of each plot describes the spatial distribution of environmental factors (described in the methods section of the main text). Points in red are significantly associated with a nongenetic phenotype using a 5\% FDR threshold (dashed line). For runs with significant associations the dotted line is a Bonferroni-adjusted cutoff for $p=0.05$.}
+\label{fig:manhattan_plots}
+\end{figure*}
+\DIFaddbegin \FloatBarrier
+\DIFaddend 
+
+\DIFaddbegin \begin{figure*}[p]
+\centering
+\includegraphics[width=0.8\textwidth]{figures/qqplots_hexbin.pdf}
+\caption{\DIFaddFL{Quantile-quantile plots showing observed and expected $-log10(p)$ for PC-corrected GWAS run on simulations with varying neighborhood sizes and environmental distributions. Hexagonal bins are colored by the average neighborhood size of simulations with points falling in a given region of quantile-quantile space. Qqplots for a subset of these simulations are shown as lines in Figure \ref{fig:gwas}D.}} 
+\label{fig:qqplot_hexbins}
+\end{figure*}
+\FloatBarrier
+
+\DIFaddend \begin{table}
+\small
+\centering
+\caption{\bf Summary statistics calculated on simulated genotypes.}
+\begin{tabular}{rllrrrrr}
+  \hline
+Statistic & Description \\ 
+  \hline
+$\Theta_{/pi}$ & Mean of the distribution of pairwise genetic differences \\
+$\Theta_{/W}$ & Effective population size based on segregating sites \\
+Segregating Sites & Total number of segregating sites in the sample \\
+Tajima's $D$ & Difference in $\Theta_{/pi}$ and $\Theta_{/W}$ over its standard deviation\\
+Observed \DIFdelbeginFL \DIFdelFL{Heterzygosity }\DIFdelendFL \DIFaddbeginFL \DIFaddFL{Heterozygosity }\DIFaddendFL & Proportion of heterozygous individuals in the sample \\
+$F_{IS}$ & Wright's inbreeding coefficient $1-H_{e}/H_{o}$ \\
+$var(D_{xy})$ & Variance in the distribution of pairwise genetic distances \\
+$skew(D_{xy})$ & Skew of the distribution of pairwise genetic distances \\
+$mean(IBS)$ & \makecell[l]{Mean of the distribution of pairwise identical-by-state (IBS) \\tract lengths taken over all pairs.} \\
+$var(IBS)$ & \makecell[l]{Variance of the distribution of pairwise identical-by-state (IBS) \\tract lengths taken over all pairs.} \\
+$skew(IBS)$ & \makecell[l]{Skew of the distribution of pairwise identical-by-state (IBS) \\tract lengths taken over all pairs.} \\
+$nIBS$ & Mean number of IBS tracts with length > 2bp across all pairs in the sample. \\
+$nIBS>1e6$ & \makecell[l]{Mean number of IBS tracts over $1\times10^6$bp per pair \\across all pairs in the sample.} \\ 
+$corr(D_{xy},dist)$ & Pearson correlation between genetic distance and $\log_{10}(spatial\text{ }distance)$ \\
+$corr(mean(IBS),dist)$ & \makecell[l]{Pearson correlation between the mean of the IBS tract distribution \\for each pair of samples and $\log_{10}(spatial\text{ }distance)$} \\
+$corr(nIBS,dist)$ & \makecell[l]{Pearson correlation between the number of IBS tracts \\for each pair of samples and $\log_{10}(spatial\text{ }distance)$} \\
+$corr(IBS>1e6,dist)$ & \makecell[l]{Pearson correlation between the number of IBS tracts $> 1\times10^6$bp \\for each pair of samples and $\log_{10}(spatial\text{ }distance)$} \\
+$corr(skew(IBS),dist)$ & \makecell[l]{Pearson correlation between the skew of the distribution of pairwise haplotype\\ block lengths for each pair of samples and $\log_{10}(spatial\text{ }distance)$} \\
+\end{tabular}
+\label{table:sumstats}
+\end{table}
+\DIFaddbegin \FloatBarrier
+\DIFaddend 
+
+\begin{table*}[htbp]
+\tiny
+\centering
+\caption{\bf Anova and Levene's test $p$ values for differences by sampling strategy. Bolded values are rejected at $\alpha=0.05$}
+\begin{tableminipage}{\textwidth}
+\begin{tabularx}{\textwidth}{XXXX}
+  \hline
+ variable & model & p(equal means) & p(equal variance) \\ 
+  \hline
+segsites & random mating & 0.998190 & 0.980730 \\ 
+$\Theta_{\pi}$ & random mating & 0.997750 & 0.996450 \\ 
+$\Theta_{W}$ & random mating & 0.998190 & 0.980730 \\ 
+Tajima's $D$ & random mating & 0.879690 & 0.188770 \\ 
+observed heterozygosity & random mating & 0.531540 & 0.433230 \\ 
+$F_{IS}$ & random mating & 0.474790 & 0.785730 \\ 
+$mean(D_{xy})$ & random mating & 0.997770 & 0.996510 \\ 
+$var(D_{xy})$ & random mating & 0.283630 & 0.647240 \\ 
+$skew(D_{xy})$ & random mating & 0.958320 & 0.260750 \\ 
+$corr(Dxy,dist)$ & random mating & 0.601980 &\textbf{0.000000} \\ 
+$mean(IBS)$ & random mating & 0.997960 & 0.997730 \\ 
+$var(IBS)$ & random mating & 0.486450 & 0.399490 \\ 
+$skew(IBS)$ & random mating & 0.117980 & 0.069770 \\ 
+$nIBS$ & random mating & 0.997680 & 0.996570 \\ 
+$nIBS>1e6$ & random mating & 0.834870 & 0.888730 \\ 
+$corr(mean(IBS),dist)$ & random mating & 0.073270 & 0.308420 \\ 
+$corr(IBS>1e6,dist)$ & random mating & 0.268440 & \textbf{0.002100} \\ 
+$corr(skew(IBS),dist)$ & random mating & 0.396920 & \textbf{0.000620} \\ 
+$corr(nIBS,dist)$ & random mating & 0.581090 & \textbf{0.000000} \\ 
+segsites & spatial & \textbf{0.000000} & \textbf{0.000000} \\ 
+$\Theta_{\pi}$ & spatial & \textbf{0.026510} & \textbf{0.013440} \\ 
+$\Theta_{W}$ & spatial & \textbf{0.000000} & \textbf{0.000000} \\ 
+Tajima's $D$ & spatial & \textbf{0.000000} & \textbf{0.000000} \\ 
+observed heterozygosity & spatial & \textbf{0.000000} & \textbf{0.000000} \\ 
+$F_{IS}$ & spatial & \textbf{0.000000} & \textbf{0.000120} \\ 
+$mean(D_{xy})$ & spatial & \textbf{0.025390} & \textbf{0.012910} \\ 
+$var(D_{xy})$ & spatial & \textbf{0.004970} & \textbf{0.006230} \\ 
+$skew(D_{xy})$ & spatial & \textbf{0.000000} & \textbf{0.000000} \\ 
+$corr(Dxy,dist)$ & spatial & \textbf{0.000000} & \textbf{0.000000} \\ 
+$mean(IBS)$ & spatial & 0.272400 & 0.114250 \\ 
+$var(IBS)$ & spatial & \textbf{0.000000} & \textbf{0.000000} \\ 
+$skew(IBS)$ & spatial & \textbf{0.000000} & \textbf{0.000000} \\ 
+$nIBS$ & spatial & \textbf{0.033920} & \textbf{0.016640} \\ 
+$nIBS>1e6$ & spatial & \textbf{0.000000} & \textbf{0.000000} \\ 
+$corr(mean(IBS),dist)$ & spatial & \textbf{0.000000} & 0.590540 \\ 
+$corr(IBS>1e6,dist)$ & spatial & \textbf{0.000000} & \textbf{0.000000} \\ 
+$corr(skew(IBS),dist)$ & spatial & \textbf{0.000000} & \textbf{0.000000} \\ 
+$corr(nIBS,dist)$ & spatial & \textbf{0.000000} & \textbf{0.000000} \\ 
+\hline
+\end{tabularx}
+\end{tableminipage}
+\label{table:sampling}
+\end{table*}
+\DIFaddbegin \FloatBarrier
+\DIFaddend 
+
+% latex table generated in R 3.5.1 by xtable 1.8-3 package
+% Fri Mar 22 13:50:47 2019
+%\begin{table}[ht]
+%\small
+%\centering
+%\caption{\bf T-test results comparing standard deviations of inferred $N_{e}$ between spatial %and coalescent models, by neighborhood size (NS) and sampling strategy. $p$ is the probability %that spatial models have higher standard deviations.}
+%\begin{tabular}{rllrrrrr}
+%  \hline
+%sampling & NS range & t & df & $p$ \\ 
+%  \hline
+%random & 2-20 & 4.2572 & 41.6166 & 0.0001 \\ 
+%random & 20-100 & -1.8473 & 171.9905 & 0.9668 \\ 
+%random & 100-500 & -2.1297 & 164.3864  & 0.9827 \\ 
+%random & 500-1000 & -3.9681 & 147.0497 & 0.9999 \\ 
+%point & 2-20 & 7.0802 & 44.3615  & 0.0000 \\ 
+%point & 20-100 & -0.2038 & 169.3799 & 0.5806 \\ 
+%point & 100-500 & -2.4945 & 152.5000 & 0.9932 \\ 
+%point & 500-1000 & -3.8329 & 162.6443& 0.9999 \\ 
+%midpoint & 2-20 & 5.9253 & 59.5462 & 0.0000 \\ 
+%midpoint & 20-100 & 3.8940 & 171.7005  & 0.0001 \\ 
+%midpoint & 100-500 & -2.2764 & 139.5221 & 0.9878 \\ 
+%midpoint & 500-1000 & -3.2223 & 165.0792 & 0.9992 \\ 
+%   \hline
+%\end{tabular}
+%\label{table:demography}
+%\end{table}
+
+
+\DIFdelbegin %DIFDELCMD < \stopsupplement
+%DIFDELCMD < %%%
+\DIFdelend \DIFaddbegin \newpage
+
+\includereviews
+\DIFaddend 
+
+
+\end{document}
+
