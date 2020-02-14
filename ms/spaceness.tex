@@ -271,7 +271,7 @@ Therefore, to properly compare to theoretical expectations,
 we empirically calculated these demographic quantities in simulations. 
 We recorded the census population size in all simulations,
 and used mean population density ($\rho$, census size divided by total area)
-to compute neighborhood size as $N_W = 4 \pi \rho \sigma^2$. 
+to compute neighborhood size as $N_W = 4 \pi \rho \sigma^2$.  \llabel{ll:nw_defn}
 To estimate generation times, we stored ages of the parents of every new individual born across 200 timesteps, 
 after a 100 generation burn-in, and took the mean. 
 To estimate variance in offspring number, 
@@ -540,7 +540,7 @@ Clinal environments cause an interesting pattern in false positives after PC cor
 but at neighborhood sizes above roughly 250 the proportion of significant SNPs increases to up to 0.4\% (Figure~\ref{fig:gwas}). 
 This may be due to a loss of descriptive power of the PCs
 -- as neighborhood size increases, the total proportion of variance explained by the first 10 PC axes declines from roughly 10\% to 4\% (Figure \ref{fig:gwas}B). 
-Essentially, PCA seems unable to effectively summarize the weak population structure present in large-neighborhood simulations given the sample sizes we tested, \revpoint{2}{2} \llabel{samplesizenote}
+Essentially, PCA seems unable to effectively summarize the weak population structure present in large-neighborhood simulations given the sample sizes we tested, \revpoint{2}{2}
 but these populations continue to have enough spatial structure to create significant correlations between genotypes and the environment. A similar process can also be seen in the corner phenotype distribution, in which the count of significant SNPs initially declines as neighborhood size increases and then increases at approximately the point at which the proportion of variance explained by PCA approaches its minimum. 
 
 Figure \ref{fig:gwas}D shows quantile-quantile plots for a subset of simulations that show the degree of genome-wide inflation of test statistics in PC-corrected GWAS across all simulations and environmental distributions. 
@@ -656,9 +656,11 @@ In essence, a PC-corrected GWAS asks ``what regions of the genome are more assoc
 In our simulations, we observed that this procedure can fail under a variety of circumstances. 
 If dispersal is limited and environmental variation is clustered in space (i.e., corner or patchy distributions in our simulations), PC positions fail to capture the fine-scale spatial structure required to remove all signals of association. Conversely, as dispersal increases, PCA loses power to describe population structure before spatial mixing breaks down the relationship between genotype and the environment. These effects were observed with all spatially correlated environmental patterns, but were particularly pronounced if environmental effects are concentrated in one region, as was also found by \citet{Mathieson2012}. Though increasing the number of PC axes used in the analysis may reduce the false-positive rate, this may also decrease the power of the test to detect truly causal alleles \citep{Lawson2019}. 
 
-In this work we simulated a single chromosome with size roughly comparable to one human chromosome. If we scale the number of false-positive associations identified in our analyses to a GWAS conducted on whole-genome data from humans, we would expect to see several thousand weak false-positive associations after PC corrections in a population with neighborhood sizes up to at least 1000 (which should include values appropriate for many human populations). Notably, very few of the spurious associations we identified would be significant at a conservative Bonferroni-adjusted $p$-value cutoff (see Figure \ref{fig:manhattan_plots}). This suggests that GWAS focused on finding strongly associated alleles for traits controlled by a limited number of variants in the genome are likely robust to the impacts of continuous spatial structure. However, methods that analyze the combined effects of thousands or millions of weakly associated variants such as polygenic risk scores \citep{wray2007prediction,international2009common} are likely to be affected by subtle population structure. Indeed as recently identified in studies of genotype associations for human height in Europe \citep{Berg2018,Sohail2018}, PC regression GWAS in modern human populations do include residual signal of population structure in large-scale analyses of polygenic traits. In addition to error associated with varying patterns of linkage disequilibrium and allele frequency among populations, the confounding of environmental and genetic effects on phenotypes introduced by population structure is expected to lead to low predictive power when polygenic scores are generated for populations outside the original GWAS cohort, \llabel{ldcaveats}
+In this work we simulated a single chromosome with size roughly comparable to one human chromosome. If we scale the number of false-positive associations identified in our analyses to a GWAS conducted on whole-genome data from humans, we would expect to see several thousand weak false-positive associations after PC corrections in a population with neighborhood sizes up to at least 1000 (which should include values appropriate for many human populations). Notably, very few of the spurious associations we identified would be significant at a conservative Bonferroni-adjusted $p$-value cutoff (see Figure \ref{fig:manhattan_plots}). This suggests that GWAS focused on finding strongly associated alleles for traits controlled by a limited number of variants in the genome are likely robust to the impacts of continuous spatial structure. However, methods that analyze the combined effects of thousands or millions of weakly associated variants such as polygenic risk scores \citep{wray2007prediction,international2009common} are likely to be affected by subtle population structure. \revpoint{2}{3}
+Indeed as recently identified in studies of genotype associations for human height in Europe \citep{Berg2018,Sohail2018}, \revpoint{2}{4}
+PC regression GWAS in modern human populations do include residual signal of population structure in large-scale analyses of polygenic traits. In addition to error associated with varying patterns of linkage disequilibrium and allele frequency among populations, the confounding of environmental and genetic effects on phenotypes introduced by population structure is expected to lead to low predictive power when polygenic scores are generated for populations outside the original GWAS cohort, \llabel{ldcaveats}
 %When attempting to make predictions across populations with different environmental exposures, polygenic risk scores affected by population structure can be expected to offer low predictive power, 
-as was shown in a recent study finding lower polygenic score predictive power outside European populations \citep{Martin2019}. 
+as was shown in a recent study finding lower polygenic score predictive power outside European populations \citep{Martin2019}.
 
 In summary, spatial covariation in population structure and the environment confounds the interpretation of GWAS $p$-values, and correction using principal components is insufficient to fully separate these signals for polygenic traits under a variety of environmental and population parameter regimes. 
 Other GWAS methods such as mixed models \citep{Kang2008} \llabel{mixedmodelcallout} may be less sensitive to this confounding, but there is no obvious reason that this should be so. 
@@ -757,8 +759,8 @@ It is not currently clear how much different choices of demographic parameters,
 or of functional forms for the regulation,
 might quantitatively affect our results,
 although the general predictions should be robust to similar forms of regulation.
-Since populations are still entirely \emph{intrinsically} regulated,
-our model still has a very strong ``population genetics'' flavor.
+As is usual in population genetics, \revpoint{2}{6}
+the populations are entirely \emph{intrinsically} regulated.
 Alternatively, population size could be regulated by interactions with other species
 (e.g., a Lotka-Volterra model),
 or extrinsically specified by local resource availability
@@ -811,7 +813,7 @@ using principal components analysis or similar decompositions is a difficult iss
 How can we best avoid spurious correlations while correlating genetic and phenotypic variation 
 without underpowering the methods?
 Perhaps optimistically,
-we posit that process-driven descriptions of ancestry 
+we posit that process-driven descriptions of ancestry  \revpoint{2}{7}
 and/or more generalized unsupervised methods may be able to better account for carry out this task.
 
 
