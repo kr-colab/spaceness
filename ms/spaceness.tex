@@ -286,24 +286,21 @@ and calculated the variance in number of offspring across all individuals in tim
 All calculations were performed with information recorded in the tree sequence,
 using pyslim \citep{pyslim}.
 
-Also note that $\sigma$ controls the dispersal of offspring away from only \emph{one} parent \llabel{ll:sigma_effective}
+ Note that $\sigma$ controls the dispersal of offspring away from only \emph{one} parent \llabel{ll:sigma_effective}
 (e.g., the seed parent for plants),
-while the usual population genetics definition of dispersal distance
-involves the distance to a randomly chosen one of the two parents.
+while population genetics usually defines "dispersal distance" to be the distance to a randomly chosen one of the two parents
 (thus taking into account the distance from pollen parent as well).
 This second component -- the distance between mates --
 has in our simulations a distribution that is of order $\sigma$ but that depends on the population's patchiness.
 If both between-mate distance and dispersal distance has variance $\sigma^2$ along each axis,
 then the mean squared distance to a randomly chosen parent along that axis would be
 $(\sigma^2 + 2 \sigma^2)/2 = 3 \sigma^2 /2$.
-Also note that Wright's definition of neighborhood size should rightly use the \emph{effective}
+To match theory, neighborhood size should be defined in terms of \emph{effective}
 dispersal distance, i.e., the mean squared displacement along an axis
-between parent-child pairs found moving back along a lineage \citep{barton2002neutral}.
-Nonetheless, we use $\sigma$ and $\rho$ as defined here to compute $N_W$
+between parent-child pairs found moving back along a lineage \citep{barton2002neutral}, 
+and \emph{effective} population density \citep{Rousset1997}.
+However, we use $\sigma$ and $\rho$ as defined here to compute $N_W$
 because these quantities are more easily observable in practice than their ``effective'' versions.
-We also note that effective population density is lower than the actual population density,
-while the $\sigma$ we use is an underestimate,
-so our numbers may be close to the ``effective'' values used in theory.
 
 
 %%%%%%%%%%%%%
