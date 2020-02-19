@@ -196,8 +196,7 @@ thanks for catching this, corrected.
 I am fairly pleased overall with the revised version of this article. I commend the authors for the substantial amount of work conducted. This contribution now convincingly demonstrates how important it is to properly account for population structure when individuals are distributed along a spatial continuum.
 \end{quote}
 
-Thanks. We are also fairly pleased with it, overall.
-\plr{this is probably too much =)}
+Thank you for your comments. 
 
 \begin{point}{}
 A couple of minor points about the forward model are still puzzling me though. First of all, in one dimension, the variance of $L(o)$, the random variable corresponding to the offspring's spatial position, given $l(p)$, the parent's position, is equal to $E((L(o)-l(p))^2):=\sigma^2$. Hence, $\sigma$ is here the square root of the expected squared Euclidean distance between parents and offspring. In general, assuming isotropic migrations, $\sigma$ is the square root of the expected squared Euclidean distance taken along any dimension. It seems to me that this definition is distinct from the mean parent-offspring distance, as stated by the authors.
@@ -254,18 +253,7 @@ Additionally, the neighborhood size as defined by the authors (see \llname{ll:nw
     which would cancel the first.
     So, we are fairly confident that our values of $N_W$ match the theoretical versions
     to within the precision we require (which is only order-of-magnitue, really).
-
-These are an important point set of points on relating neighborhood sizes from different models which we have aimed to clarify. In our simulation the x axis displacement of a locus along any link in the pedigree is normally distributed with standard deviation $\sigma$ for the ``maternal'' material (i.e. deriving from the parent from which dispersal is calculated), but for the ``paternal'' parent it is the sum of two independent normal draws each with with standard deviation $\sigma$. Averaging over a random series of maternal and paternal transmissions (because our simulated genome is autosomal), variance in axial position across pedigree links is then $(3/2)\sigma^2$ and the expected displacement $\sqrt{3/2}\sigma$. So from the perspective of genes sampled at the present time our neighborhood size calculations are lower than those in models like those described in \cite{Rousset1997} by a factor of (3/2) because of differences in the breeding model. 
-
-This inflation in neighborhood size is then partially offset by our use of census rather than ``effective'' population size when calculating population density, because $N_e$ of our spatial model estimated from $\pi$ in random-mating spatial models is roughly 2/3 the census size. We chose this method for density and sigma calculations because we sought to parameterize our model with values that could be observed in real populations. We also find the concept of ``effective population size'' in this context even more confusing than usual -- as we show, spatial processes in both evolution and sampling radically shift the distribution of coalescence times and the variance in offspring numbers in ways that mimic the effects of classic $N_{e}$ scaling in random-mating models, but are driven by fundamentally different processes.
-
-Thus relative to models like \cite{Rousset1997} our definition of $\sigma$ is probably too low and $\rho$ probably too high such that the neighborhood sizes we show in plots are roughly consistent with previous theoretical work; while relative to neighborhood sizes calculated from mark-recapture studies measuring parent-offspring distances our figures should be consistent to the extent that the breeding and dispersal system matches our simulation. We have expanded the caveats at the head of the discussion paragraph interpreting empirical studies noting that definitions of $\rho$ in ecological vs genetic studies mean results should be interpreted with caution \llname{rhocaveat}; however, as we mainly interpret these figures in terms of order-of-magnitude differences (roughly less than 100, 100-1000, and over 1000) we think our results are general enough to be robust to these modeling differences while still giving a useful yardstick. Indeed for many of the empirical studies the range of NS values given is larger than the differences we expect from the parameter definitions described above. We also think that our study of lattice simulations in appendix 1 demonstrates nicely how qualitatively similar simulations can lead to quite different patterns of genetic diversity at a given neighborhood size as a result of differences in the underlying breeding model. 
-
-\cjb{CJ: let's meet and talk again and talk about what edits to make here. I'm not sure what the best way to go is.}
-
 }
-
-\ak{ADK: I made some small edits but I'm pretty happy about how it reads}
 
 \begin{point}{}
 Furthermore, the neighborhood size estimates obtained for Bebicium vittatum derive from the analysis of a one-dimensional habitat. The product $\sigma^2 \rho$ is thus expressed in this particular case as a number of individuals *per unit of space* (in two dimensions, this product is expressed as a number of individuals). Hence, the unit of space matters a lot here, prohibiting the direct comparison with other figures in the same table or with the simulations conducted in this study.
