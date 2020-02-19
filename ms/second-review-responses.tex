@@ -24,7 +24,8 @@
 \vskip 1em
 
 We are writing to submit another revised version of our manuscript, 
-``Space is the Place: Effects of Continuous Spatial Structure on Analysis of Population Genetic Data''.
+``Space is the Place: Effects of Continuous Spatial Structure on Analysis of Population Genetic Data''. 
+We have addressed reviewer comments below and made a number of changes to better explain our demographic parameters and alternate factors affecting GWAS transferability. Included here is a combined PDF including the revised text and response to reviewers, and a diff file comparing this revision and our previous submission (note that page and line numbers in the response to reviewers refers to the revised text, not the diff file). Thank you for your time and efforts.    
 
 
 \vspace{5em}
@@ -73,7 +74,7 @@ The point of R3 on the bimodality in the realized dispersal distance in your mod
 \end{quote}
 
 
-Thank you for your comments. We have responded to each reviewer below. In response to reviewer 2 we have added several caveats to the GWAS section noting other sources of error such as allele frequency and LD variation among populations. Reviewer 3 raised two good points on our definition of neighborhood size and the interpetation of $\sigma$ -- first, that $\sigma$ refers to one- rather than two-dimensional distances between parent and offspring (this is consistent with previous theoretical work, and we have corrected our definition in the text), and second, that the use of separate draws for mate selection and dispersal means the total distance traveled by a locus along a pedigree link is greater for ``paternal'' than ``maternal'' material (taking ``maternal'' to mean the parent from which dispersal is calculated). Because our simulated genome is autosomal and individuals hermaphroditic and non-selfing, a locus will experience a mix of ``maternal'' and ``paternal'' transmission events along its genealogy. So we see this as a scaling issue rather than one of a ``bimodal'' dispersal kernal per se -- the expected axial displacement of a locus along a pedigree link is $\sqrt{3/2} \sigma$, rather than $\sigma$.
+Thank you for your comments. We have responded to each reviewer below. In response to reviewer 2 we have added several caveats to the GWAS section noting other sources of error such as allele frequency and LD variation among populations. Reviewer 3 raised two good points on our definition of neighborhood size and the interpetation of $\sigma$ -- first, that $\sigma$ refers to one- rather than two-dimensional distances between parent and offspring (this is consistent with previous theoretical work, and we have corrected our definition in the text), and second, that the use of separate draws for mate selection and dispersal means the total distance traveled by a locus along a pedigree link is greater for ``paternal'' than ``maternal'' material (taking ``maternal'' to mean the parent from which dispersal is calculated). However, our simulated genome is autosomal and individuals non-selfing, so a locus will experience a mix of ``maternal'' and ``paternal'' transmission events along its genealogy. We see this as a scaling issue rather than one of a ``bimodal'' dispersal kernal per se -- the expected axial displacement of a locus along a pedigree link is $\sqrt{3/2} \sigma$, rather than $\sigma$.
 (Note that although the parent-offspring displacement is a mixture of mean-zero Gaussians
 with respect to a bimodal distribution of standard deviations,
 the norm of any such mixtures is never itself bimodal.)
