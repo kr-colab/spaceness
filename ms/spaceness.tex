@@ -11,30 +11,6 @@
 \newcommand*{\articletypename}{PREPRINT}
 % Use the documentclass option 'lineno' to view line numbers
 
-% adding commenting commands
-\newif\ifcomments
-\commentstrue
-%\commentsfalse
-\newcommand{\cjb}[1]{\ifcomments{{\color{orange} \it (#1)}}\else{}\fi}
-\newcommand{\plr}[1]{\ifcomments{{\color{purple} \it (#1)}}\else{}\fi}
-\newcommand{\ak}[1]{\ifcomments{{\color{red} \it (#1)}}\else{}\fi}
-
-%%%%%%%%%%%
-% for responses to reviewers
-% set this to show line numbers and include responses to reviews or not
-\newif\ifreviewresponses
-\reviewresponsestrue  % include them
-% \reviewresponsesfalse  % don't include them
-\input{review-response-commands}
-\newcommand{\responsefile}{second-review-responses.tex}  % name of the review reponses file
-
-
-
-%Space is the Place: How Dispersal and Competition Shape Genetic Variation in Continuous Space
-%Impacts of Continuous Spatial Structure on Analyses of Population Genetic Data
-%Impacts of Isolation by Distance on Demographic Modeling and Association Studies
-%Space is the Place: How Dispersal and Sampling Shape Inference From Genetic Variation in Continuous Space
-%Evolution on the Final Frontier: How Dispersal and Sampling Shape Inference From Genetic Data in Continuous Space
 \title{Space is the Place: Effects of Continuous Spatial Structure on Analysis of Population Genetic Data}
 
 \author[$\ast$,1]{C.J. Battey}
@@ -46,12 +22,7 @@
 
 \runningtitle{Effects of Continuous Space} % For use in the footer 
 
-%% For the footnote.
-%% Give the last name of the first author if only one author;
-% \runningauthor{FirstAuthorLastname}
-%% last names of both authors if there are two authors;
-% \runningauthor{FirstAuthorLastname and SecondAuthorLastname}
-%% last name of the first author followed by et al, if more than two authors.
+
 \runningauthor{Battey \textit{et al.}}
 
 \begin{abstract}
